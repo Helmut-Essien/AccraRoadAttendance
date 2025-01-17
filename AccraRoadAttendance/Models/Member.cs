@@ -1,10 +1,11 @@
 ﻿// AccraRoadAttendance.Models.Member.cs
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AccraRoadAttendance.Models
 {
-    public class Member
+    public class Member : IdentityUser
     {
         [Key]
         public int Id { get; set; }

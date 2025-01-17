@@ -1,16 +1,23 @@
-﻿// AccraRoadAttendance.Data.AttendanceContext.cs
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using AccraRoadAttendance.Models;
 
 namespace AccraRoadAttendance.Data
 {
-    public class AttendanceContext : DbContext
+    public class AttendanceContext : IdentityDbContext<Member>
     {
         public DbSet<Member> Members { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public AttendanceContext(DbContextOptions<AttendanceContext> options)
+            : base(options)
         {
-            optionsBuilder.UseSqlite("Data Source=attendance.db");
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            // Custom configurations if needed
+            // Example: builder.Entity<Member>().Property(m => m.AdditionalProperty).IsRequired();
         }
     }
 }
