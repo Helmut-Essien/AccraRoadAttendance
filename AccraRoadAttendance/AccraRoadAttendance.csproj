@@ -9,7 +9,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="AppImages\attendance.svg" />
+    <None Remove="AppImages\b4.jpg" />
+    <None Remove="AppImages\churchLogo.svg" />
+    <None Remove="AppImages\Logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="AppImages\b4.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="AppImages\attendance.svg" />
+    <Resource Include="AppImages\churchLogo.svg" />
+    <Resource Include="AppImages\Logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="MaterialDesignColors" Version="5.2.1" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -19,6 +38,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="SharpVectors" Version="1.8.4.2" />
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />
   </ItemGroup>
 
 </Project>
