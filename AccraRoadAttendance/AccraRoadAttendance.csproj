@@ -13,6 +13,8 @@
     <None Remove="AppImages\b4.jpg" />
     <None Remove="AppImages\churchLogo.svg" />
     <None Remove="AppImages\CLogo.jpg" />
+    <None Remove="AppImages\CLogo.png" />
+    <None Remove="AppImages\CLogoc.png" />
     <None Remove="AppImages\Logo.png" />
   </ItemGroup>
 
@@ -24,6 +26,8 @@
     <Resource Include="AppImages\attendance.svg" />
     <Resource Include="AppImages\churchLogo.svg" />
     <Resource Include="AppImages\CLogo.jpg" />
+    <Resource Include="AppImages\CLogo.png" />
+    <Resource Include="AppImages\CLogoc.png" />
     <Resource Include="AppImages\Logo.png" />
   </ItemGroup>
 

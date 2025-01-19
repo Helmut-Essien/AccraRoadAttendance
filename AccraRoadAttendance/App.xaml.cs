@@ -33,6 +33,7 @@ namespace AccraRoadAttendance
                     // Register MainWindow
                     services.AddTransient<MainWindow>();
                     services.AddTransient<SplashScreen>();
+                    services.AddTransient<Login>();
                 })
                 .Build();
         }
@@ -58,7 +59,7 @@ namespace AccraRoadAttendance
             }
 
             // Show the SplashScreen
-            var splashScreen = serviceProvider.GetRequiredService<SplashScreen>();
+            var splashScreen = serviceProvider.GetRequiredService<Login>();
             splashScreen.Show();
 
             // Here you might want to simulate some work or wait for a few seconds
