@@ -59,7 +59,7 @@ namespace AccraRoadAttendance
             }
 
             // Show the SplashScreen
-            var splashScreen = serviceProvider.GetRequiredService<Login>();
+            var splashScreen = serviceProvider.GetRequiredService<MainWindow>();
             splashScreen.Show();
 
             // Here you might want to simulate some work or wait for a few seconds

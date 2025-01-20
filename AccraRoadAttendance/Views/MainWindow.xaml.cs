@@ -22,6 +22,40 @@ namespace AccraRoadAttendance.Views
         public MainWindow()
         {
             InitializeComponent();
+            // Set default content (Dashboard)
+            //MainContent.Content = new Dashboard();
+        }
+
+        private void Navigate(object sender, RoutedEventArgs e)
+        {
+            var button = sender as System.Windows.Controls.Button;
+            var viewName = button.CommandParameter as string;
+
+            //switch (viewName)
+            //{
+            //    case "Dashboard":
+            //        MainContent.Content = new Dashboard();
+            //        break;
+            //    case "MarkAttendance":
+            //        MainContent.Content = new MarkAttendance();
+            //        break;
+            //    case "Reports":
+            //        MainContent.Content = new Reports();
+            //        break;
+            //    case "Settings":
+            //        MainContent.Content = new Settings();
+            //        break;
+            //}
+        }
+
+        private void ExitApp(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void ToggleTheme(object sender, RoutedEventArgs e)
+        {
+            // Logic to toggle light/dark theme
         }
     }
 }

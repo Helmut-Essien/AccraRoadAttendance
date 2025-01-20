@@ -15,6 +15,7 @@
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
+
     <materialDesign:Card
         Margin="25"
         materialDesign:ElevationAssist.Elevation="Dp4"
@@ -55,6 +56,7 @@
                 </materialDesign:PopupBox>
 
                 <Image
+                    x:Name="logoImage"
                     Height="150"
                     Margin="0,60,0,5"
                     Source="pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogoc.png" />
@@ -96,6 +98,7 @@
                     materialDesign:ElevationAssist.Elevation="Dp0"
                     Content="LOG IN"
                     FontSize="18"
+                    Foreground="White"
                     Style="{StaticResource MaterialDesignFlatMidBgButton}" />
                 <Button
                     x:Name="signupBtn"

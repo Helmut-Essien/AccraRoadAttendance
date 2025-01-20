@@ -37,11 +37,15 @@ namespace AccraRoadAttendance.Views
             {
                 IsDarkTheme = false;
                 theme.SetBaseTheme(BaseTheme.Light);
+                // Change image for light theme
+                logoImage.Source = new BitmapImage(new Uri("pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogoc.png"));
             }
             else
             {
                 IsDarkTheme = true;
                 theme.SetBaseTheme(BaseTheme.Dark);
+                // Change image for light theme
+                logoImage.Source = new BitmapImage(new Uri("pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogocw.png"));
             }
             paletteHelper.SetTheme(theme);
         }
