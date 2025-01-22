@@ -1,4 +1,6 @@
-﻿using AccraRoadAttendance.Views.Pages.Members;
+﻿using AccraRoadAttendance.Data;
+using AccraRoadAttendance.Views.Pages.Members;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +22,14 @@ namespace AccraRoadAttendance.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly IServiceProvider _serviceProvider;
+        public MainWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            // Set default content (Dashboard)
-            //MainContent.Content = new Dashboard();
+            _serviceProvider = serviceProvider;
+            // Optionally set default content
+            // MainContent.Content = _serviceProvider.GetRequiredService<Dashboard>();
+
         }
 
         private void Navigate(object sender, RoutedEventArgs e)
@@ -32,11 +37,20 @@ namespace AccraRoadAttendance.Views
             var button = sender as System.Windows.Controls.Button;
             var viewName = button.CommandParameter as string;
 
-            switch (viewName)
+            if (viewName != null)
             {
-                case "Members":
-                    MainContent.Content = new Members();
-                    break;
+                switch (viewName)
+                {
+                    case "Members":
+                        using (var scope = _serviceProvider.CreateScope())
+                        {
+                            var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
+                            var membersView = new Members(context, this);
+                            MainContent.Content = membersView;
+                        }
+                        break;
+                        // Add other cases for other views here
+                }
             }
             //    case "MarkAttendance":
             //        MainContent.Content = new MarkAttendance();

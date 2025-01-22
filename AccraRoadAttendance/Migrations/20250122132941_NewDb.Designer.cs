@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccraRoadAttendance.Migrations
 {
     [DbContext(typeof(AttendanceDbContext))]
-    [Migration("20250121225148_AttendanceKeyToString")]
-    partial class AttendanceKeyToString
+    [Migration("20250122132941_NewDb")]
+    partial class NewDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

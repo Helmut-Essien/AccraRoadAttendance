@@ -3,6 +3,7 @@ using System.Windows;
 using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Views;
+using AccraRoadAttendance.Views.Pages.Members;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +35,8 @@ namespace AccraRoadAttendance
                     services.AddTransient<MainWindow>();
                     services.AddTransient<SplashScreen>();
                     services.AddTransient<Login>();
+                    services.AddTransient<AddMembers>();
+                    services.AddTransient<Members>();
                 })
                 .Build();
         }

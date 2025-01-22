@@ -35,6 +35,7 @@
         <Button
             Grid.Row="1"
             HorizontalAlignment="Left"
+            Click="AddMember_Click"
             Style="{StaticResource addButton}">
             <StackPanel Orientation="Horizontal">
                 <Icon:PackIconMaterial
@@ -91,26 +92,20 @@
                 RowStyle="{DynamicResource DataGridRowStyle1}"
                 Style="{DynamicResource DataGridStyle1}">
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn
-                        Width="auto"
-                        CanUserResize="False"
-                        ElementStyle="{StaticResource CheckBoxStyle1}"
-                        Header="C">
-                        <DataGridCheckBoxColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <CheckBox Style="{StaticResource CheckBoxStyle1}" />
-                            </DataTemplate>
-                        </DataGridCheckBoxColumn.HeaderTemplate>
-                    </DataGridCheckBoxColumn>
                     <DataGridTextColumn
                         Width="auto"
-                        Binding="{Binding Id}"
+                        Binding="{Binding FirstName}"
                         CanUserResize="False"
-                        Header="ID"
+                        Header="First Name" />
+                    <DataGridTextColumn
+                        Width="auto"
+                        Binding="{Binding LastName}"
+                        CanUserResize="False"
+                        Header="Last Name"
                         IsReadOnly="True" />
                     <DataGridTemplateColumn
                         Width="*"
-                        Header="Member"
+                        Header="Other Names"
                         IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -129,15 +124,15 @@
                                             Text="{Binding Character}" />
                                     </Border>
 
-                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding OtherNames}" />
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn
                         Width="*"
-                        Binding="{Binding Name}"
-                        Header="Name"
+                        Binding="{Binding Sex}"
+                        Header="Sex"
                         IsReadOnly="True" />
                     <DataGridTextColumn
                         Width="*"

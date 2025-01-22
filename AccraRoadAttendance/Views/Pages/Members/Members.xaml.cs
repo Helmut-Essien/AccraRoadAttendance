@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using AccraRoadAttendance.Data;
+using AccraRoadAttendance.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,29 +11,39 @@ namespace AccraRoadAttendance.Views.Pages.Members
 {
     public partial class Members : UserControl
     {
-        private List<Member> allMembers; // All members in the system
-        private List<Member> displayedMembers; // Members displayed on the current page
+        private MainWindow _mainWindow;
+        private readonly AttendanceDbContext _context;
+        private List<Models.Member> allMembers; // All members in the system
+        private List<Models.Member> displayedMembers; // Members displayed on the current page
         private int currentPage = 1;
+        private AttendanceDbContext context;
         private const int pageSize = 15;
 
-        public Members()
+        public Members(AttendanceDbContext context, MainWindow mainWindow)
         {
             InitializeComponent();
+            _context = context;
+            _mainWindow = mainWindow;
             LoadMembers();
         }
 
-        private void LoadMembers()
+        public Members(AttendanceDbContext context)
         {
-            // Simulate loading members from a database or file
-            allMembers = Enumerable.Range(1, 100).Select(i => new Member
-            {
-                Id = i,
-                Name = $"Member {i}",
-                Email = $"member{i}@example.com",
-                PhoneNumber = $"123-456-789{i % 10}"
-            }).ToList();
+            this.context = context;
+        }
 
-            RefreshDataGrid();
+        private async void LoadMembers()
+        {
+            try
+            {
+                // Load members from the database asynchronously
+                allMembers = await _context.Members.ToListAsync();
+                RefreshDataGrid();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while loading members: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void RefreshDataGrid()
@@ -45,38 +59,68 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private void AddMember_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Add Member clicked!");
-            // Logic for adding a new member
+
+            // Navigate to the AddMembers user control
+            var addMembersView = new AddMembers(_context);
+
+            // Set the ContentControl in MainWindow to AddMembers
+            _mainWindow.MainContent.Content = addMembersView;
+
+            //// Get the main window and ensure it's our MainWindow
+            //var mainWindow = Application.Current.MainWindow as MainWindow;
+            //if (mainWindow != null)
+            //{
+            //    // Get the service provider from the application
+            //    var app = Application.Current as App;
+            //    if (app != null && app._host != null)
+            //    {
+            //        using (var scope = app._host.Services.CreateScope())
+            //        {
+            //            // Retrieve AddMembers UserControl from the service container
+            //            var addMembersView = scope.ServiceProvider.GetRequiredService<AddMembers>();
+            //            mainWindow.MainContent.Content = addMembersView;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Could not access the service container.");
+            //    }
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Could not find the MainWindow to update the content.");
+            //}
         }
 
         private void EditMember_Click(object sender, RoutedEventArgs e)
         {
             var member = (sender as Button)?.Tag as Member;
-            MessageBox.Show($"Edit Member: {member?.Name}");
+            MessageBox.Show($"Edit Member: ");
             // Logic for editing the member
         }
 
         private void DeleteMember_Click(object sender, RoutedEventArgs e)
         {
-            var member = (sender as Button)?.Tag as Member;
-            if (MessageBox.Show($"Delete Member: {member?.Name}?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                allMembers.Remove(member);
-                RefreshDataGrid();
-            }
+            //var member = (sender as Button)?.Tag as Member;
+            //if (MessageBox.Show($"Delete Member: {member?.Name}?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            //{
+            //    allMembers.Remove(member);
+            //    RefreshDataGrid();
+            //}
         }
 
         private void SearchMembers_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var query = (sender as TextBox)?.Text.ToLower();
-            if (!string.IsNullOrEmpty(query))
-            {
-                allMembers = allMembers.Where(m => m.Name.ToLower().Contains(query)).ToList();
-            }
-            else
-            {
-                LoadMembers();
-            }
-            RefreshDataGrid();
+            //var query = (sender as TextBox)?.Text.ToLower();
+            //if (!string.IsNullOrEmpty(query))
+            //{
+            //    allMembers = allMembers.Where(m => m.Name.ToLower().Contains(query)).ToList();
+            //}
+            //else
+            //{
+            //    LoadMembers();
+            //}
+            //RefreshDataGrid();
         }
 
         private void PreviousPage_Click(object sender, RoutedEventArgs e)
@@ -98,11 +142,5 @@ namespace AccraRoadAttendance.Views.Pages.Members
         }
     }
 
-    public class Member
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-    }
+    
 }
