@@ -24,11 +24,11 @@ namespace AccraRoadAttendance
                 .ConfigureServices((context, services) =>
                 {
                     var connectionString = "Data Source=attendance.db"; // Or from config files
-                    services.AddDbContext<AttendanceContext>(options =>
+                    services.AddDbContext<AttendanceDbContext>(options =>
                         options.UseSqlite(connectionString));
                     // Here's where you use AddIdentityCore
                     services.AddIdentityCore<Member>()
-                        .AddEntityFrameworkStores<AttendanceContext>();
+                        .AddEntityFrameworkStores<AttendanceDbContext>();
 
                     // Register MainWindow
                     services.AddTransient<MainWindow>();
@@ -48,7 +48,7 @@ namespace AccraRoadAttendance
             {
                 using (var scope = serviceProvider.CreateScope())
                 {
-                    var context = scope.ServiceProvider.GetRequiredService<AttendanceContext>();
+                    var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
                     context.Database.EnsureCreated();
                 }
             }

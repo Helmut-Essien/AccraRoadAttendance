@@ -7,11 +7,31 @@ namespace AccraRoadAttendance.Models
 {
     public class Member : IdentityUser
     {
-        [Key]
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Sex { get; set; }
-        public string PicturePath { get; set; }
-        public bool IsPresent { get; set; }
+        
+        [MaxLength(50)]
+        public required string FirstName { get; set; }
+
+        
+        [MaxLength(50)]
+        public required string LastName { get; set; }
+
+        [MaxLength(50)]
+        public string? OtherNames { get; set; }
+
+        [Required]
+        public Gender Sex { get; set; } // Enum for better type safety
+
+        
+        [MaxLength(200)]
+        public required string PicturePath { get; set; }
     }
+
+    // Enum for Gender
+    public enum Gender
+    {
+        Male,
+        Female,
+        
+    }
+
 }

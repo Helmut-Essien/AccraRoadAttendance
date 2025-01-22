@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AccraRoadAttendance.Migrations
 {
-    [DbContext(typeof(AttendanceContext))]
+    [DbContext(typeof(AttendanceDbContext))]
     [Migration("20250115164327_InitialDb")]
     partial class InitialDb
     {

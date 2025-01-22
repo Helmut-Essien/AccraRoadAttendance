@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AccraRoadAttendance.Views.Pages.Members;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,11 +32,12 @@ namespace AccraRoadAttendance.Views
             var button = sender as System.Windows.Controls.Button;
             var viewName = button.CommandParameter as string;
 
-            //switch (viewName)
-            //{
-            //    case "Dashboard":
-            //        MainContent.Content = new Dashboard();
-            //        break;
+            switch (viewName)
+            {
+                case "Members":
+                    MainContent.Content = new Members();
+                    break;
+            }
             //    case "MarkAttendance":
             //        MainContent.Content = new MarkAttendance();
             //        break;
