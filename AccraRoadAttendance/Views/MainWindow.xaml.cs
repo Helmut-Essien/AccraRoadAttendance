@@ -1,5 +1,6 @@
 ﻿using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Views.Pages.Members;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -22,14 +23,24 @@ namespace AccraRoadAttendance.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IServiceProvider _serviceProvider;
+        public readonly IServiceProvider _serviceProvider;
+        private AttendanceDbContext _context;
         public MainWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
+            // Initialize context here, outside of any using block
+            _context = serviceProvider.GetRequiredService<AttendanceDbContext>();
             // Optionally set default content
             // MainContent.Content = _serviceProvider.GetRequiredService<Dashboard>();
 
+        }
+
+        // Add a method to navigate to AddMembers
+        public void NavigateToAddMembers()
+        {
+            var addMembersView = new AddMembers(_context);
+            MainContent.Content = addMembersView;
         }
 
         private void Navigate(object sender, RoutedEventArgs e)

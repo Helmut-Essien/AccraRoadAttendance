@@ -59,7 +59,10 @@
                         FontWeight="SemiBold"
                         Foreground="#374655"
                         Text="First Name:" />
-                    <TextBox materialDesign:HintAssist.Hint="Enter first name" Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter first name"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
                 <!--  Last Name  -->
@@ -72,7 +75,10 @@
                         FontWeight="SemiBold"
                         Foreground="#374655"
                         Text="Last Name:" />
-                    <TextBox materialDesign:HintAssist.Hint="Enter last name" Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter last name"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
                 <!--  Other Names  -->
@@ -85,7 +91,10 @@
                         FontWeight="SemiBold"
                         Foreground="#374655"
                         Text="Other Names:" />
-                    <TextBox materialDesign:HintAssist.Hint="Enter other names" Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter other names"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding OtherNames, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
                 <!--  Gender  -->
@@ -98,7 +107,13 @@
                         FontWeight="SemiBold"
                         Foreground="#374655"
                         Text="Gender:" />
-                    <ComboBox Height="40" Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                    <ComboBox
+                        Height="40"
+                        Padding="5,0,10,0"
+                        HorizontalContentAlignment="Stretch"
+                        materialDesign:HintAssist.Hint="Choose gender"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                        Text="{Binding Gender, UpdateSourceTrigger=PropertyChanged}">
                         <ComboBoxItem Content="Male" />
                         <ComboBoxItem Content="Female" />
                     </ComboBox>
@@ -114,7 +129,10 @@
                         FontWeight="SemiBold"
                         Foreground="#374655"
                         Text="Phone Number:" />
-                    <TextBox materialDesign:HintAssist.Hint="Enter phone number" Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter phone number"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
                 <!--  Email  -->
@@ -127,7 +145,10 @@
                         FontWeight="SemiBold"
                         Foreground="#374655"
                         Text="Email:" />
-                    <TextBox materialDesign:HintAssist.Hint="Enter email" Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter email"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
                 <!--  Upload Picture Section  -->
@@ -168,7 +189,7 @@
                 <StackPanel
                     Grid.Row="4"
                     Margin="10"
-                    HorizontalAlignment="Right"
+                    HorizontalAlignment="Left"
                     Orientation="Horizontal">
                     <Button
                         Width="100"
@@ -190,7 +211,7 @@
         </ScrollViewer>
 
         <!--  Action Buttons  -->
-        <StackPanel
+        <!--<StackPanel
             Grid.Row="1"
             Margin="10"
             HorizontalAlignment="Right"
@@ -209,7 +230,7 @@
                 Click="Cancel_Click"
                 Content="Cancel"
                 Style="{StaticResource MaterialDesignFlatButton}" />
-        </StackPanel>
+        </StackPanel>-->
 
 
 

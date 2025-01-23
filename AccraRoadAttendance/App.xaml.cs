@@ -32,7 +32,7 @@ namespace AccraRoadAttendance
                         .AddEntityFrameworkStores<AttendanceDbContext>();
 
                     // Register MainWindow
-                    services.AddTransient<MainWindow>();
+                    services.AddSingleton<MainWindow>(); // Changed to Singleton
                     services.AddTransient<SplashScreen>();
                     services.AddTransient<Login>();
                     services.AddTransient<AddMembers>();

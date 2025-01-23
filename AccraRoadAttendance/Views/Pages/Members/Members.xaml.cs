@@ -2,6 +2,7 @@
 using AccraRoadAttendance.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -61,10 +62,12 @@ namespace AccraRoadAttendance.Views.Pages.Members
             MessageBox.Show("Add Member clicked!");
 
             // Navigate to the AddMembers user control
-            var addMembersView = new AddMembers(_context);
-
-            // Set the ContentControl in MainWindow to AddMembers
-            _mainWindow.MainContent.Content = addMembersView;
+            using (var scope = _mainWindow._serviceProvider.CreateScope()) // Get the service provider from MainWindow
+            {
+                var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>(); // Get DbContext
+                var addMembersView = new AddMembers(_context); // Pass DbContext to AddMembers
+                _mainWindow.MainContent.Content = addMembersView; // Set the content in MainWindow
+            }
 
             //// Get the main window and ensure it's our MainWindow
             //var mainWindow = Application.Current.MainWindow as MainWindow;
@@ -139,6 +142,11 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 currentPage++;
                 RefreshDataGrid();
             }
+        }
+
+        private void NavigateToAddMembers(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.NavigateToAddMembers();
         }
     }
 
