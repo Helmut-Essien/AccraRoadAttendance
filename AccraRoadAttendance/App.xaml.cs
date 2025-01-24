@@ -36,6 +36,7 @@ namespace AccraRoadAttendance
                     services.AddTransient<SplashScreen>();
                     services.AddTransient<Login>();
                     services.AddTransient<AddMembers>();
+                    services.AddTransient<EditMembers>();
                     services.AddTransient<Members>();
                 })
                 .Build();

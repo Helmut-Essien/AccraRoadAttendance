@@ -97,9 +97,15 @@ namespace AccraRoadAttendance.Views.Pages.Members
 
         private void EditMember_Click(object sender, RoutedEventArgs e)
         {
-            var member = (sender as Button)?.Tag as Member;
-            MessageBox.Show($"Edit Member: ");
-            // Logic for editing the member
+            var member = (sender as Button)?.CommandParameter as Member;
+            if (member != null)
+            {
+                _mainWindow.NavigateToEditMembers(member);
+            }
+            else
+            {
+                MessageBox.Show("No member selected for editing.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void DeleteMember_Click(object sender, RoutedEventArgs e)
@@ -144,10 +150,17 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
-        private void NavigateToAddMembers(object sender, RoutedEventArgs e)
-        {
-            _mainWindow.NavigateToAddMembers();
-        }
+        
+
+        //private void NavigateToAddMembers(object sender, RoutedEventArgs e)
+        //{
+        //    _mainWindow.NavigateToAddMembers();
+        //}
+
+        //private void NavigateToEditMembers(object sender, RoutedEventArgs e)
+        //{
+        //    _mainWindow.NavigateToEditMembers();
+        //}
     }
 
     

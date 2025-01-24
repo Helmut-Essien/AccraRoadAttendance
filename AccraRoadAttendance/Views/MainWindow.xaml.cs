@@ -1,4 +1,5 @@
 ﻿using AccraRoadAttendance.Data;
+using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Views.Pages.Members;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,12 +37,44 @@ namespace AccraRoadAttendance.Views
 
         }
 
+
+
+        // Add a method to navigate to Members
+        public void NavigateToMembers()
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
+                var membersView = new Members(context, this);
+                MainContent.Content = membersView;
+            }
+        }
+
         // Add a method to navigate to AddMembers
         public void NavigateToAddMembers()
         {
             var addMembersView = new AddMembers(_context);
             MainContent.Content = addMembersView;
         }
+
+        // Add a method to navigate to EditMembers
+        public void NavigateToEditMembers(Member member)
+        {
+            if (member == null)
+            {
+                MessageBox.Show("Member is null before navigation.");
+                return;
+            }
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
+                var editMemberView = new EditMembers(context, this, member);
+                System.Diagnostics.Debug.WriteLine("EditMembers instance created");
+                MainContent.Content = editMemberView;
+                System.Diagnostics.Debug.WriteLine("EditMembers set as content");
+            }
+        }
+
 
         private void Navigate(object sender, RoutedEventArgs e)
         {
