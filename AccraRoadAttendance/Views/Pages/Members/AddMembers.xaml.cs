@@ -59,10 +59,11 @@ namespace AccraRoadAttendance.Views.Pages.Members
             {
                 SelectedPicturePath = openFileDialog.FileName;
                 ImagePreview.Source = new BitmapImage(new Uri(SelectedPicturePath));
+                OnPropertyChanged(nameof(SelectedPicturePath));
             }
         }
 
-        private void SaveMember_Click(object sender, RoutedEventArgs e)
+        private async void SaveMember_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -70,6 +71,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 if (string.IsNullOrWhiteSpace(FirstName) ||
                     string.IsNullOrWhiteSpace(LastName) ||
                     string.IsNullOrWhiteSpace(Gender) ||
+                    string.IsNullOrWhiteSpace(SelectedPicturePath) ||
                     string.IsNullOrWhiteSpace(PhoneNumber))
                 {
                     MessageBox.Show("Please fill in all required fields.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -92,12 +94,11 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     PhoneNumber = PhoneNumber,
                     Email = Email,
                     PicturePath = SelectedPicturePath,
-
-                }; 
+                };
 
                 // Save to database
                 _context.Members.Add(newMember);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 MessageBox.Show("Member saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 

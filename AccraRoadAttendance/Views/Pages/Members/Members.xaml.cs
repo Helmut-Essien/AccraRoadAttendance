@@ -1,7 +1,6 @@
 ﻿using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +11,11 @@ namespace AccraRoadAttendance.Views.Pages.Members
 {
     public partial class Members : UserControl
     {
-        private MainWindow _mainWindow;
+        private readonly MainWindow _mainWindow;
         private readonly AttendanceDbContext _context;
-        private List<Models.Member> allMembers; // All members in the system
-        private List<Models.Member> displayedMembers; // Members displayed on the current page
+        private List<Member> allMembers; // All members in the system
+        private List<Member> displayedMembers; // Members displayed on the current page
         private int currentPage = 1;
-        private AttendanceDbContext context;
         private const int pageSize = 15;
 
         public Members(AttendanceDbContext context, MainWindow mainWindow)
@@ -28,16 +26,10 @@ namespace AccraRoadAttendance.Views.Pages.Members
             LoadMembers();
         }
 
-        public Members(AttendanceDbContext context)
-        {
-            this.context = context;
-        }
-
         private async void LoadMembers()
         {
             try
             {
-                // Load members from the database asynchronously
                 allMembers = await _context.Members.ToListAsync();
                 RefreshDataGrid();
             }
@@ -60,39 +52,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private void AddMember_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Add Member clicked!");
-
-            // Navigate to the AddMembers user control
-            using (var scope = _mainWindow._serviceProvider.CreateScope()) // Get the service provider from MainWindow
-            {
-                var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>(); // Get DbContext
-                var addMembersView = new AddMembers(_context); // Pass DbContext to AddMembers
-                _mainWindow.MainContent.Content = addMembersView; // Set the content in MainWindow
-            }
-
-            //// Get the main window and ensure it's our MainWindow
-            //var mainWindow = Application.Current.MainWindow as MainWindow;
-            //if (mainWindow != null)
-            //{
-            //    // Get the service provider from the application
-            //    var app = Application.Current as App;
-            //    if (app != null && app._host != null)
-            //    {
-            //        using (var scope = app._host.Services.CreateScope())
-            //        {
-            //            // Retrieve AddMembers UserControl from the service container
-            //            var addMembersView = scope.ServiceProvider.GetRequiredService<AddMembers>();
-            //            mainWindow.MainContent.Content = addMembersView;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("Could not access the service container.");
-            //    }
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Could not find the MainWindow to update the content.");
-            //}
+            _mainWindow.NavigateToAddMembers();
         }
 
         private void EditMember_Click(object sender, RoutedEventArgs e)
@@ -108,28 +68,48 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
-        private void DeleteMember_Click(object sender, RoutedEventArgs e)
+        private async void DeleteMember_Click(object sender, RoutedEventArgs e)
         {
-            //var member = (sender as Button)?.Tag as Member;
-            //if (MessageBox.Show($"Delete Member: {member?.Name}?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            //{
-            //    allMembers.Remove(member);
-            //    RefreshDataGrid();
-            //}
+            var member = (sender as Button)?.CommandParameter as Member;
+            if (member != null)
+            {
+                if (MessageBox.Show($"Delete Member: {member.FirstName} {member.LastName}?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _context.Members.Remove(member);
+                        await _context.SaveChangesAsync();
+                        allMembers.Remove(member);
+                        RefreshDataGrid();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"An error occurred while deleting the member: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No member selected for deletion.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void SearchMembers_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //var query = (sender as TextBox)?.Text.ToLower();
-            //if (!string.IsNullOrEmpty(query))
-            //{
-            //    allMembers = allMembers.Where(m => m.Name.ToLower().Contains(query)).ToList();
-            //}
-            //else
-            //{
-            //    LoadMembers();
-            //}
-            //RefreshDataGrid();
+            var query = (sender as TextBox)?.Text.ToLower();
+            if (!string.IsNullOrEmpty(query))
+            {
+                allMembers = _context.Members
+                    .Where(m => m.FirstName.ToLower().Contains(query) ||
+                                m.LastName.ToLower().Contains(query) ||
+                                m.OtherNames.ToLower().Contains(query))
+                    .ToList();
+                RefreshDataGrid();
+            }
+            else
+            {
+                LoadMembers();
+            }
         }
 
         private void PreviousPage_Click(object sender, RoutedEventArgs e)
@@ -149,19 +129,5 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 RefreshDataGrid();
             }
         }
-
-        
-
-        //private void NavigateToAddMembers(object sender, RoutedEventArgs e)
-        //{
-        //    _mainWindow.NavigateToAddMembers();
-        //}
-
-        //private void NavigateToEditMembers(object sender, RoutedEventArgs e)
-        //{
-        //    _mainWindow.NavigateToEditMembers();
-        //}
     }
-
-    
 }

@@ -2,20 +2,9 @@
 using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Views.Pages.Members;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace AccraRoadAttendance.Views
 {
@@ -24,40 +13,29 @@ namespace AccraRoadAttendance.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        public readonly IServiceProvider _serviceProvider;
-        private AttendanceDbContext _context;
-        public MainWindow(IServiceProvider serviceProvider)
+        private readonly AttendanceDbContext _context;
+
+        public MainWindow(AttendanceDbContext context)
         {
             InitializeComponent();
-            _serviceProvider = serviceProvider;
-            // Initialize context here, outside of any using block
-            _context = serviceProvider.GetRequiredService<AttendanceDbContext>();
-            // Optionally set default content
-            // MainContent.Content = _serviceProvider.GetRequiredService<Dashboard>();
-
+            _context = context;
         }
 
-
-
-        // Add a method to navigate to Members
+        // Method to navigate to Members
         public void NavigateToMembers()
         {
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
-                var membersView = new Members(context, this);
-                MainContent.Content = membersView;
-            }
+            var membersView = new Members(_context, this);
+            MainContent.Content = membersView;
         }
 
-        // Add a method to navigate to AddMembers
+        // Method to navigate to AddMembers
         public void NavigateToAddMembers()
         {
             var addMembersView = new AddMembers(_context);
             MainContent.Content = addMembersView;
         }
 
-        // Add a method to navigate to EditMembers
+        // Method to navigate to EditMembers
         public void NavigateToEditMembers(Member member)
         {
             if (member == null)
@@ -65,47 +43,25 @@ namespace AccraRoadAttendance.Views
                 MessageBox.Show("Member is null before navigation.");
                 return;
             }
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
-                var editMemberView = new EditMembers(context, this, member);
-                System.Diagnostics.Debug.WriteLine("EditMembers instance created");
-                MainContent.Content = editMemberView;
-                System.Diagnostics.Debug.WriteLine("EditMembers set as content");
-            }
+            var editMemberView = new EditMembers(_context, this, member);
+            MainContent.Content = editMemberView;
         }
-
 
         private void Navigate(object sender, RoutedEventArgs e)
         {
-            var button = sender as System.Windows.Controls.Button;
-            var viewName = button.CommandParameter as string;
+            var button = sender as Button;
+            var viewName = button?.CommandParameter as string;
 
             if (viewName != null)
             {
                 switch (viewName)
                 {
                     case "Members":
-                        using (var scope = _serviceProvider.CreateScope())
-                        {
-                            var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
-                            var membersView = new Members(context, this);
-                            MainContent.Content = membersView;
-                        }
+                        NavigateToMembers();
                         break;
                         // Add other cases for other views here
                 }
             }
-            //    case "MarkAttendance":
-            //        MainContent.Content = new MarkAttendance();
-            //        break;
-            //    case "Reports":
-            //        MainContent.Content = new Reports();
-            //        break;
-            //    case "Settings":
-            //        MainContent.Content = new Settings();
-            //        break;
-            //}
         }
 
         private void ExitApp(object sender, RoutedEventArgs e)

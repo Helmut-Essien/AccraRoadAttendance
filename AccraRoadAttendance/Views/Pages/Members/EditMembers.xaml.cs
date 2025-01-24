@@ -7,24 +7,20 @@ using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using AccraRoadAttendance.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AccraRoadAttendance.Views.Pages.Members
 {
     public partial class EditMembers : UserControl, INotifyPropertyChanged
     {
-       
         private readonly MainWindow _mainWindow;
+        private readonly AttendanceDbContext _context;
         private Member _currentMember;
-        private AttendanceDbContext context;
-
-
 
         public EditMembers(AttendanceDbContext context, MainWindow mainWindow, Member member)
         {
             System.Diagnostics.Debug.WriteLine("Entering EditMembers constructor");
             InitializeComponent();
-           
+            _context = context;
             _mainWindow = mainWindow;
             _currentMember = member;
             DataContext = this;
@@ -85,7 +81,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
-        private void UpdateMember_Click(object sender, RoutedEventArgs e)
+        private async void UpdateMember_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -106,31 +102,25 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     return;
                 }
 
-                using (var scope = _mainWindow._serviceProvider.CreateScope())
+                // Attach and update member details
+                var memberToUpdate = await _context.Members.FindAsync(_currentMember.Id);
+
+                if (memberToUpdate == null)
                 {
-                    // Create a scoped instance of DbContext
-                    var scopedContext = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
-
-                    // Attach and update member details
-                    var memberToUpdate = scopedContext.Members.FirstOrDefault(m => m.Id == _currentMember.Id);
-
-                    if (memberToUpdate == null)
-                    {
-                        MessageBox.Show("The member could not be found in the database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
-                    // Update member details
-                    memberToUpdate.FirstName = FirstName;
-                    memberToUpdate.LastName = LastName;
-                    memberToUpdate.OtherNames = OtherNames;
-                    memberToUpdate.Sex = parsedGender;
-                    memberToUpdate.PhoneNumber = PhoneNumber;
-                    memberToUpdate.Email = Email;
-                    memberToUpdate.PicturePath = SelectedPicturePath;
-
-                    scopedContext.SaveChanges();
+                    MessageBox.Show("The member could not be found in the database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
                 }
+
+                // Update member details
+                memberToUpdate.FirstName = FirstName;
+                memberToUpdate.LastName = LastName;
+                memberToUpdate.OtherNames = OtherNames;
+                memberToUpdate.Sex = parsedGender;
+                memberToUpdate.PhoneNumber = PhoneNumber;
+                memberToUpdate.Email = Email;
+                memberToUpdate.PicturePath = SelectedPicturePath;
+
+                await _context.SaveChangesAsync();
 
                 MessageBox.Show("Member updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 _mainWindow.NavigateToMembers();
@@ -152,7 +142,6 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                 MessageBox.Show($"An error occurred while updating the member: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)

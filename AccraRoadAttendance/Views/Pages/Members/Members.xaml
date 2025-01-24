@@ -35,7 +35,7 @@
         <Button
             Grid.Row="1"
             HorizontalAlignment="Left"
-            Click="EditMember_Click"
+            Click="AddMember_Click"
             Style="{StaticResource addButton}">
             <StackPanel Orientation="Horizontal">
                 <Icon:PackIconMaterial
@@ -104,7 +104,7 @@
                         Header="Last Name"
                         IsReadOnly="True" />
                     <DataGridTemplateColumn
-                        Width="*"
+                        Width="auto"
                         Header="Other Names"
                         IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>
@@ -130,12 +130,12 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn
-                        Width="*"
+                        Width="auto"
                         Binding="{Binding Sex}"
                         Header="Sex"
                         IsReadOnly="True" />
                     <DataGridTextColumn
-                        Width="*"
+                        Width="auto"
                         Binding="{Binding Email}"
                         Header="Email"
                         IsReadOnly="True" />
@@ -145,7 +145,7 @@
                         Header="Phone"
                         IsReadOnly="True" />
                     <DataGridTemplateColumn
-                        Width="auto"
+                        Width="*"
                         Header="Operations"
                         IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>
