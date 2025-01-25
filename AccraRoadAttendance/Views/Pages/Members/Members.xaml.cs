@@ -17,7 +17,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private List<Member> allMembers; // All members in the system
         private List<Member> displayedMembers; // Members displayed on the current page
         private int currentPage = 1;
-        private const int pageSize = 3;
+        private const int pageSize = 1;
 
         public Members(AttendanceDbContext context, MainWindow mainWindow)
         {
@@ -70,12 +70,23 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
+        private int _currentPage = 1;
+        public int CurrentPage
+        {
+             get => _currentPage;
+            set
+               {
+        _currentPage = value;
+        OnPropertyChanged(nameof(CurrentPage));
+            }
+        }
+
         private async void LoadMembers()
         {
             try
             {
                 allMembers = await _context.Members.ToListAsync();
-                currentPage = 1;
+                CurrentPage = 1;
                 RefreshDataGrid();
                 UpdatePagination();
             }
@@ -89,7 +100,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
         {
             int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
             displayedMembers = allMembers
-                .Skip((currentPage - 1) * pageSize)
+                .Skip((CurrentPage - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
 
@@ -110,20 +121,20 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 // Logic to determine which pages to display
                 if (totalPages > maxPagesToShow)
                 {
-                    if (currentPage <= maxPagesToShow / 2)
+                    if (CurrentPage <= maxPagesToShow / 2)
                     {
                         startPage = 1;
                         endPage = maxPagesToShow;
                     }
-                    else if (currentPage > totalPages - maxPagesToShow / 2)
+                    else if (CurrentPage > totalPages - maxPagesToShow / 2)
                     {
                         startPage = totalPages - maxPagesToShow + 1;
                         endPage = totalPages;
                     }
                     else
                     {
-                        startPage = currentPage - maxPagesToShow / 2;
-                        endPage = currentPage + maxPagesToShow / 2 - 1;
+                        startPage = CurrentPage - maxPagesToShow / 2;
+                        endPage = CurrentPage + maxPagesToShow / 2 - 1;
                     }
 
                     // Ensure endPage does not include the last page when it's already handled separately
@@ -209,7 +220,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
                                 m.LastName.ToLower().Contains(query) ||
                                 m.OtherNames.ToLower().Contains(query))
                     .ToList();
-                currentPage = 1; // Reset to first page when searching
+                CurrentPage = 1; // Reset to first page when searching
                 RefreshDataGrid();
                 UpdatePagination();
             }
@@ -221,9 +232,9 @@ namespace AccraRoadAttendance.Views.Pages.Members
 
         private void PreviousPage_Click(object sender, RoutedEventArgs e)
         {
-            if (currentPage > 1)
+            if (CurrentPage > 1)
             {
-                currentPage--;
+                CurrentPage--;
                 RefreshDataGrid();
                 UpdatePagination();
             }
@@ -232,9 +243,9 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private void NextPage_Click(object sender, RoutedEventArgs e)
         {
             int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
-            if (currentPage < totalPages)
+            if (CurrentPage < totalPages)
             {
-                currentPage++;
+                CurrentPage++;
                 RefreshDataGrid();
                 UpdatePagination();
             }
@@ -246,7 +257,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
             {
                 if (pageNumber != -1) // -1 represents the ellipsis, not clickable
                 {
-                    currentPage = pageNumber;
+                    CurrentPage = pageNumber;
                     RefreshDataGrid();
                     UpdatePagination();
                 }
