@@ -125,6 +125,12 @@ namespace AccraRoadAttendance.Views.Pages.Members
                         startPage = currentPage - maxPagesToShow / 2;
                         endPage = currentPage + maxPagesToShow / 2 - 1;
                     }
+
+                    // Ensure endPage does not include the last page when it's already handled separately
+                    if (endPage >= totalPages)
+                    {
+                        endPage = totalPages - 1;
+                    }
                 }
 
                 List<int> pages = new List<int>();
@@ -135,21 +141,17 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     pages.Add(i);
                 }
 
-                // If there are more pages after the endPage, show ellipsis and last page
-                if (endPage < totalPages)
+                // If there are more pages after the endPage, show ellipsis
+                if (endPage < totalPages - 1)
                 {
-                    // Check if there's more than one page between endPage and totalPages
-                    if (totalPages - endPage > 1)
-                    {
-                        pages.Add(-1); // -1 represents the ellipsis
-                    }
-                    // The last page will be handled by LastPageNumber binding
+                    pages.Add(-1); // -1 represents the ellipsis
                 }
 
                 PageNumbers = pages;
-                LastPageNumber = totalPages;
+                LastPageNumber = totalPages; // Let the "last page" button handle the last page
             }
         }
+
 
 
         private void AddMember_Click(object sender, RoutedEventArgs e)
