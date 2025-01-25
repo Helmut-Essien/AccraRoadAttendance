@@ -114,13 +114,13 @@ namespace AccraRoadAttendance.Views.Pages.Members
 
             if (IsPaginationVisible)
             {
-                int maxPagesToShow = 4; // Number of pages to show at once
+                int maxPagesToShow = 4;
                 int startPage = 1;
-                int endPage = totalPages;
+                int endPage;
 
-                // Logic to determine which pages to display
                 if (totalPages > maxPagesToShow)
                 {
+                    // Logic to determine visible pages when there are many pages
                     if (CurrentPage <= maxPagesToShow / 2)
                     {
                         startPage = 1;
@@ -137,29 +137,34 @@ namespace AccraRoadAttendance.Views.Pages.Members
                         endPage = CurrentPage + maxPagesToShow / 2 - 1;
                     }
 
-                    // Ensure endPage does not include the last page when it's already handled separately
+                    // Ensure endPage doesn't overlap with the last page button
                     if (endPage >= totalPages)
                     {
                         endPage = totalPages - 1;
                     }
                 }
+                else
+                {
+                    // Show pages 1 to (totalPages - 1) to avoid duplication with the last page button
+                    endPage = totalPages - 1;
+                }
 
                 List<int> pages = new List<int>();
 
-                // Show pages
+                // Add visible page numbers
                 for (int i = startPage; i <= endPage; i++)
                 {
                     pages.Add(i);
                 }
 
-                // If there are more pages after the endPage, show ellipsis
+                // Add ellipsis if there's a gap between the visible pages and the last page
                 if (endPage < totalPages - 1)
                 {
                     pages.Add(-1); // -1 represents the ellipsis
                 }
 
                 PageNumbers = pages;
-                LastPageNumber = totalPages; // Let the "last page" button handle the last page
+                LastPageNumber = totalPages; // Last page is handled by the dedicated button
             }
         }
 
