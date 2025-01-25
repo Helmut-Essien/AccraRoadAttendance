@@ -3,7 +3,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:converters="clr-namespace:AccraRoadAttendance.Converters"
     xmlns:local="clr-namespace:AccraRoadAttendance"
+    xmlns:local1="clr-namespace:AccraRoadAttendance.Converters"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
 
@@ -19,6 +21,11 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
+
+            <!--  Add the converter using the new namespace  -->
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:PageNumberVisibilityConverter x:Key="PageNumberVisibilityConverter" />
+            <converters:EllipsisVisibilityConverter x:Key="EllipsisVisibilityConverter" />
 
             <!--  Global style for corner radius  -->
 

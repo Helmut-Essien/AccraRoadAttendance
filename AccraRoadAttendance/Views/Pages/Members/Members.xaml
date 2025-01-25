@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:converters="clr-namespace:AccraRoadAttendance.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -171,6 +172,7 @@
 
         <!--  Pagination  -->
         <Border
+            x:Name="PaginationBorder"
             Grid.Row="4"
             Margin="0,2,10,10"
             Padding="5"
@@ -179,30 +181,51 @@
             Background="White"
             BorderBrush="#dee4ec"
             BorderThickness="1"
-            CornerRadius="5">
+            CornerRadius="5"
+            Visibility="{Binding Path=IsPaginationVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Orientation="Horizontal">
-                <Button Style="{StaticResource pagingButton}">
+                <Button Click="PreviousPage_Click" Style="{StaticResource pagingButton}">
                     <Icon:PackIconMaterial Kind="ChevronLeft" Style="{StaticResource pagingButtonIcon}" />
                 </Button>
                 <Rectangle
                     Width="1"
                     Margin="3,7"
                     Fill="#dee4ec" />
-                <Button Content="1" Style="{StaticResource pagingButton}" />
-                <Button Content="2" Style="{StaticResource pagingButton}" />
-                <Button Content="3" Style="{StaticResource pagingButton}" />
+                <ItemsControl x:Name="PageNumberButtons" ItemsSource="{Binding PageNumbers}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <!--  Here we use the PageNumberVisibilityConverter to show/hide page numbers  -->
+                            <Button
+                                Click="PageNumberButton_Click"
+                                Content="{Binding}"
+                                Style="{StaticResource pagingButton}"
+                                Visibility="{Binding Converter={StaticResource PageNumberVisibilityConverter}}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <!--  Ellipsis visibility controlled by EllipsisVisibilityConverter  -->
                 <TextBlock
                     Margin="10,0"
                     VerticalAlignment="Center"
                     FontSize="15"
                     Foreground="#6c7682"
-                    Text="..." />
-                <Button Content="5" Style="{StaticResource pagingButton}" />
+                    Text="..."
+                    Visibility="{Binding PageNumbers, Converter={StaticResource EllipsisVisibilityConverter}}" />
+                <!--  Last page number button  -->
+                <Button
+                    Click="PageNumberButton_Click"
+                    Content="{Binding LastPageNumber}"
+                    Style="{StaticResource pagingButton}" />
                 <Rectangle
                     Width="1"
                     Margin="3,7"
                     Fill="#dee4ec" />
-                <Button Style="{StaticResource pagingButton}">
+                <Button Click="NextPage_Click" Style="{StaticResource pagingButton}">
                     <Icon:PackIconMaterial Kind="ChevronRight" Style="{StaticResource pagingButtonIcon}" />
                 </Button>
             </StackPanel>
