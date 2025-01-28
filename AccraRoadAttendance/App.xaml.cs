@@ -1,7 +1,9 @@
 ﻿using System.Configuration;
 using System.Windows;
+using System.Windows.Navigation;
 using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
+using AccraRoadAttendance.Services;
 using AccraRoadAttendance.Views;
 using AccraRoadAttendance.Views.Pages.Members;
 using Microsoft.AspNetCore.Identity;
@@ -17,69 +19,51 @@ namespace AccraRoadAttendance
     /// </summary>
     public partial class App : Application
     {
-        private IHost _host;
+        private readonly IHost _host;
 
         public App()
         {
             _host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
-                    var connectionString = "Data Source=attendance.db"; // Or from config files
+                    // Configure DbContext
                     services.AddDbContext<AttendanceDbContext>(options =>
-                        options.UseSqlite(connectionString));
-                    // Here's where you use AddIdentityCore
+                        options.UseSqlite("Data Source=attendance.db"));
+
+
+                    // Configure Identity
                     services.AddIdentityCore<Member>()
                         .AddEntityFrameworkStores<AttendanceDbContext>();
 
-                    // Register MainWindow
-                    services.AddSingleton<MainWindow>(); // Changed to Singleton
+                    // Register windows and pages with correct lifetimes
+                    services.AddSingleton<MainWindow>();
                     services.AddTransient<SplashScreen>();
                     services.AddTransient<Login>();
                     services.AddTransient<AddMembers>();
                     services.AddTransient<EditMembers>();
                     services.AddTransient<Members>();
+
+                    // Add navigation service
+                    services.AddSingleton<INavigationService, Services.NavigationService>();
                 })
                 .Build();
         }
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            // Use dependency injection to get the context
-            var serviceProvider = _host.Services;
-            try
-            {
-                using (var scope = serviceProvider.CreateScope())
-                {
-                    var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
-                    context.Database.EnsureCreated();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Database creation failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                Shutdown();
-            }
+            await InitializeDatabaseAsync();
 
-            // Show the SplashScreen
-            var splashScreen = serviceProvider.GetRequiredService<MainWindow>();
-            splashScreen.Show();
+            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            mainWindow.Show();
+        }
 
-            // Here you might want to simulate some work or wait for a few seconds
-            // This is a placeholder - replace with actual initialization logic or loading
-            //System.Threading.Tasks.Task.Delay(2000).ContinueWith((t) =>
-            //{
-            //    Application.Current.Dispatcher.Invoke(() =>
-            //    {
-            //        // Close the splash screen
-            //        splashScreen.Close();
-
-            //        // Show the main window
-            //        var mainWindow = serviceProvider.GetRequiredService<MainWindow>();
-            //        mainWindow.Show();
-            //    });
-            //});
+        private async Task InitializeDatabaseAsync()
+        {
+            using var scope = _host.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
+            await context.Database.MigrateAsync();
         }
 
         protected override void OnExit(ExitEventArgs e)

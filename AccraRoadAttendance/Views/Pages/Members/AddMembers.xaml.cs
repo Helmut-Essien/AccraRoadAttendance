@@ -7,17 +7,22 @@ using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using AccraRoadAttendance.Models;
 using Microsoft.EntityFrameworkCore;
+using static AccraRoadAttendance.Models.Member;
+using AccraRoadAttendance.Services;
 
 namespace AccraRoadAttendance.Views.Pages.Members
 {
     public partial class AddMembers : UserControl, INotifyPropertyChanged
     {
         private readonly AttendanceDbContext _context;
+        private readonly INavigationService _navigationService;
 
-        public AddMembers(AttendanceDbContext context)
+
+        public AddMembers(AttendanceDbContext context, INavigationService navigationService)
         {
             InitializeComponent();
             _context = context;
+            _navigationService = navigationService;
             DataContext = this;
         }
 
@@ -71,8 +76,9 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 if (string.IsNullOrWhiteSpace(FirstName) ||
                     string.IsNullOrWhiteSpace(LastName) ||
                     string.IsNullOrWhiteSpace(Gender) ||
-                    string.IsNullOrWhiteSpace(SelectedPicturePath) ||
-                    string.IsNullOrWhiteSpace(PhoneNumber))
+                     string.IsNullOrWhiteSpace(PhoneNumber))
+                //string.IsNullOrWhiteSpace(SelectedPicturePath))
+
                 {
                     MessageBox.Show("Please fill in all required fields.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;

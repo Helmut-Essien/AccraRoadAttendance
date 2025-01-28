@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccraRoadAttendance.Migrations
 {
     [DbContext(typeof(AttendanceDbContext))]
-    [Migration("20250122132941_NewDb")]
-    partial class NewDb
+    [Migration("20250127215715_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,24 +26,83 @@ namespace AccraRoadAttendance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("Date")
+                    b.Property<string>("MemberId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsPresent")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
 
-                    b.Property<string>("MemberId")
+                    b.Property<DateTime>("RecordedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ServiceDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("ServiceType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Date")
-                        .HasDatabaseName("IX_Attendance_Date");
-
                     b.HasIndex("MemberId");
 
+                    b.HasIndex("ServiceDate")
+                        .HasDatabaseName("IX_Attendance_ServiceDate");
+
+                    b.HasIndex("ServiceDate", "ServiceType")
+                        .HasDatabaseName("IX_ServiceDate_ServiceType");
+
                     b.ToTable("Attendances");
+                });
+
+            modelBuilder.Entity("AccraRoadAttendance.Models.ChurchAttendanceSummary", b =>
+                {
+                    b.Property<DateTime>("SummaryDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("ServiceType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Children")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("OfferingAmount")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ServiceTheme")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TotalFemalePresent")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalMalePresent")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalMembers")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalPresent")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Visitors")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("SummaryDate", "ServiceType");
+
+                    b.HasIndex("ServiceType")
+                        .HasDatabaseName("IX_Summary_ServiceType");
+
+                    b.HasIndex("SummaryDate")
+                        .HasDatabaseName("IX_Summary_Date");
+
+                    b.ToTable("ChurchAttendanceSummaries");
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.Member", b =>
@@ -58,6 +117,9 @@ namespace AccraRoadAttendance.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("date");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
@@ -70,6 +132,9 @@ namespace AccraRoadAttendance.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -80,6 +145,9 @@ namespace AccraRoadAttendance.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("MembershipStartDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -103,15 +171,15 @@ namespace AccraRoadAttendance.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PicturePath")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Sex")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Sex")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("INTEGER");
@@ -266,7 +334,7 @@ namespace AccraRoadAttendance.Migrations
             modelBuilder.Entity("AccraRoadAttendance.Models.Attendance", b =>
                 {
                     b.HasOne("AccraRoadAttendance.Models.Member", "Member")
-                        .WithMany()
+                        .WithMany("Attendances")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -323,6 +391,11 @@ namespace AccraRoadAttendance.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("AccraRoadAttendance.Models.Member", b =>
+                {
+                    b.Navigation("Attendances");
                 });
 #pragma warning restore 612, 618
         }

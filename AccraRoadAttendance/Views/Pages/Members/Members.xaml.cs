@@ -1,5 +1,6 @@
 ﻿using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
+using AccraRoadAttendance.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,25 +11,25 @@ using System.Windows.Controls;
 
 namespace AccraRoadAttendance.Views.Pages.Members
 {
-    public partial class Members : UserControl, INotifyPropertyChanged
+    public partial class Members : UserControl, INotifyPropertyChanged, IParameterReceiver
     {
-        private readonly MainWindow _mainWindow;
         private readonly AttendanceDbContext _context;
+        private readonly INavigationService _navigationService;
         private List<Member> allMembers; // All members in the system
         private List<Member> displayedMembers; // Members displayed on the current page
         private int currentPage = 1;
-        private const int pageSize = 1;
+        private const int pageSize = 2;
 
-        public Members(AttendanceDbContext context, MainWindow mainWindow)
+        public Members(AttendanceDbContext context, INavigationService navigationService)
         {
             InitializeComponent();
             _context = context;
-            _mainWindow = mainWindow;
-            DataContext = this; // Set DataContext to this instance
-            
+            _navigationService = navigationService;
+            DataContext = this;
             IsPaginationVisible = false;
             LoadMembers();
         }
+        
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -173,7 +174,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private void AddMember_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Add Member clicked!");
-            _mainWindow.NavigateToAddMembers();
+            _navigationService.NavigateTo<AddMembers>();
         }
 
         private void EditMember_Click(object sender, RoutedEventArgs e)
@@ -181,13 +182,14 @@ namespace AccraRoadAttendance.Views.Pages.Members
             var member = (sender as Button)?.CommandParameter as Member;
             if (member != null)
             {
-                _mainWindow.NavigateToEditMembers(member);
+                _navigationService.NavigateTo<EditMembers>(member);
             }
             else
             {
                 MessageBox.Show("No member selected for editing.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+         
 
         private async void DeleteMember_Click(object sender, RoutedEventArgs e)
         {
@@ -267,6 +269,11 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     UpdatePagination();
                 }
             }
+        }
+
+        public void ReceiveParameter(object parameter)
+        {
+            throw new NotImplementedException();
         }
     }
 }

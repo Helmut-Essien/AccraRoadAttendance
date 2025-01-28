@@ -18,10 +18,35 @@ namespace AccraRoadAttendance.Models
         public required Member Member { get; set; }
 
         [Required]
-        public DateTime Date { get; set; } // Date of the Sunday service
+        [Column(TypeName = "date")]
+        public DateTime ServiceDate { get; set; }
 
         [Required]
-        public bool IsPresent { get; set; } // True if the member attended
+        public ServiceType ServiceType { get; set; } // Sunday, Midweek, Special
+
+        [Required]
+        public DateTime RecordedAt { get; set; } = DateTime.UtcNow;
+
+        [Required]
+        public AttendanceStatus Status { get; set; } // Present, Absent, Excused
+
+        [MaxLength(500)]
+        public string? Notes { get; set; }
+    }
+
+    public enum ServiceType
+    {
+        SundayService,
+        WednesdayPrayer,
+        ThursdayBibleStudy,
+        SpecialEvent
+    }
+
+    public enum AttendanceStatus
+    {
+        Present,
+        Absent,
+        Excused
     }
 
 

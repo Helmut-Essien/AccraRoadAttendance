@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AccraRoadAttendance.Migrations
 {
     /// <inheritdoc />
-    public partial class NewDb : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,8 +33,11 @@ namespace AccraRoadAttendance.Migrations
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     OtherNames = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
-                    Sex = table.Column<int>(type: "INTEGER", nullable: false),
-                    PicturePath = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    Sex = table.Column<string>(type: "TEXT", nullable: false),
+                    PicturePath = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    MembershipStartDate = table.Column<DateTime>(type: "date", nullable: false),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "date", nullable: true),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -53,6 +56,26 @@ namespace AccraRoadAttendance.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChurchAttendanceSummaries",
+                columns: table => new
+                {
+                    SummaryDate = table.Column<DateTime>(type: "date", nullable: false),
+                    ServiceType = table.Column<string>(type: "TEXT", nullable: false),
+                    TotalPresent = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalMalePresent = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalFemalePresent = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalMembers = table.Column<int>(type: "INTEGER", nullable: false),
+                    Visitors = table.Column<int>(type: "INTEGER", nullable: false),
+                    Children = table.Column<int>(type: "INTEGER", nullable: false),
+                    OfferingAmount = table.Column<decimal>(type: "TEXT", nullable: false),
+                    ServiceTheme = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChurchAttendanceSummaries", x => new { x.SummaryDate, x.ServiceType });
                 });
 
             migrationBuilder.CreateTable(
@@ -168,8 +191,11 @@ namespace AccraRoadAttendance.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     MemberId = table.Column<string>(type: "TEXT", nullable: false),
-                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    IsPresent = table.Column<bool>(type: "INTEGER", nullable: false)
+                    ServiceDate = table.Column<DateTime>(type: "date", nullable: false),
+                    ServiceType = table.Column<string>(type: "TEXT", nullable: false),
+                    RecordedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Status = table.Column<string>(type: "TEXT", nullable: false),
+                    Notes = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -226,14 +252,29 @@ namespace AccraRoadAttendance.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Attendance_Date",
+                name: "IX_Attendance_ServiceDate",
                 table: "Attendances",
-                column: "Date");
+                column: "ServiceDate");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_MemberId",
                 table: "Attendances",
                 column: "MemberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServiceDate_ServiceType",
+                table: "Attendances",
+                columns: new[] { "ServiceDate", "ServiceType" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Summary_Date",
+                table: "ChurchAttendanceSummaries",
+                column: "SummaryDate");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Summary_ServiceType",
+                table: "ChurchAttendanceSummaries",
+                column: "ServiceType");
         }
 
         /// <inheritdoc />
@@ -256,6 +297,9 @@ namespace AccraRoadAttendance.Migrations
 
             migrationBuilder.DropTable(
                 name: "Attendances");
+
+            migrationBuilder.DropTable(
+                name: "ChurchAttendanceSummaries");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

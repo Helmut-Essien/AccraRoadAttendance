@@ -7,26 +7,31 @@ using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using AccraRoadAttendance.Models;
 using Microsoft.EntityFrameworkCore;
+using static AccraRoadAttendance.Models.Member;
+using AccraRoadAttendance.Services;
 
 namespace AccraRoadAttendance.Views.Pages.Members
 {
-    public partial class EditMembers : UserControl, INotifyPropertyChanged
+    public partial class EditMembers : UserControl, INotifyPropertyChanged, IParameterReceiver
     {
-        private readonly MainWindow _mainWindow;
-        private readonly AttendanceDbContext _context;
         private Member _currentMember;
+        private readonly AttendanceDbContext _context;
+        private readonly INavigationService _navigationService;
 
-        public EditMembers(AttendanceDbContext context, MainWindow mainWindow, Member member)
+        // Remove Member from constructor
+        public EditMembers(AttendanceDbContext context, INavigationService navigationService)
         {
-            System.Diagnostics.Debug.WriteLine("Entering EditMembers constructor");
             InitializeComponent();
             _context = context;
-            _mainWindow = mainWindow;
-            _currentMember = member;
+            _navigationService = navigationService;
             DataContext = this;
-            System.Diagnostics.Debug.WriteLine("Before PopulateForm");
+        }
+
+        // Add method to load member data
+        public void LoadMember(Member member)
+        {
+            _currentMember = member;
             PopulateForm();
-            System.Diagnostics.Debug.WriteLine("After PopulateForm");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -123,7 +128,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 await _context.SaveChangesAsync();
 
                 MessageBox.Show("Member updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                _mainWindow.NavigateToMembers();
+                _navigationService.NavigateTo<Members>();
             }
             catch (DbUpdateException dbEx)
             {
@@ -148,6 +153,15 @@ namespace AccraRoadAttendance.Views.Pages.Members
         {
             // Here you might want to reload the original member data or just close the edit view
             PopulateForm();
+        }
+
+        public void ReceiveParameter(object parameter)
+        {
+            if (parameter is Member member)
+            {
+                _currentMember = member;
+                PopulateForm();
+            }
         }
     }
 }
