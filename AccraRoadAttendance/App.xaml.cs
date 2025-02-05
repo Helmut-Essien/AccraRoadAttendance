@@ -5,6 +5,7 @@ using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Services;
 using AccraRoadAttendance.Views;
+using AccraRoadAttendance.Views.Pages.Attendance;
 using AccraRoadAttendance.Views.Pages.Members;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +29,7 @@ namespace AccraRoadAttendance
                 {
                     // Configure DbContext
                     services.AddDbContext<AttendanceDbContext>(options =>
-                        options.UseSqlite("Data Source=attendance.db"));
+                        options.UseSqlServer("Server=CALYPSO-PC\\SQLEXPRESS;Database=AttendanceDb;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True;"));
 
 
                     // Configure Identity
@@ -42,6 +43,7 @@ namespace AccraRoadAttendance
                     services.AddTransient<AddMembers>();
                     services.AddTransient<EditMembers>();
                     services.AddTransient<Members>();
+                    services.AddTransient<MarkAttendance>();
 
                     // Add navigation service
                     services.AddSingleton<INavigationService, Services.NavigationService>();

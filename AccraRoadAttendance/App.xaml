@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:AccraRoadAttendance"
     xmlns:local1="clr-namespace:AccraRoadAttendance.Converters"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:models="clr-namespace:AccraRoadAttendance.Models"
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
 
 
@@ -27,6 +28,50 @@
             <converters:PageNumberVisibilityConverter x:Key="PageNumberVisibilityConverter" />
             <converters:EllipsisVisibilityConverter x:Key="EllipsisVisibilityConverter" />
             <converters:EqualityConverter x:Key="EqualityConverter" />
+
+            <x:Array x:Key="ServiceTypeValues" Type="{x:Type models:ServiceType}">
+                <models:ServiceType>SundayService</models:ServiceType>
+                <models:ServiceType>WednesdayPrayer</models:ServiceType>
+                <models:ServiceType>ThursdayBibleStudy</models:ServiceType>
+                <models:ServiceType>SpecialEvent</models:ServiceType>
+            </x:Array>
+
+            <Style x:Key="VerticallyCenteredCellStyle" TargetType="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style x:Key="VerticallyCenteredComboBoxStyle" TargetType="ComboBox">
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+
+            <Style x:Key="CenteredComboBoxEditingStyle" TargetType="ComboBox">
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="MinWidth" Value="70" />
+                <!--  Adjust as needed  -->
+                <Setter Property="MinHeight" Value="25" />
+                <!--  Adjust to match text height  -->
+                <Setter Property="MaxHeight" Value="25" />
+                <!--  Adjust to match text height  -->
+                <Setter Property="Padding" Value="5,5,10,5" />
+                <Setter Property="Margin" Value="0,0,0,0" />
+                <!--  Optional, adjust padding to fine-tune appearance  -->
+            </Style>
+
+            <ObjectDataProvider
+                x:Key="AttendanceStatusValues"
+                MethodName="GetValues"
+                ObjectType="{x:Type models:AttendanceStatus}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="models:AttendanceStatus" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+            <!--<x:Array x:Key="AttendanceStatusValues" Type="{x:Type models:AttendanceStatus}">
+                <models:AttendanceStatus>Present</models:AttendanceStatus>
+                <models:AttendanceStatus>Absent</models:AttendanceStatus>
+                <models:AttendanceStatus>Excused</models:AttendanceStatus>
+            </x:Array>-->
 
             <!--  Global style for corner radius  -->
 

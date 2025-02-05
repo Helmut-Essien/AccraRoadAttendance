@@ -1,6 +1,7 @@
 ﻿using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Services;
+using AccraRoadAttendance.Views.Pages.Attendance;
 using AccraRoadAttendance.Views.Pages.Members;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -39,8 +40,8 @@ namespace AccraRoadAttendance.Views
                 case "Members":
                     _navigationService.NavigateTo<Members>();
                     break;
-                case "AddMembers":
-                    _navigationService.NavigateTo<AddMembers>();
+                case "MarkAttendance":
+                    _navigationService.NavigateTo<MarkAttendance>();
                     break;
             }
         }

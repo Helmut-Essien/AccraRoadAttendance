@@ -8,7 +8,7 @@ namespace AccraRoadAttendance.Data
         public AttendanceDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<AttendanceDbContext>();
-            optionsBuilder.UseSqlite("Data Source=attendance.db");
+            optionsBuilder.UseSqlServer("Server=CALYPSO-PC\\SQLEXPRESS;Database=AttendanceDb;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True;");
 
             return new AttendanceDbContext(optionsBuilder.Options);
         }
