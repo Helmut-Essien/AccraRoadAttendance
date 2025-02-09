@@ -1,0 +1,43 @@
+﻿<Window
+    x:Class="AccraRoadAttendance.Views.Pages.Attendance.VisitorsInputWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    Title="Enter Additional Details"
+    Width="600"
+    Height="400"
+    Background="{DynamicResource MaterialDesignPaper}"
+    WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,0,0,5" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="0,0,0,10" />
+            <Setter Property="materialDesign:HintAssist.Hint" Value="Enter value" />
+        </Style>
+    </Window.Resources>
+    <Grid Margin="20">
+        <StackPanel>
+            <TextBlock Text="Visitors:" />
+            <TextBox Name="VisitorsTextBox" />
+
+            <TextBlock Text="Children:" />
+            <TextBox Name="ChildrenTextBox" />
+
+            <TextBlock Text="Offering Amount:" />
+            <TextBox Name="OfferingTextBox" />
+
+            <TextBlock Text="Service Theme:" />
+            <TextBox Name="ThemeTextBox" />
+
+            <Button
+                Margin="0,20,0,0"
+                HorizontalAlignment="Right"
+                Click="SaveButton_Click"
+                Content="Save"
+                Style="{StaticResource MaterialDesignRaisedButton}" />
+        </StackPanel>
+    </Grid>
+</Window>

@@ -6,156 +6,191 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:AccraRoadAttendance.Models"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
+
+
     <Grid Margin="10,2" Background="{DynamicResource MaterialDesignPaper}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!--  Header  -->
-        <TextBlock
+        <!--  Header Section  -->
+        <StackPanel
             Grid.Row="0"
-            Margin="0,20,0,0"
-            HorizontalAlignment="Left"
-            FontSize="36"
-            FontWeight="Bold"
-            Foreground="{DynamicResource MaterialDesignBody}"
-            Text="Mark Attendance" />
-
-        <!--  Service Information & Search  -->
-        <Grid Grid.Row="1" Margin="0,10,0,10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <ComboBox
-                x:Name="ServiceTypeComboBox"
-                Grid.Column="0"
+            Margin="10"
+            Orientation="Horizontal">
+            <TextBlock
                 Margin="0,0,10,0"
-                materialDesign:HintAssist.Hint="Service Type"
-                ItemsSource="{Binding Source={StaticResource ServiceTypeValues}}"
-                Style="{StaticResource MaterialDesignOutlinedComboBox}" />
-
+                VerticalAlignment="Center"
+                Text="Select Date:" />
             <DatePicker
-                x:Name="ServiceDatePicker"
-                Grid.Column="1"
+                Name="ServiceDatePicker"
                 Margin="0,0,10,0"
-                materialDesign:HintAssist.Hint="Service Date"
-                Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
-
+                SelectedDate="{x:Static sys:DateTime.Today}" />
+            <ComboBox
+                Name="ServiceTypeComboBox"
+                Width="150"
+                Margin="0,0,10,0"
+                ItemsSource="{Binding Source={StaticResource ServiceTypeValues}}"
+                SelectionChanged="ServiceTypeComboBox_SelectionChanged" />
             <TextBox
-                x:Name="SearchBox"
-                Grid.Column="2"
-                Width="300"
-                materialDesign:HintAssist.Hint="Search Members"
-                materialDesign:TextFieldAssist.HasTrailingIcon="True"
-                materialDesign:TextFieldAssist.TrailingIcon="{x:Static materialDesign:PackIconKind.Magnify}"
-                Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                TextChanged="SearchBox_TextChanged" />
-        </Grid>
+                Name="ServiceThemeTextBox"
+                Width="200"
+                Margin="0,0,10,0"
+                materialDesign:HintAssist.Hint="Service Theme"
+                IsEnabled="False" />
+        </StackPanel>
 
         <!--  Attendance List  -->
-        <materialDesign:Card
+        <DataGrid
+            x:Name="AttendanceDataGrid"
+            Grid.Row="1"
+            AutoGenerateColumns="False"
+            CanUserAddRows="False"
+            CellEditEnding="AttendanceDataGrid_CellEditEnding"
+            HeadersVisibility="Column"
+            IsReadOnly="False"
+            Style="{StaticResource DataGridStyle1}">
+            <DataGrid.Columns>
+                <!--  Picture Column  -->
+                <DataGridTemplateColumn Width="Auto" Header="Picture">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border
+                                Width="60"
+                                Height="60"
+                                VerticalAlignment="Center"
+                                materialDesign:ElevationAssist.Elevation="Dp2"
+                                Background="{DynamicResource MaterialDesignPaper}"
+                                CornerRadius="30">
+                                <Image
+                                    Width="54"
+                                    Height="54"
+                                    Margin="3"
+                                    Source="{Binding Member.PicturePath}"
+                                    Stretch="UniformToFill" />
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!--  First Name Column  -->
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding Member.FirstName}"
+                    ElementStyle="{StaticResource VerticallyCenteredCellStyle}"
+                    Header="First Name"
+                    IsReadOnly="True" />
+
+                <!--  Last Name Column  -->
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding Member.LastName}"
+                    ElementStyle="{StaticResource VerticallyCenteredCellStyle}"
+                    Header="Last Name"
+                    IsReadOnly="True" />
+
+                <!--  Gender Column  -->
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding Member.Sex}"
+                    ElementStyle="{StaticResource VerticallyCenteredCellStyle}"
+                    Header="Gender"
+                    IsReadOnly="True" />
+
+                <!--  Status ComboBox Column  -->
+                <DataGridTemplateColumn Width="Auto" Header="Status">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox
+                                Height="25"
+                                IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=IsEnabled}"
+                                ItemsSource="{Binding Source={StaticResource AttendanceStatusValues}}"
+                                PreviewMouseWheel="ComboBox_PreviewMouseWheel"
+                                SelectedItem="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectionChanged="StatusComboBox_SelectionChanged"
+                                Style="{StaticResource VerticallyCenteredComboBoxStyle}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox
+                                Height="25"
+                                ItemsSource="{Binding Source={StaticResource AttendanceStatusValues}}"
+                                PreviewMouseWheel="ComboBox_PreviewMouseWheel"
+                                SelectedItem="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectionChanged="StatusComboBox_SelectionChanged"
+                                Style="{StaticResource CenteredComboBoxEditingStyle}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+                <!--  Notes TextBox Column  -->
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Header="Notes"
+                    IsReadOnly="False" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!--  Summary Section  -->
+        <StackPanel
             Grid.Row="2"
-            Margin="0,0,0,10"
-            Padding="5"
-            materialDesign:ElevationAssist.Elevation="Dp4">
-            <DataGrid
-                x:Name="AttendanceDataGrid"
-                AutoGenerateColumns="False"
-                CanUserAddRows="False"
-                HeadersVisibility="Column"
-                IsReadOnly="False"
-                Style="{StaticResource DataGridStyle1}">
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn Width="Auto" Header="Picture">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Border
-                                    Width="60"
-                                    Height="60"
-                                    VerticalAlignment="Center"
-                                    materialDesign:ElevationAssist.Elevation="Dp2"
-                                    Background="{DynamicResource MaterialDesignPaper}"
-                                    CornerRadius="30">
-
-                                    <Image
-                                        Width="54"
-                                        Height="54"
-                                        Margin="3"
-                                        Source="{Binding Member.PicturePath}"
-                                        Stretch="UniformToFill" />
-                                </Border>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTextColumn
-                        Width="Auto"
-                        Binding="{Binding Member.FirstName}"
-                        ElementStyle="{StaticResource VerticallyCenteredCellStyle}"
-                        Header="First Name"
-                        IsReadOnly="True" />
-                    <DataGridTextColumn
-                        Width="Auto"
-                        Binding="{Binding Member.LastName}"
-                        ElementStyle="{StaticResource VerticallyCenteredCellStyle}"
-                        Header="Last Name"
-                        IsReadOnly="True" />
-                    <DataGridTextColumn
-                        Width="Auto"
-                        Binding="{Binding Member.Sex}"
-                        ElementStyle="{StaticResource VerticallyCenteredCellStyle}"
-                        Header="Gender"
-                        IsReadOnly="True" />
-                    <DataGridComboBoxColumn
-                        Width="Auto"
-                        EditingElementStyle="{StaticResource CenteredComboBoxEditingStyle}"
-                        ElementStyle="{StaticResource VerticallyCenteredComboBoxStyle}"
-                        Header="Status"
-                        ItemsSource="{Binding Source={StaticResource AttendanceStatusValues}}"
-                        SelectedItemBinding="{Binding Status, UpdateSourceTrigger=PropertyChanged}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </materialDesign:Card>
-
-        <!--  Summary and Save  -->
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
+            Margin="10"
+            HorizontalAlignment="Left"
+            Orientation="Horizontal">
             <TextBlock
-                Grid.Column="0"
-                FontWeight="SemiBold"
-                Text="Present: " />
+                Margin="0,0,10,0"
+                FontWeight="Bold"
+                Text="Total Present:" />
             <TextBlock
-                x:Name="TotalPresentText"
-                Grid.Column="1"
+                Name="TotalPresentText"
                 Margin="0,0,20,0"
                 Text="0" />
+            <TextBlock
+                Margin="0,0,10,0"
+                FontWeight="Bold"
+                Text="Total Male Present:" />
+            <TextBlock
+                Name="TotalMalePresentText"
+                Margin="0,0,20,0"
+                Text="0" />
+            <TextBlock
+                Margin="0,0,10,0"
+                FontWeight="Bold"
+                Text="Total Female Present:" />
+            <TextBlock
+                Name="TotalFemalePresentText"
+                Margin="0,0,20,0"
+                Text="0" />
+        </StackPanel>
 
-            <Button
-                Grid.Column="3"
-                Width="150"
-                HorizontalAlignment="Right"
-                Click="SaveAttendance_Click"
-                Style="{StaticResource MaterialDesignRaisedButton}">
-                <StackPanel Orientation="Horizontal">
-                    <Icon:PackIconMaterial Margin="0,0,5,0" Kind="ContentSave" />
-                    <TextBlock Text="Save Attendance" />
-                </StackPanel>
-            </Button>
-        </Grid>
+        <!--  Save Attendance Button  -->
+        <Button
+            Grid.Row="3"
+            Margin="10"
+            HorizontalAlignment="Right"
+            Background="{DynamicResource PrimaryHueMidBrush}"
+            Click="SaveAttendance_Click"
+            Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+            Style="{StaticResource MaterialDesignRaisedButton}">
+            <StackPanel Orientation="Horizontal">
+                <Icon:PackIconMaterial
+                    Width="20"
+                    Height="20"
+                    Margin="0,0,5,0"
+                    Kind="CheckCircleOutline" />
+                <TextBlock Text="End and Save Attendance for Event" />
+            </StackPanel>
+        </Button>
     </Grid>
 </UserControl>
