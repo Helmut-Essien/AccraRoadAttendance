@@ -7,43 +7,243 @@ using Microsoft.EntityFrameworkCore;
 using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Views.Pages.Members;
+using System.ComponentModel;
 
 namespace AccraRoadAttendance.Views.Pages.Attendance
 {
-    public partial class MarkAttendance : UserControl
+    public partial class MarkAttendance : UserControl, INotifyPropertyChanged
     {
         private readonly AttendanceDbContext _context;
         private List<Models.Attendance> attendanceRecords;
+        private List<Member> allMembers;
+        private List<Member> displayedMembers;
+        private int currentPage = 1;
+        private const int pageSize = 2;
 
         public MarkAttendance(AttendanceDbContext context)
         {
             InitializeComponent();
             _context = context;
+            DataContext = this;
             ServiceDatePicker.SelectedDate = DateTime.Today;
             ServiceTypeComboBox.ItemsSource = Enum.GetValues(typeof(ServiceType));
             LoadMembers();
         }
 
-        private List<Member> allMembers;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private bool _isPaginationVisible;
+        public bool IsPaginationVisible
+        {
+            get => _isPaginationVisible;
+            set
+            {
+                _isPaginationVisible = value;
+                OnPropertyChanged(nameof(IsPaginationVisible));
+            }
+        }
+
+
+        private List<int> _pageNumbers;
+        public List<int> PageNumbers
+        {
+            get => _pageNumbers;
+            set
+            {
+                _pageNumbers = value;
+                OnPropertyChanged(nameof(PageNumbers));
+            }
+        }
+
+        private int _lastPageNumber;
+        public int LastPageNumber
+        {
+            get => _lastPageNumber;
+            set
+            {
+                _lastPageNumber = value;
+                OnPropertyChanged(nameof(LastPageNumber));
+            }
+        }
+
+        private int _currentPage = 1;
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set
+            {
+                _currentPage = value;
+                OnPropertyChanged(nameof(CurrentPage));
+            }
+        }
+        private void RefreshDataGrid()
+        {
+            int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
+            displayedMembers = allMembers
+                .Skip((CurrentPage - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Initialize attendance records for displayed members
+            attendanceRecords = displayedMembers.Where(m => m.IsActive).Select(m => new Models.Attendance
+            {
+                MemberId = m.Id,
+                Member = m,
+                ServiceDate = DateTime.Today,
+                Status = AttendanceStatus.Absent,
+                RecordedAt = DateTime.UtcNow,
+                Notes = string.Empty
+            }).ToList();
+
+            AttendanceDataGrid.ItemsSource = attendanceRecords;
+            UpdateTotals();
+        }
+
+        private void UpdatePagination()
+        {
+            int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
+            IsPaginationVisible = totalPages > 1;
+
+            if (IsPaginationVisible)
+            {
+                int maxPagesToShow = 4;
+                int startPage = 1;
+                int endPage;
+
+                if (totalPages > maxPagesToShow)
+                {
+                    // Logic to determine visible pages when there are many pages
+                    if (CurrentPage <= maxPagesToShow / 2)
+                    {
+                        startPage = 1;
+                        endPage = maxPagesToShow;
+                    }
+                    else if (CurrentPage > totalPages - maxPagesToShow / 2)
+                    {
+                        startPage = totalPages - maxPagesToShow + 1;
+                        endPage = totalPages;
+                    }
+                    else
+                    {
+                        startPage = CurrentPage - maxPagesToShow / 2;
+                        endPage = CurrentPage + maxPagesToShow / 2 - 1;
+                    }
+
+                    // Ensure endPage doesn't overlap with the last page button
+                    if (endPage >= totalPages)
+                    {
+                        endPage = totalPages - 1;
+                    }
+                }
+                else
+                {
+                    // Show pages 1 to (totalPages - 1) to avoid duplication with the last page button
+                    endPage = totalPages - 1;
+                }
+
+                List<int> pages = new List<int>();
+
+                // Add visible page numbers
+                for (int i = startPage; i <= endPage; i++)
+                {
+                    pages.Add(i);
+                }
+
+                // Add ellipsis if there's a gap between the visible pages and the last page
+                if (endPage < totalPages - 1)
+                {
+                    pages.Add(-1); // -1 represents the ellipsis
+                }
+
+                PageNumbers = pages;
+                LastPageNumber = totalPages; // Last page is handled by the dedicated button
+            }
+        }
+
+        private void PreviousPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentPage > 1)
+            {
+                CurrentPage--;
+                RefreshDataGrid();
+                UpdatePagination();
+            }
+        }
+
+        private void NextPage_Click(object sender, RoutedEventArgs e)
+        {
+            int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
+            if (CurrentPage < totalPages)
+            {
+                CurrentPage++;
+                RefreshDataGrid();
+                UpdatePagination();
+            }
+        }
+
+        private void PageNumberButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && int.TryParse(btn.Content.ToString(), out int pageNumber))
+            {
+                if (pageNumber != -1) // -1 represents the ellipsis, not clickable
+                {
+                    CurrentPage = pageNumber;
+                    RefreshDataGrid();
+                    UpdatePagination();
+                }
+            }
+        }
+
+        public void ReceiveParameter(object parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+
+
+
+
+        //private async void LoadMembers()
+        //{
+        //    try
+        //    {
+        //        allMembers = await _context.Members.ToListAsync();
+        //        // Initialize attendance records for active members
+        //        attendanceRecords = allMembers.Where(m => m.IsActive).Select(m => new Models.Attendance
+        //        {
+        //            MemberId = m.Id,
+        //            Member = m,
+        //            ServiceDate = DateTime.Today,
+        //            Status = AttendanceStatus.Absent,
+        //            RecordedAt = DateTime.UtcNow,
+        //            Notes = string.Empty
+        //        }).ToList();
+
+        //        AttendanceDataGrid.ItemsSource = attendanceRecords;
+        //        UpdateTotals();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error loading members: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    }
+        //}
 
         private async void LoadMembers()
         {
             try
             {
                 allMembers = await _context.Members.ToListAsync();
-                // Initialize attendance records for active members
-                attendanceRecords = allMembers.Where(m => m.IsActive).Select(m => new Models.Attendance
-                {
-                    MemberId = m.Id,
-                    Member = m,
-                    ServiceDate = DateTime.Today,
-                    Status = AttendanceStatus.Absent,
-                    RecordedAt = DateTime.UtcNow,
-                    Notes = string.Empty
-                }).ToList();
-
-                AttendanceDataGrid.ItemsSource = attendanceRecords;
-                UpdateTotals();
+                CurrentPage = 1;
+                RefreshDataGrid();
+                UpdatePagination();
             }
             catch (Exception ex)
             {

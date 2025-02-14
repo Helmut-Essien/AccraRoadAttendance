@@ -12,6 +12,11 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:PageNumberVisibilityConverter x:Key="PageNumberVisibilityConverter" />
+        <converters:EllipsisVisibilityConverter x:Key="EllipsisVisibilityConverter" />
+    </UserControl.Resources>
 
 
 
@@ -153,7 +158,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <!--  Pagination  --><!--
+        <!--  Pagination  -->
         <Border
             x:Name="PaginationBorder"
             Grid.Row="2"
@@ -177,7 +182,7 @@
                 <ItemsControl x:Name="PageNumberButtons" ItemsSource="{Binding PageNumbers}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            --><!--  Here we use the PageNumberVisibilityConverter to show/hide page numbers  --><!--
+                            <!--  Here we use the PageNumberVisibilityConverter to show/hide page numbers  -->
                             <Button
                                 Click="PageNumberButton_Click"
                                 Content="{Binding}"
@@ -191,7 +196,7 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
-                --><!--  Ellipsis visibility controlled by EllipsisVisibilityConverter  --><!--
+                <!--  Ellipsis visibility controlled by EllipsisVisibilityConverter  -->
                 <TextBlock
                     Margin="10,0"
                     VerticalAlignment="Center"
@@ -199,7 +204,7 @@
                     Foreground="#6c7682"
                     Text="..."
                     Visibility="{Binding PageNumbers, Converter={StaticResource EllipsisVisibilityConverter}}" />
-                --><!--  Last page number button  --><!--
+                <!--  Last page number button  -->
                 <Button
                     Click="PageNumberButton_Click"
                     Content="{Binding LastPageNumber}"
@@ -212,7 +217,7 @@
                     <Icon:PackIconMaterial Kind="ChevronRight" Style="{StaticResource pagingButtonIcon}" />
                 </Button>
             </StackPanel>
-        </Border>-->
+        </Border>
 
 
         <!--  Summary Section  -->
