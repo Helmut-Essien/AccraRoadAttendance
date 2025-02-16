@@ -18,7 +18,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private List<Member> allMembers; // All members in the system
         private List<Member> displayedMembers; // Members displayed on the current page
         private int currentPage = 1;
-        private const int pageSize = 2;
+        private const int pageSize = 1;
 
         public Members(AttendanceDbContext context, INavigationService navigationService)
         {

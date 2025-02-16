@@ -3,41 +3,132 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-    Title="Enter Additional Details"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    Title="Service Details"
     Width="600"
-    Height="400"
-    Background="{DynamicResource MaterialDesignPaper}"
-    WindowStartupLocation="CenterScreen">
+    Height="450"
+    AllowsTransparency="True"
+    Background="Transparent"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None">
+
     <Window.Resources>
-        <Style TargetType="TextBlock">
-            <Setter Property="Margin" Value="0,0,0,5" />
+        <Style BasedOn="{StaticResource MaterialDesignBody1TextBlock}" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,0,0,8" />
             <Setter Property="FontWeight" Value="Medium" />
         </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Margin" Value="0,0,0,10" />
-            <Setter Property="materialDesign:HintAssist.Hint" Value="Enter value" />
+
+        <Style
+            x:Key="NumericTextBox"
+            BasedOn="{StaticResource MaterialDesignOutlinedTextBox}"
+            TargetType="TextBox">
+            <Setter Property="InputScope">
+                <Setter.Value>
+                    <InputScope>
+                        <InputScope.Names>
+                            <InputScopeName NameValue="Number" />
+                        </InputScope.Names>
+                    </InputScope>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="materialDesign:TextFieldAssist.UnderlineBrush" Value="{DynamicResource ValidationErrorBrush}" />
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style
+            x:Key="ThemeTextBox"
+            BasedOn="{StaticResource MaterialDesignOutlinedTextBox}"
+            TargetType="TextBox">
+            <Setter Property="materialDesign:HintAssist.Hint" Value="Service Theme (optional)" />
+            <Setter Property="Margin" Value="0,0,0,16" />
         </Style>
     </Window.Resources>
-    <Grid Margin="20">
-        <StackPanel>
-            <TextBlock Text="Visitors:" />
-            <TextBox Name="VisitorsTextBox" />
 
-            <TextBlock Text="Children:" />
-            <TextBox Name="ChildrenTextBox" />
+    <Grid Margin="16">
+        <materialDesign:Card
+            Padding="24"
+            materialDesign:ElevationAssist.Elevation="Dp8"
+            Background="{DynamicResource MaterialDesignPaper}"
+            UniformCornerRadius="6">
 
-            <TextBlock Text="Offering Amount:" />
-            <TextBox Name="OfferingTextBox" />
+            <Grid Margin="0,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <TextBlock Text="Service Theme:" />
-            <TextBox Name="ThemeTextBox" />
+                <!--  Header  -->
+                <TextBlock
+                    Grid.Row="0"
+                    Margin="0,0,0,16"
+                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                    Text="Service Attendance Summary" />
 
-            <Button
-                Margin="0,20,0,0"
-                HorizontalAlignment="Right"
-                Click="SaveButton_Click"
-                Content="Save"
-                Style="{StaticResource MaterialDesignRaisedButton}" />
-        </StackPanel>
+                <!--  Content  -->
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <!--  Visitors  -->
+                    <TextBox
+                        Name="VisitorsTextBox"
+                        Margin="0,0,0,16"
+                        materialDesign:HintAssist.Hint="Number of Visitors"
+                        materialDesign:TextFieldAssist.PrefixText="👥"
+                        PreviewTextInput="IntegerValidationTextBox"
+                        Style="{StaticResource NumericTextBox}"
+                        Text="{Binding Visitors, ValidatesOnExceptions=True, NotifyOnValidationError=True}" />
+
+                    <!--  Children  -->
+                    <TextBox
+                        Name="ChildrenTextBox"
+                        Margin="0,0,0,16"
+                        materialDesign:HintAssist.Hint="Number of Children"
+                        materialDesign:TextFieldAssist.PrefixText="👶"
+                        PreviewTextInput="IntegerValidationTextBox"
+                        Style="{StaticResource NumericTextBox}"
+                        Text="{Binding Children, ValidatesOnExceptions=True, NotifyOnValidationError=True}" />
+
+                    <!--  Offering  -->
+                    <TextBox
+                        Name="OfferingTextBox"
+                        Margin="0,0,0,16"
+                        materialDesign:HintAssist.Hint="Offering Amount (GHS)"
+                        materialDesign:TextFieldAssist.PrefixText="₵"
+                        PreviewTextInput="DecimalValidationTextBox"
+                        Style="{StaticResource NumericTextBox}"
+                        Text="{Binding OfferingAmount, ValidatesOnExceptions=True, NotifyOnValidationError=True}" />
+
+                    <!--  Theme (Optional)  -->
+                    <TextBox
+                        Name="ThemeTextBox"
+                        materialDesign:HintAssist.Hint="Service Theme (optional)"
+                        materialDesign:TextFieldAssist.PrefixText="📖"
+                        Style="{StaticResource ThemeTextBox}"
+                        Text="{Binding ServiceTheme, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!--  Action Buttons  -->
+                <StackPanel
+                    Grid.Row="2"
+                    Margin="0,16,0,0"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        Margin="0,0,8,0"
+                        Click="CancelButton_Click"
+                        Content="CANCEL"
+                        Style="{StaticResource MaterialDesignOutlinedButton}" />
+                    <Button
+                        materialDesign:ButtonAssist.CornerRadius="2"
+                        Background="{DynamicResource MaterialDesignSecondaryAccentBrush}"
+                        Click="SaveButton_Click"
+                        Content="SAVE SUMMARY"
+                        Style="{StaticResource MaterialDesignRaisedButton}" />
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
     </Grid>
 </Window>
