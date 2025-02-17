@@ -120,13 +120,14 @@
                         Margin="0,0,8,0"
                         Click="CancelButton_Click"
                         Content="CANCEL"
+                        Foreground="Red"
                         Style="{StaticResource MaterialDesignOutlinedButton}" />
                     <Button
                         materialDesign:ButtonAssist.CornerRadius="2"
-                        Background="{DynamicResource MaterialDesignSecondaryAccentBrush}"
                         Click="SaveButton_Click"
                         Content="SAVE SUMMARY"
-                        Style="{StaticResource MaterialDesignRaisedButton}" />
+                        Foreground="White"
+                        Style="{StaticResource MaterialDesignFlatMidBgButton}" />
                 </StackPanel>
             </Grid>
         </materialDesign:Card>
