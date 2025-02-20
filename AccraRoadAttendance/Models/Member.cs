@@ -16,6 +16,9 @@ namespace AccraRoadAttendance.Models
         [MaxLength(50)]
         public string? OtherNames { get; set; }
 
+        [NotMapped]
+        public string FullName => $"{FirstName} {LastName} {OtherNames}".Trim();
+
         [Required]
         public Gender Sex { get; set; }
 

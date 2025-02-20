@@ -3,6 +3,8 @@ using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Services;
 using AccraRoadAttendance.Views.Pages.Attendance;
 using AccraRoadAttendance.Views.Pages.Members;
+using AccraRoadAttendance.Views.Pages.Reports;
+using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Windows;
@@ -43,6 +45,10 @@ namespace AccraRoadAttendance.Views
                 case "MarkAttendance":
                     _navigationService.NavigateTo<MarkAttendance>();
                     break;
+                case "Reports":
+                    _navigationService.NavigateTo<ReportsPage>();
+                    break;
+                    
             }
         }
 

@@ -7,6 +7,7 @@ using AccraRoadAttendance.Services;
 using AccraRoadAttendance.Views;
 using AccraRoadAttendance.Views.Pages.Attendance;
 using AccraRoadAttendance.Views.Pages.Members;
+using AccraRoadAttendance.Views.Pages.Reports;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,6 +45,7 @@ namespace AccraRoadAttendance
                     services.AddTransient<EditMembers>();
                     services.AddTransient<Members>();
                     services.AddTransient<MarkAttendance>();
+                    services.AddTransient<ReportsPage>();
 
                     // Add navigation service
                     services.AddSingleton<INavigationService, Services.NavigationService>();
