@@ -84,24 +84,17 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
         }
         private void RefreshDataGrid()
         {
-            int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
             displayedMembers = allMembers
                 .Skip((CurrentPage - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
 
-            // Initialize attendance records for displayed members
-            attendanceRecords = displayedMembers.Where(m => m.IsActive).Select(m => new Models.Attendance
-            {
-                MemberId = m.Id,
-                Member = m,
-                ServiceDate = DateTime.Today,
-                Status = AttendanceStatus.Absent,
-                RecordedAt = DateTime.UtcNow,
-                Notes = string.Empty
-            }).ToList();
+            // Filter existing attendance records for the displayed members
+            var displayedAttendanceRecords = attendanceRecords
+                .Where(ar => displayedMembers.Any(dm => dm.Id == ar.MemberId))
+                .ToList();
 
-            AttendanceDataGrid.ItemsSource = attendanceRecords;
+            AttendanceDataGrid.ItemsSource = displayedAttendanceRecords;
             UpdateTotals();
         }
 
@@ -241,6 +234,16 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
             try
             {
                 allMembers = await _context.Members.ToListAsync();
+                // Initialize attendance records for all active members
+                attendanceRecords = allMembers.Where(m => m.IsActive).Select(m => new Models.Attendance
+                {
+                    MemberId = m.Id,
+                    Member = m,
+                    ServiceDate = DateTime.Today,
+                    Status = AttendanceStatus.Absent,
+                    RecordedAt = DateTime.UtcNow,
+                    Notes = string.Empty
+                }).ToList();
                 CurrentPage = 1;
                 RefreshDataGrid();
                 UpdatePagination();

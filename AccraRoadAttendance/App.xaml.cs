@@ -30,7 +30,7 @@ namespace AccraRoadAttendance
                 {
                     // Configure DbContext
                     services.AddDbContext<AttendanceDbContext>(options =>
-                        options.UseSqlServer("Server=CALYPSO-PC\\SQLEXPRESS;Database=AttendanceDb;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True;"));
+                        options.UseSqlServer("Server=FINSERVE\\SQLEXPRESS;Database=AttendanceDb;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True;"));
 
 
                     // Configure Identity
