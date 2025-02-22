@@ -9,6 +9,7 @@ using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 
 namespace AccraRoadAttendance.Views.Pages.Reports
 {
@@ -217,7 +218,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                 // Swap to a different MD style here if you like:
                 Style = (Style)Application.Current.FindResource("MaterialDesignOutlinedDatePicker")
             };
-            HintAssist.SetHint(_startDatePicker, "Start Date");
+            HintAssist.SetHint(_startDatePicker, "Enter Date");
 
             var endDateLabel = new TextBlock
             {
@@ -234,7 +235,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                 // Swap to a different MD style here if you like:
                 Style = (Style)Application.Current.FindResource("MaterialDesignOutlinedDatePicker")
             };
-            HintAssist.SetHint(_endDatePicker, "End Date");
+            HintAssist.SetHint(_endDatePicker, "Enter Date");
 
             switch (selectedReport)
             {
@@ -640,5 +641,40 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                 MessageBox.Show($"Error generating report: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        private void PrintToPdf_Click(object sender, RoutedEventArgs e)
+        {
+            // Check if there is data to print
+            if (ReportDataGrid.ItemsSource == null)
+            {
+                MessageBox.Show("No report data to print. Please generate a report first.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var selectedReport = (ReportTypeComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
+            if (string.IsNullOrEmpty(selectedReport))
+            {
+                MessageBox.Show("Please select a report type.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var startDate = _startDatePicker.SelectedDate.Value;
+            var endDate = _endDatePicker.SelectedDate.Value;
+            var reportData = ReportDataGrid.ItemsSource.Cast<object>().ToList();
+
+
+            // Open a save file dialog for the user to choose the PDF location
+            var saveFileDialog = new SaveFileDialog
+            {
+                Filter = "PDF files (*.pdf)|*.pdf",
+                FileName = $"{selectedReport.Replace(" ", "_")}_{DateTime.Now:yyyyMMdd}.pdf"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                var generator = new ReportGenerator();
+                generator.GenerateReport(selectedReport, reportData, startDate, endDate, saveFileDialog.FileName);
+                MessageBox.Show($"Report saved to {saveFileDialog.FileName}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
     }
+
 }

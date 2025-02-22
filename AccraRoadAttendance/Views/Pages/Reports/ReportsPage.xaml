@@ -60,15 +60,28 @@
                 </materialDesign:Card>
 
                 <!--  Generate Button  -->
-                <Button
+                <StackPanel
                     Grid.Row="2"
                     Margin="10"
                     HorizontalAlignment="Right"
-                    Background="{DynamicResource PrimaryHueMidBrush}"
-                    Click="GenerateReport_Click"
-                    Content="Generate Report"
-                    Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
-                    Style="{StaticResource MaterialDesignRaisedButton}" />
+                    Orientation="Horizontal">
+                    <Button
+                        Margin="5"
+                        Background="{DynamicResource PrimaryHueMidBrush}"
+                        Click="GenerateReport_Click"
+                        Content="Generate Report"
+                        Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                        Style="{StaticResource MaterialDesignRaisedButton}" />
+                    <Button
+                        Margin="5"
+                        Background="{DynamicResource PrimaryHueMidBrush}"
+                        Click="PrintToPdf_Click"
+                        Content="Print to PDF"
+                        Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                        Style="{StaticResource MaterialDesignRaisedButton}" />
+
+                </StackPanel>
+
             </Grid>
         </materialDesign:Card>
     </Grid>
