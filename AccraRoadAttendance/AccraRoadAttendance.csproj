@@ -15,8 +15,10 @@
     <None Remove="AppImages\CLogo.jpg" />
     <None Remove="AppImages\CLogo.png" />
     <None Remove="AppImages\CLogoc.png" />
+    <None Remove="AppImages\CLogoCropped.png" />
     <None Remove="AppImages\CLogocw.png" />
     <None Remove="AppImages\Logo.png" />
+    <None Remove="AppImages\Picture1.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,8 +31,10 @@
     <Resource Include="AppImages\CLogo.jpg" />
     <Resource Include="AppImages\CLogo.png" />
     <Resource Include="AppImages\CLogoc.png" />
+    <Resource Include="AppImages\CLogoCropped.png" />
     <Resource Include="AppImages\CLogocw.png" />
     <Resource Include="AppImages\Logo.png" />
+    <Resource Include="AppImages\Picture1.png" />
   </ItemGroup>
 
   <ItemGroup>
