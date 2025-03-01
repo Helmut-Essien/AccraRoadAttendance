@@ -48,12 +48,36 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             title.Format.SpaceAfter = "0.5cm";
 
             // Add date range
-          
+            if (reportType == "Individual Attendance")
+            {
+                var dateRange = _section.AddParagraph($"This is the attendance history of {memberName} from {startDate.ToString("dd-MMM-yyyy").ToUpper()} to {endDate.ToString("dd-MMM-yyyy").ToUpper()}");
+                dateRange.Format.Font.Size = 12;
+                dateRange.Format.Alignment = ParagraphAlignment.Left;
+                dateRange.Format.SpaceAfter = "1cm";
+            }
+            else if (reportType == "Church Attendance Summary")
+            {
+                var dateRange = _section.AddParagraph($"This is the attendance history of the Church from {startDate.ToString("dd-MMM-yyyy").ToUpper()} to {endDate.ToString("dd-MMM-yyyy").ToUpper()}");
+                dateRange.Format.Font.Size = 12;
+                dateRange.Format.Alignment = ParagraphAlignment.Left;
+                dateRange.Format.SpaceAfter = "1cm";
 
-            var dateRange = _section.AddParagraph($"This is the attendance history of {memberName} from {startDate.ToString("dd-MMM-yyyy").ToUpper()} to {endDate.ToString("dd-MMM-yyyy").ToUpper()}");
-            dateRange.Format.Font.Size = 12;
-            dateRange.Format.Alignment = ParagraphAlignment.Left;
-            dateRange.Format.SpaceAfter = "1cm";
+            }
+            else if (reportType == "Service Type Report")
+            {
+                var service = "";
+                foreach (var record in (IEnumerable<dynamic>)data) 
+                {
+                    service = record.ServiceType.ToString();
+                }
+                 var dateRange = _section.AddParagraph($"This is the attendance history of the Church on {service.ToUpper()} from {startDate.ToString("dd-MMM-yyyy").ToUpper()} to {endDate.ToString("dd-MMM-yyyy").ToUpper()}");
+                dateRange.Format.Font.Size = 12;
+                dateRange.Format.Alignment = ParagraphAlignment.Left;
+                dateRange.Format.SpaceAfter = "1cm";
+
+            }
+
+
 
             // Add report-specific table
             switch (reportType)
@@ -193,8 +217,8 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             line.Format.SpaceBefore = "0.2cm";
 
             var footTable = footer.AddTable();
-            footTable.AddColumn("11cm"); // Left column for Bible verse
-            footTable.AddColumn("5cm"); // Right column for pageNumber
+            footTable.AddColumn("14cm").Format.Alignment = ParagraphAlignment.Left; // Left column for Bible verse
+            footTable.AddColumn("5cm").Format.Alignment = ParagraphAlignment.Right; // Right column for pageNumber
 
             var footRow = footTable.AddRow();
 
@@ -290,14 +314,14 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             table.Style = "Table";
 
             //table.Borders.Width = 0.5;
-            table.AddColumn("2cm"); // Summary Date
-            table.AddColumn("4cm"); // Service Type
-            table.AddColumn("2cm"); // Total Present
-            table.AddColumn("2cm"); // Male Present
-            table.AddColumn("2cm"); // Female Present
-            table.AddColumn("2cm"); // Visitors
-            table.AddColumn("2cm"); // Children
-            table.AddColumn("2cm"); // Offering
+            table.AddColumn("2cm").Format.Alignment = ParagraphAlignment.Left; // Summary Date
+            table.AddColumn("4cm").Format.Alignment = ParagraphAlignment.Center; // Service Type
+            table.AddColumn("2cm").Format.Alignment = ParagraphAlignment.Center; ; // Total Present
+            table.AddColumn("2cm").Format.Alignment = ParagraphAlignment.Center; ; // Male Present
+            table.AddColumn("2cm").Format.Alignment = ParagraphAlignment.Center; ; // Female Present
+            table.AddColumn("2cm").Format.Alignment = ParagraphAlignment.Center; ; // Visitors
+            table.AddColumn("2cm").Format.Alignment = ParagraphAlignment.Center; ; // Children
+            table.AddColumn("3cm").Format.Alignment = ParagraphAlignment.Right; ; // Offering
 
             var headerRow = table.AddRow();
             headerRow.HeadingFormat = true;
@@ -332,7 +356,9 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                 row.Cells[4].AddParagraph(record.TotalFemalePresent.ToString());
                 row.Cells[5].AddParagraph(record.Visitors.ToString());
                 row.Cells[6].AddParagraph(record.Children.ToString());
-                row.Cells[7].AddParagraph(record.OfferingAmount.ToString("C"));
+                //row.Cells[7].AddParagraph(record.OfferingAmount.ToString("C"));
+                // Format as Ghana Cedis (GH₵)
+                row.Cells[7].AddParagraph($"₵{record.OfferingAmount: #,##0.00}");
 
                 // Enable automatic row height for wrapped text
                 //row.HeightRule = RowHeightRule.Auto;
