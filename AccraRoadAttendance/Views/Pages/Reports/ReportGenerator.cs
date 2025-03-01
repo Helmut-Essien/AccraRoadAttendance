@@ -15,7 +15,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
         private Section _section;
         private readonly Color _blueColor = new Color(3, 119, 162);
 
-        public void GenerateReport(string reportType, object data, DateTime startDate, DateTime endDate, string filePath)
+        public void GenerateReport(string reportType, object data, DateTime startDate, DateTime endDate, string filePath, string memberName = null)
         {
             _document = new Document();
             //_document.DefaultPageSetup.LeftMargin = "2cm";
@@ -24,30 +24,35 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             // Set page margins on the section's PageSetup instead of modifying DefaultPageSetup
             _section.PageSetup.TopMargin = "5.7cm";
             _section.PageSetup.HeaderDistance = "1cm";
-            _section.PageSetup.LeftMargin = "2cm";
-            _section.PageSetup.RightMargin = "2cm";
+            _section.PageSetup.LeftMargin = "1cm";
+            _section.PageSetup.RightMargin = "1cm";
 
 
             // Add header and footer using the letterhead template from the attached file
             AddHeader();
-            AddReportContent(reportType, startDate, endDate, data);
+            AddReportContent(reportType, startDate, endDate, data, memberName);
             AddFooter();
             RenderAndSavePdf(filePath);
         }
 
-        private void AddReportContent(string reportType, DateTime startDate, DateTime endDate, object data)
+        private void AddReportContent(string reportType, DateTime startDate, DateTime endDate, object data, string memberName)
         {
+        
+            
             // Add report title
             var title = _section.AddParagraph(reportType);
             title.Format.Font.Size = 14;
             title.Format.Font.Bold = true;
+            title.Format.Font.Color = Colors.Black;
             title.Format.Alignment = ParagraphAlignment.Center;
-            title.Format.SpaceAfter = "1cm";
+            title.Format.SpaceAfter = "0.5cm";
 
             // Add date range
-            var dateRange = _section.AddParagraph($"From {startDate.ToShortDateString()} to {endDate.ToShortDateString()}");
-            dateRange.Format.Font.Size = 10;
-            dateRange.Format.Alignment = ParagraphAlignment.Center;
+          
+
+            var dateRange = _section.AddParagraph($"This is the attendance history of {memberName} from {startDate.ToString("dd-MMM-yyyy").ToUpper()} to {endDate.ToString("dd-MMM-yyyy").ToUpper()}");
+            dateRange.Format.Font.Size = 12;
+            dateRange.Format.Alignment = ParagraphAlignment.Left;
             dateRange.Format.SpaceAfter = "1cm";
 
             // Add report-specific table
@@ -94,7 +99,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
 
             // Logo and Church Name Section
             var mainTable = header.AddTable();
-            mainTable.AddColumn("5cm"); // Left column for logo
+            mainTable.AddColumn("6.5cm"); // Left column for logo
             mainTable.AddColumn("11cm"); // Center column for text
             mainTable.AddColumn("1cm"); // Right column (spacer for centering)
 
@@ -143,9 +148,9 @@ namespace AccraRoadAttendance.Views.Pages.Reports
 
             // Contact Information Table
             var contactTable = header.AddTable();
-            var T1 = contactTable.AddColumn("8cm");
+            var T1 = contactTable.AddColumn("9.5cm");
             T1.Format.Alignment = ParagraphAlignment.Left;
-            var T2 = contactTable.AddColumn("8cm");
+            var T2 = contactTable.AddColumn("9.5cm");
             T2.Format.Alignment = ParagraphAlignment.Right;
 
             // First row
@@ -166,15 +171,16 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             row = contactTable.AddRow();
             var telCell = row.Cells[0].AddParagraph("TEL: 0244265642/0244161872");
             row.Cells[1].AddParagraph("P.O.Box WU 554, Kasoa.");
-            //row.Format.Alignment = ParagraphAlignment.Center;
-            telCell.Format.SpaceAfter = "0.1cm";
-            
+            ////row.Format.Alignment = ParagraphAlignment.Center;
+            //telCell.Format.SpaceAfter = "0.1cm";
 
-            // Horizontal line
-            var line = header.AddParagraph();
-            line.Format.Borders.Bottom.Width = 0.75;
-            line.Format.Borders.Bottom.Color = Colors.Black;
-            
+
+            // Add simulated document classification
+            var classificationBar = _section.AddParagraph();
+            classificationBar.Format.Shading.Color = Colors.Black;
+            classificationBar.Format.SpaceBefore = "0.01cm";
+            classificationBar.Format.SpaceAfter = "0.3cm"; // Removed the invalid 'Height' property
+
         }
 
         private void AddFooter()
@@ -221,16 +227,38 @@ namespace AccraRoadAttendance.Views.Pages.Reports
 
         private void AddIndividualAttendanceTable(object data)
         {
-            var table = _section.AddTable();
-            table.Borders.Width = 0.5;
-            table.AddColumn("3cm"); // Service Date
-            table.AddColumn("3cm"); // Service Type
-            table.AddColumn("2cm"); // Status
-            table.AddColumn("6cm"); // Notes
+            //// Add redacted-style heading
+            //var title = _section.AddParagraph("OPERATION: SANCTUARY ATTENDANCE");
+            //title.Format.Font.Size = 14;
+            //title.Format.Font.Bold = true;
+            //title.Format.Font.Color = Colors.Black;
+            //title.Format.Alignment = ParagraphAlignment.Center;
+            //title.Format.SpaceAfter = "0.5cm";
 
+
+
+            // Create dossier-style table
+            var table = _section.AddTable();
+            table.Style = "Table";
+            //table.Borders.Color = Colors.Black;
+            //table.Borders.Width = 0.75;
+
+            // Columns: Date | Operation Codename | Status | Authentication
+            table.AddColumn("3.5cm").Format.Alignment = ParagraphAlignment.Center;
+            table.AddColumn("4.5cm").Format.Alignment = ParagraphAlignment.Left;
+            table.AddColumn("3cm").Format.Alignment = ParagraphAlignment.Center;
+            table.AddColumn("4cm").Format.Alignment = ParagraphAlignment.Left;
+
+            // Create header row with black background
             var headerRow = table.AddRow();
             headerRow.HeadingFormat = true;
             headerRow.Format.Font.Bold = true;
+            headerRow.Format.Font.Color = Colors.White;
+            headerRow.Format.Shading.Color = Colors.Black;
+            headerRow.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Center;
+            headerRow.Format.Alignment = ParagraphAlignment.Center;
+            headerRow.Height = "1cm";
+
             headerRow.Cells[0].AddParagraph("Service Date");
             headerRow.Cells[1].AddParagraph("Service Type");
             headerRow.Cells[2].AddParagraph("Status");
@@ -239,19 +267,31 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             foreach (var record in (IEnumerable<dynamic>)data)
             {
                 var row = table.AddRow();
-                row.Cells[0].AddParagraph(record.ServiceDate.ToShortDateString());
+                row.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Center;
+                row.Format.Font.Name = "Courier New";
+                row.Format.Font.Size = 10;
+
+                // Convert dates to classified format
+                var dateCell = row.Cells[0];
+                dateCell.AddParagraph(record.ServiceDate.ToString("dd-MMM-yyyy").ToUpper());
+                
                 row.Cells[1].AddParagraph(record.ServiceType.ToString());
                 row.Cells[2].AddParagraph(record.Status.ToString());
                 row.Cells[3].AddParagraph(record.Notes?.ToString() ?? "");
+
+                // Key Change: Allow rows to expand vertically
+                row.HeightRule = RowHeightRule.Auto;
             }
         }
 
         private void AddChurchAttendanceSummaryTable(object data)
         {
             var table = _section.AddTable();
-            table.Borders.Width = 0.5;
+            table.Style = "Table";
+
+            //table.Borders.Width = 0.5;
             table.AddColumn("2cm"); // Summary Date
-            table.AddColumn("2cm"); // Service Type
+            table.AddColumn("4cm"); // Service Type
             table.AddColumn("2cm"); // Total Present
             table.AddColumn("2cm"); // Male Present
             table.AddColumn("2cm"); // Female Present
@@ -262,6 +302,12 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             var headerRow = table.AddRow();
             headerRow.HeadingFormat = true;
             headerRow.Format.Font.Bold = true;
+            headerRow.Format.Font.Color = Colors.White;
+            headerRow.Format.Shading.Color = Colors.Black;
+            headerRow.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Center;
+            headerRow.Format.Alignment = ParagraphAlignment.Center;
+            headerRow.Height = "1cm";
+
             headerRow.Cells[0].AddParagraph("Date");
             headerRow.Cells[1].AddParagraph("Service");
             headerRow.Cells[2].AddParagraph("Total");
@@ -274,6 +320,11 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             foreach (var record in (IEnumerable<dynamic>)data)
             {
                 var row = table.AddRow();
+                row.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Center;
+                row.Format.Font.Name = "Courier New";
+                row.Format.Font.Size = 10;
+                row.Height = "0.6cm";
+
                 row.Cells[0].AddParagraph(record.SummaryDate.ToShortDateString());
                 row.Cells[1].AddParagraph(record.ServiceType.ToString());
                 row.Cells[2].AddParagraph(record.TotalPresent.ToString());
@@ -282,6 +333,10 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                 row.Cells[5].AddParagraph(record.Visitors.ToString());
                 row.Cells[6].AddParagraph(record.Children.ToString());
                 row.Cells[7].AddParagraph(record.OfferingAmount.ToString("C"));
+
+                // Enable automatic row height for wrapped text
+                //row.HeightRule = RowHeightRule.Auto;
+
             }
         }
 

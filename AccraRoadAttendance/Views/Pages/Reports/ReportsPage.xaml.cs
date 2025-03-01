@@ -462,6 +462,8 @@ namespace AccraRoadAttendance.Views.Pages.Reports
         //    }
         //}
 
+        private Member _selectedMemberForReport;
+
         private void GenerateReport_Click(object sender, RoutedEventArgs e)
         {
             // Use the stored DatePicker references.
@@ -506,6 +508,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                         }
 
                         var selectedMember = memberComboBox.SelectedItem as Member;
+                        _selectedMemberForReport = selectedMember;
                         var individualRecords = _context.Attendances
                             .Where(a => a.MemberId == selectedMember.Id && a.ServiceDate >= startDate && a.ServiceDate <= endDate)
                             .Select(a => new { a.ServiceDate, a.ServiceType, a.Status, a.Notes })
@@ -661,6 +664,12 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             var endDate = _endDatePicker.SelectedDate.Value;
             var reportData = ReportDataGrid.ItemsSource.Cast<object>().ToList();
 
+            string memberName = null;
+            if (selectedReport == "Individual Attendance")
+            {
+                memberName = _selectedMemberForReport?.FullName;
+            }
+
 
             // Open a save file dialog for the user to choose the PDF location
             var saveFileDialog = new SaveFileDialog
@@ -671,7 +680,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             if (saveFileDialog.ShowDialog() == true)
             {
                 var generator = new ReportGenerator();
-                generator.GenerateReport(selectedReport, reportData, startDate, endDate, saveFileDialog.FileName);
+                generator.GenerateReport(selectedReport, reportData, startDate, endDate, saveFileDialog.FileName, memberName);
                 MessageBox.Show($"Report saved to {saveFileDialog.FileName}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
