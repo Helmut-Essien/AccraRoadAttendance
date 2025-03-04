@@ -345,7 +345,16 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                         {
                             Name = "ServiceTypeComboBox",
                             Style = (Style)Application.Current.FindResource("MaterialDesignOutlinedComboBox"),
-                            ItemsSource = Enum.GetValues(typeof(ServiceType)),
+                            DisplayMemberPath = "DisplayName", // Show friendly names
+                            SelectedValuePath = "Value", // Store the enum value
+                            ItemsSource = Enum.GetValues(typeof(ServiceType))
+                             .Cast<ServiceType>()
+                             .Select(st => new
+                                 {
+                                    Value = st,
+                                    DisplayName = st.GetDisplayName() // Use your extension method
+                                  })
+                                .ToList(),
                             Width = 200
                         };
                         HintAssist.SetHint(serviceTypeComboBox, "Select Service Type");
@@ -510,10 +519,18 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                         var selectedMember = memberComboBox.SelectedItem as Member;
                         _selectedMemberForReport = selectedMember;
                         var individualRecords = _context.Attendances
-                            .Where(a => a.MemberId == selectedMember.Id && a.ServiceDate >= startDate && a.ServiceDate <= endDate)
-                            .Select(a => new { a.ServiceDate, a.ServiceType, a.Status, a.Notes })
-                            .OrderBy(a => a.ServiceDate)
-                            .ToList();
+                         .Where(a => a.MemberId == selectedMember.Id &&
+                                 a.ServiceDate >= startDate &&
+                                 a.ServiceDate <= endDate)
+                         .Select(a => new
+                             {
+                                 a.ServiceDate,
+                                 ServiceType = a.ServiceType.GetDisplayName(), // Convert here
+                                 a.Status,
+                                 a.Notes
+                             })
+                         .OrderBy(a => a.ServiceDate)
+                         .ToList();
                         ReportDataGrid.ItemsSource = individualRecords;
                         break;
 
@@ -523,7 +540,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                             .Select(s => new
                             {
                                 s.SummaryDate,
-                                s.ServiceType,
+                                ServiceType = s.ServiceType.GetDisplayName(), // Convert to display name
                                 s.TotalPresent,
                                 s.TotalMalePresent,
                                 s.TotalFemalePresent,
@@ -542,7 +559,10 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                             .SelectMany(g => g.Children.OfType<StackPanel>())
                             .SelectMany(sp => sp.Children.OfType<ComboBox>())
                             .FirstOrDefault(c => c.Name == "ServiceTypeComboBox");
-                        var selectedServiceType = serviceTypeComboBox?.SelectedItem as ServiceType?;
+
+                        // Get the selected value directly from the anonymous object
+                        var selectedItem = serviceTypeComboBox?.SelectedItem as dynamic;
+                        ServiceType? selectedServiceType = selectedItem?.Value;
                         if (!selectedServiceType.HasValue)
                         {
                             MessageBox.Show("Please select a service type.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -555,7 +575,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                             .Select(s => new
                             {
                                 s.SummaryDate,
-                                s.ServiceType,
+                                ServiceType = s.ServiceType.GetDisplayName(), // Convert to display name
                                 MalePresent = s.TotalMalePresent,
                                 FemalePresent = s.TotalFemalePresent,
                                 s.Children,

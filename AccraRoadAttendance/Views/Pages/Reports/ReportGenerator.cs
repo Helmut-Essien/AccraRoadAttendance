@@ -369,18 +369,24 @@ namespace AccraRoadAttendance.Views.Pages.Reports
         private void AddServiceTypeReportTable(object data)
         {
             var table = _section.AddTable();
-            table.Borders.Width = 0.5;
-            table.AddColumn("2cm"); // Summary Date
-            table.AddColumn("2cm"); // Service Type
-            table.AddColumn("2cm"); // Males
-            table.AddColumn("2cm"); // Females
-            table.AddColumn("2cm"); // Children
-            table.AddColumn("2cm"); // Visitors
-            table.AddColumn("2cm"); // Total
+            //table.Borders.Width = 0.5;
+            table.AddColumn("2cm").Format.Alignment = ParagraphAlignment.Left; // Summary Date
+            table.AddColumn("5.3cm").Format.Alignment = ParagraphAlignment.Center; // Service Type
+            table.AddColumn("2cm").Format.Alignment = ParagraphAlignment.Center; // Males
+            table.AddColumn("2cm").Format.Alignment = ParagraphAlignment.Center; // Females
+            table.AddColumn("2cm").Format.Alignment = ParagraphAlignment.Center; // Children
+            table.AddColumn("2cm").Format.Alignment = ParagraphAlignment.Center; // Visitors
+            table.AddColumn("2cm").Format.Alignment = ParagraphAlignment.Center; // Total
 
             var headerRow = table.AddRow();
             headerRow.HeadingFormat = true;
             headerRow.Format.Font.Bold = true;
+            headerRow.Format.Font.Color = Colors.White;
+            headerRow.Format.Shading.Color = Colors.Black;
+            headerRow.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Center;
+            headerRow.Format.Alignment = ParagraphAlignment.Center;
+            headerRow.Height = "1cm";
+
             headerRow.Cells[0].AddParagraph("Date");
             headerRow.Cells[1].AddParagraph("Service");
             headerRow.Cells[2].AddParagraph("Males");
@@ -392,6 +398,11 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             foreach (var record in (IEnumerable<dynamic>)data)
             {
                 var row = table.AddRow();
+                row.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Center;
+                row.Format.Font.Name = "Courier New";
+                row.Format.Font.Size = 10;
+                row.Height = "0.6cm";
+
                 row.Cells[0].AddParagraph(record.SummaryDate.ToShortDateString());
                 row.Cells[1].AddParagraph(record.ServiceType.ToString());
                 row.Cells[2].AddParagraph(record.MalePresent.ToString());

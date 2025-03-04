@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace AccraRoadAttendance.Models
 {
@@ -36,9 +37,16 @@ namespace AccraRoadAttendance.Models
 
     public enum ServiceType
     {
+        [Display(Name = "Sunday Service")]
         SundayService,
+
+        [Display(Name = "Wednesday Prayer")]
         WednesdayPrayer,
+
+        [Display(Name = "Thursday Bible Study")]
         ThursdayBibleStudy,
+
+        [Display(Name = "Special Event")]
         SpecialEvent
     }
 
@@ -49,5 +57,39 @@ namespace AccraRoadAttendance.Models
         Excused
     }
 
+    public static class EnumExtensions
+    {
+        public static string GetDisplayName(this Enum enumValue)
+        {
+            var memberInfo = enumValue.GetType().GetMember(enumValue.ToString());
+            if (memberInfo.Length > 0)
+            {
+                var displayAttribute = memberInfo[0].GetCustomAttribute<DisplayAttribute>();
+                if (displayAttribute != null)
+                    return displayAttribute.Name;
+            }
+            return enumValue.ToString();
+        }
 
+        public static ServiceType? GetEnumValueFromDisplayName(string displayName)
+        {
+            foreach (ServiceType value in Enum.GetValues(typeof(ServiceType)))
+            {
+                if (value.GetDisplayName().Equals(displayName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return value;
+                }
+            }
+            return null;
+        }
+
+
+
+    }
 }
+    
+
+
+
+
+ 
