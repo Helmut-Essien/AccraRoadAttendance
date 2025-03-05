@@ -22,7 +22,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             //_document.DefaultPageSetup.RightMargin = "2cm";
             _section = _document.AddSection();
             // Set page margins on the section's PageSetup instead of modifying DefaultPageSetup
-            _section.PageSetup.TopMargin = "5.7cm";
+            _section.PageSetup.TopMargin = "5.2cm";
             _section.PageSetup.HeaderDistance = "1cm";
             _section.PageSetup.LeftMargin = "1cm";
             _section.PageSetup.RightMargin = "1cm";
@@ -202,7 +202,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             // Add simulated document classification
             var classificationBar = _section.AddParagraph();
             classificationBar.Format.Shading.Color = Colors.Black;
-            classificationBar.Format.SpaceBefore = "0.01cm";
+            //classificationBar.Format.SpaceBefore = "0.01cm";
             classificationBar.Format.SpaceAfter = "0.3cm"; // Removed the invalid 'Height' property
 
         }
