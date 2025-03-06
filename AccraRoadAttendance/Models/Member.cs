@@ -91,7 +91,7 @@ namespace AccraRoadAttendance.Models
         {
             Male,
             Female,
-            Other
+           
         }
 
         public enum MaritalStatus

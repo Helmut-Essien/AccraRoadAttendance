@@ -45,6 +45,13 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -108,15 +115,13 @@
                         Foreground="#374655"
                         Text="Gender:" />
                     <ComboBox
+                        x:Name="GenderComboBox"
                         Height="40"
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
                         materialDesign:HintAssist.Hint="Choose gender"
-                        Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                        Text="{Binding Gender, UpdateSourceTrigger=PropertyChanged}">
-                        <ComboBoxItem Content="Male" />
-                        <ComboBoxItem Content="Female" />
-                    </ComboBox>
+                        SelectedValue="{Binding Gender, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                 </StackPanel>
 
                 <!--  Phone Number  -->
@@ -151,9 +156,129 @@
                         Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
+                <!--  Date of Birth  -->
+                <StackPanel
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    Margin="10">
+                    <TextBlock
+                        FontWeight="SemiBold"
+                        Foreground="#374655"
+                        Text="Date of Birth" />
+                    <DatePicker
+                        x:Name="DateOfBirthPicker"
+                        materialDesign:HintAssist.Hint="Select date of birth"
+                        SelectedDate="{Binding DateOfBirth}"
+                        Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
+                </StackPanel>
+
+                <!--  Nationality  -->
+                <StackPanel
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    Margin="10">
+                    <TextBlock
+                        FontWeight="SemiBold"
+                        Foreground="#374655"
+                        Text="Nationality" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter nationality"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding Nationality}" />
+                </StackPanel>
+
+                <!--  Marital Status  -->
+                <StackPanel
+                    Grid.Row="5"
+                    Grid.Column="0"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655"
+                        Text="Marital status:" />
+                    <ComboBox
+                        x:Name="MaritalStatusComboBox"
+                        Height="40"
+                        Padding="5,0,10,0"
+                        HorizontalContentAlignment="Stretch"
+                        materialDesign:HintAssist.Hint="Choose marital status"
+                        SelectedValue="{Binding maritalStatus, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                </StackPanel>
+
+                <!--  Occupation  -->
+                <StackPanel
+                    Grid.Row="5"
+                    Grid.Column="1"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655"
+                        Text="Occupation:" />
+                    <ComboBox
+                        x:Name="OccupationTypeComboBox"
+                        Height="40"
+                        Padding="5,0,10,0"
+                        HorizontalContentAlignment="Stretch"
+                        materialDesign:HintAssist.Hint="Choose occupation"
+                        SelectedValue="{Binding occupationType, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+
+                </StackPanel>
+
+                <!--  Baptism Section  -->
+                <StackPanel
+                    Grid.Row="6"
+                    Grid.Column="0"
+                    Margin="10">
+                    <CheckBox
+                        Margin="0,0,0,5"
+                        x:Name="IsBaptizedCheckBox"
+                        Checked="IsBaptizedCheckBox_Checked"
+                        Content="Is Baptized"
+                        IsChecked="{Binding IsBaptized}"
+                        Unchecked="IsBaptizedCheckBox_Unchecked" />
+                    <DatePicker
+                        x:Name="BaptismDatePicker"
+                        materialDesign:HintAssist.Hint="Baptism date"
+                        SelectedDate="{Binding BaptismDate}"
+                        Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                        Visibility="Collapsed" />
+                </StackPanel>
+
+                <!--  Family Member Section  -->
+                <StackPanel
+                    Grid.Row="6"
+                    Grid.Column="1"
+                    Margin="10">
+                    <CheckBox
+                        Margin="0,0,0,5"
+                        x:Name="FamilyMemberCheckBox"
+                        Checked="FamilyMemberCheckBox_Checked"
+                        Content="Has Family Member In Church"
+                        IsChecked="{Binding HasFamilyMemberInChurch}"
+                        Style="{StaticResource MaterialDesignCheckBox}"
+                        Unchecked="FamilyMemberCheckBox_Unchecked" />
+                    <TextBox
+                        x:Name="FamilyMemberNameTextBox"
+                        materialDesign:HintAssist.Hint="Family member name"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding FamilyMemberName}"
+                        Visibility="Collapsed" />
+                    <TextBox
+                        x:Name="FamilyMemberContactTextBox"
+                        Margin="0,5,0,0"
+                        materialDesign:HintAssist.Hint="Family member contact"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding FamilyMemberContact}"
+                        Visibility="Collapsed" />
+                </StackPanel>
+
                 <!--  Upload Picture Section  -->
                 <StackPanel
-                    Grid.Row="3"
+                    Grid.Row="10"
                     Grid.Column="0"
                     Margin="10">
                     <TextBlock
@@ -187,7 +312,7 @@
                 </StackPanel>
                 <!--  Action Buttons  -->
                 <StackPanel
-                    Grid.Row="4"
+                    Grid.Row="11"
                     Margin="10"
                     HorizontalAlignment="Left"
                     Orientation="Horizontal">
