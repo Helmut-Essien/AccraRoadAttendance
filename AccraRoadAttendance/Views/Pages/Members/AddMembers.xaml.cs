@@ -63,6 +63,19 @@ namespace AccraRoadAttendance.Views.Pages.Members
             GenderComboBox.ItemsSource = genderItems;
             GenderComboBox.DisplayMemberPath = "DisplayName";
             GenderComboBox.SelectedValuePath = "Value";
+
+            // Initialize Education ComboBox
+            var educationItems = Enum.GetValues(typeof(Member.EducationalLevel))
+                .Cast<Member.EducationalLevel>()
+                .Select(g => new
+                {
+                    Value = g,
+                    DisplayName = GetEnumDisplayName(g)
+                }).ToList();
+
+            EducationComboBox.ItemsSource = educationItems;
+            EducationComboBox.DisplayMemberPath = "DisplayName";
+            EducationComboBox.SelectedValuePath = "Value";
         }
 
         private void InitializeVisibility()
@@ -101,7 +114,12 @@ namespace AccraRoadAttendance.Views.Pages.Members
         //public MaritalStatus maritalStatus { get; set; }
         //public OccupationType occupationType { get; set; }
        /* public Gender? Gender { get; set; }*/ // Also fix Gender (was a string before)
-        public string Hometown { get; set; }
+        public string? Hometown { get; set; }
+        public string? NextOfKinName { get; set; }
+        public string? NextOfKinContact { get; set; }
+        public string? Skills { get; set; }
+        public string? Address { get; set; }
+
 
         // New properties
         private DateTime? _dateOfBirth;
@@ -178,6 +196,17 @@ namespace AccraRoadAttendance.Views.Pages.Members
             {
                 _occupationType = value;
                 OnPropertyChanged(nameof(occupationType));
+            }
+        }
+
+        private EducationalLevel? _educationalLevel;
+        public EducationalLevel? educationalLevel
+        {
+            get => _educationalLevel;
+            set
+            {
+                _educationalLevel = value;
+                OnPropertyChanged(nameof(educationalLevel));
             }
         }
 
@@ -271,9 +300,16 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     BaptismDate = BaptismDate,
                     occupationType = occupationType.Value,
                     maritalStatus = maritalStatus.Value,
+                    Hometown = Hometown,
+                    NextOfKinName = NextOfKinName,
+                    NextOfKinContact = NextOfKinContact,
+                    Skills = Skills,
+                    Address = Address,
+                    educationalLevel = educationalLevel.Value,
                     HasFamilyMemberInChurch = HasFamilyMemberInChurch,
                     FamilyMemberName = FamilyMemberName,
                     FamilyMemberContact = FamilyMemberContact
+
                 };
 
                 // Save to database
@@ -323,6 +359,12 @@ namespace AccraRoadAttendance.Views.Pages.Members
             Nationality = string.Empty;
             maritalStatus = null;
             occupationType = null;
+            Hometown = string.Empty;
+            NextOfKinName = string.Empty;
+            NextOfKinContact = string.Empty;
+            Skills = string.Empty;
+            Address = string.Empty;
+            educationalLevel = null;
             IsBaptized = false;
             BaptismDate = null;
             HasFamilyMemberInChurch = false;
@@ -346,6 +388,12 @@ namespace AccraRoadAttendance.Views.Pages.Members
             OnPropertyChanged(nameof(HasFamilyMemberInChurch));
             OnPropertyChanged(nameof(FamilyMemberName));
             OnPropertyChanged(nameof(FamilyMemberContact));
+            OnPropertyChanged(nameof(Skills));
+            OnPropertyChanged(nameof(Address));
+            OnPropertyChanged(nameof(educationalLevel));
+            OnPropertyChanged(nameof(Hometown));
+            OnPropertyChanged(nameof(NextOfKinName));
+            OnPropertyChanged(nameof(NextOfKinContact));
         }
     }
 }

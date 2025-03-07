@@ -40,7 +40,7 @@ namespace AccraRoadAttendance.Models
 
         [MaxLength(100)]
         [Display(Name = "Educational Level")]
-        public string? EducationalLevel { get; set; }
+        public EducationalLevel? educationalLevel { get; set; }
 
         [MaxLength(200)]
         public string? Address { get; set; }
@@ -112,6 +112,20 @@ namespace AccraRoadAttendance.Models
             Student,
             [Display(Name = "Unemployed")]
             Unemployed
+        }
+
+        public enum EducationalLevel
+        {
+            [Display(Name = "No Formal Education")]
+            NoFormalEducation,
+            [Display(Name = "Primary School")]
+            PrimarySchool,
+            [Display(Name = "Secondary School")]
+            SecondarySchool,
+            [Display(Name = "Tertiary")]
+            Tertiary,
+            [Display(Name = "Post Graduate")]
+            PostGraduate
         }
 
 

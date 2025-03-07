@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
+    d:DesignHeight="900"
     d:DesignWidth="800"
     mc:Ignorable="d">
 
@@ -228,14 +228,118 @@
 
                 </StackPanel>
 
-                <!--  Baptism Section  -->
+                <!--  Address  -->
                 <StackPanel
                     Grid.Row="6"
                     Grid.Column="0"
                     Margin="10">
-                    <CheckBox
+                    <TextBlock
                         Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655"
+                        Text="Address:" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter house address"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!--  Next Of Kin name  -->
+                <StackPanel
+                    Grid.Row="6"
+                    Grid.Column="1"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655"
+                        Text="Next of Kin name:" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter name of next of kin"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding NextOfKinName, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!--  Next Of Kin contact  -->
+                <StackPanel
+                    Grid.Row="7"
+                    Grid.Column="0"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655"
+                        Text="Next of Kin contact:" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter contact of next of Kin"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding NextOfKinContact, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!--  Hometown  -->
+                <StackPanel
+                    Grid.Row="7"
+                    Grid.Column="1"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655"
+                        Text="Hometown:" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter hometown"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding Hometown, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!--  Skills  -->
+                <StackPanel
+                    Grid.Row="8"
+                    Grid.Column="0"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655"
+                        Text="Skills:" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter what you can do in church"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding Skills, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!--  Education Level  -->
+                <StackPanel
+                    Grid.Row="8"
+                    Grid.Column="1"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655"
+                        Text="Education:" />
+                    <ComboBox
+                        x:Name="EducationComboBox"
+                        Height="40"
+                        Padding="5,0,10,0"
+                        HorizontalContentAlignment="Stretch"
+                        materialDesign:HintAssist.Hint="Choose education level"
+                        SelectedValue="{Binding educationalLevel, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+
+                </StackPanel>
+
+
+
+
+                <!--  Baptism Section  -->
+                <StackPanel
+                    Grid.Row="9"
+                    Grid.Column="0"
+                    Margin="10">
+                    <CheckBox
                         x:Name="IsBaptizedCheckBox"
+                        Margin="0,0,0,5"
                         Checked="IsBaptizedCheckBox_Checked"
                         Content="Is Baptized"
                         IsChecked="{Binding IsBaptized}"
@@ -250,12 +354,12 @@
 
                 <!--  Family Member Section  -->
                 <StackPanel
-                    Grid.Row="6"
+                    Grid.Row="9"
                     Grid.Column="1"
                     Margin="10">
                     <CheckBox
-                        Margin="0,0,0,5"
                         x:Name="FamilyMemberCheckBox"
+                        Margin="0,0,0,5"
                         Checked="FamilyMemberCheckBox_Checked"
                         Content="Has Family Member In Church"
                         IsChecked="{Binding HasFamilyMemberInChurch}"
