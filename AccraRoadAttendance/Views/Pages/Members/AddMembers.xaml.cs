@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using static AccraRoadAttendance.Models.Member;
 using AccraRoadAttendance.Services;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 
 namespace AccraRoadAttendance.Views.Pages.Members
 {
@@ -292,7 +293,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     Sex = Gender.Value,
                     PhoneNumber = PhoneNumber,
                     Email = Email,
-                    PicturePath = SelectedPicturePath,
+                    
                     // New fields
                     DateOfBirth = DateOfBirth,
                     Nationality = Nationality,
@@ -311,6 +312,21 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     FamilyMemberContact = FamilyMemberContact
 
                 };
+
+                // Generate filename
+                string fileName = SanitizeFilename(newMember.FullName) + Path.GetExtension(SelectedPicturePath);
+                string folderPath = Path.Combine(AppContext.BaseDirectory, "ProfilePictures");
+                Directory.CreateDirectory(folderPath);
+                string newFilePath = Path.Combine(folderPath, fileName);
+
+                // Copy the selected image to the new filename
+                if (!string.IsNullOrEmpty(SelectedPicturePath))
+                {
+                    File.Copy(SelectedPicturePath, newFilePath, true);
+                }
+
+                // Update PicturePath to the new filename path
+                newMember.PicturePath = newFilePath;
 
                 // Save to database
                 _context.Members.Add(newMember);
@@ -337,6 +353,22 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                 MessageBox.Show($"An error occurred while saving the member: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private string SanitizeFilename(string input)
+        {
+            // Remove invalid characters and replace spaces with underscores
+            string valid = input.Replace(" ", "_")
+                               .Replace("/", "_")
+                               .Replace("\\", "_")
+                               .Replace(":", "_")
+                               .Replace("*", "_")
+                               .Replace("?", "_")
+                               .Replace("\"", "_")
+                               .Replace("<", "_")
+                               .Replace(">", "_")
+                               .Replace("|", "_");
+            return valid;
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)

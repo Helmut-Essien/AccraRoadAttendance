@@ -62,4 +62,8 @@
     <PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ProfilePictures\" />
+  </ItemGroup>
+
 </Project>
