@@ -46,6 +46,7 @@ namespace AccraRoadAttendance
                     services.AddTransient<Members>();
                     services.AddTransient<MarkAttendance>();
                     services.AddTransient<ReportsPage>();
+                    services.AddTransient<MemberDetails>();
 
                     // Add navigation service
                     services.AddSingleton<INavigationService, Services.NavigationService>();

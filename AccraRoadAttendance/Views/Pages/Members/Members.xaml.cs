@@ -189,7 +189,20 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 MessageBox.Show("No member selected for editing.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-         
+
+        private void MemberDetails_Click(object sender, RoutedEventArgs e)
+        {
+            var member = (sender as Button)?.CommandParameter as Member;
+            if (member != null)
+            {
+                _navigationService.NavigateTo<MemberDetails>(member);
+            }
+            else
+            {
+                MessageBox.Show("No member selected for viewing.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
 
         private async void DeleteMember_Click(object sender, RoutedEventArgs e)
         {

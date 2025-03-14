@@ -28,6 +28,8 @@
             <converters:PageNumberVisibilityConverter x:Key="PageNumberVisibilityConverter" />
             <converters:EllipsisVisibilityConverter x:Key="EllipsisVisibilityConverter" />
             <converters:EqualityConverter x:Key="EqualityConverter" />
+            <!--<converters:EqualityConverter x:Key="EqualityConverter" />
+            <converters:EqualityConverter x:Key="EqualityConverter" />-->
 
             <x:Array x:Key="ServiceTypeValues" Type="{x:Type models:ServiceType}">
                 <models:ServiceType>SundayService</models:ServiceType>
@@ -252,6 +254,36 @@
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="Width" Value="12" />
                 <Setter Property="Height" Value="12" />
+            </Style>
+
+            <Style
+                x:Key="gridDetailsButton"
+                BasedOn="{StaticResource gridEditButton}"
+                TargetType="Button">
+
+                <Setter Property="Background" Value="#009688" />
+
+                <Setter Property="BorderBrush" Value="#00796B" />
+
+
+                <!--  Mouse over effect  -->
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#00E5FF" />
+                        <!--  Lighter teal hover  -->
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!--  Optional: Create an icon-specific style if needed  -->
+            <Style
+                x:Key="gridDetailsIcon"
+                BasedOn="{StaticResource gridButtonIcon}"
+                TargetType="Icon:PackIconMaterial">
+                <Setter Property="Foreground" Value="#FFFFFF" />
+                <!--  White icon color  -->
+                <Setter Property="Kind" Value="Eye" />
+                <!--  Material Design "Eye" icon for details  -->
             </Style>
 
             <!--#region DataGrid Style-->

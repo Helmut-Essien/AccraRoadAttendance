@@ -5,9 +5,27 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
+    d:DesignHeight="900"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style TargetType="Control">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock
+                                DockPanel.Dock="Right"
+                                Foreground="Red"
+                                Text="⚠" />
+                            <Border BorderBrush="Red" BorderThickness="1" />
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
 
     <Grid Margin="10" Background="#F5F5F5">
         <Grid.RowDefinitions>
@@ -45,6 +63,13 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -57,8 +82,10 @@
                     <TextBlock
                         Margin="0,0,0,5"
                         FontWeight="SemiBold"
-                        Foreground="#374655"
-                        Text="First Name:" />
+                        Foreground="#374655">
+                        <Run Text="First Name:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter first name"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
@@ -73,8 +100,10 @@
                     <TextBlock
                         Margin="0,0,0,5"
                         FontWeight="SemiBold"
-                        Foreground="#374655"
-                        Text="Last Name:" />
+                        Foreground="#374655">
+                        <Run Text="Last Name:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter last name"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
@@ -105,18 +134,18 @@
                     <TextBlock
                         Margin="0,0,0,5"
                         FontWeight="SemiBold"
-                        Foreground="#374655"
-                        Text="Gender:" />
+                        Foreground="#374655">
+                        <Run Text="Gender:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
                     <ComboBox
+                        x:Name="GenderComboBox"
                         Height="40"
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
                         materialDesign:HintAssist.Hint="Choose gender"
-                        Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                        Text="{Binding Gender, UpdateSourceTrigger=PropertyChanged}">
-                        <ComboBoxItem Content="Male" />
-                        <ComboBoxItem Content="Female" />
-                    </ComboBox>
+                        SelectedValue="{Binding Gender, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                 </StackPanel>
 
                 <!--  Phone Number  -->
@@ -127,8 +156,10 @@
                     <TextBlock
                         Margin="0,0,0,5"
                         FontWeight="SemiBold"
-                        Foreground="#374655"
-                        Text="Phone Number:" />
+                        Foreground="#374655">
+                        <Run Text="Phone number:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter phone number"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
@@ -151,7 +182,7 @@
                         Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
-                <!--  Upload Picture Section  -->
+                <!--  Date of Birth  -->
                 <StackPanel
                     Grid.Row="3"
                     Grid.Column="0"
@@ -159,8 +190,247 @@
                     <TextBlock
                         Margin="0,0,0,5"
                         FontWeight="SemiBold"
+                        Foreground="#374655">
+                        <Run Text="Date of birth:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
+                    <DatePicker
+                        x:Name="DateOfBirthPicker"
+                        materialDesign:HintAssist.Hint="Select date of birth"
+                        SelectedDate="{Binding DateOfBirth, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
+                </StackPanel>
+
+                <!--  Nationality  -->
+                <StackPanel
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655">
+                        <Run Text="Nationality:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter nationality"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding Nationality, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!--  Marital Status  -->
+                <StackPanel
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655">
+                        <Run Text="Marital status:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
+                    <ComboBox
+                        x:Name="MaritalStatusComboBox"
+                        Height="40"
+                        Padding="5,0,10,0"
+                        HorizontalContentAlignment="Stretch"
+                        materialDesign:HintAssist.Hint="Choose marital status"
+                        SelectedValue="{Binding maritalStatus, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                </StackPanel>
+
+                <!--  Occupation  -->
+                <StackPanel
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655">
+                        <Run Text="Occupation:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
+                    <ComboBox
+                        x:Name="OccupationTypeComboBox"
+                        Height="40"
+                        Padding="5,0,10,0"
+                        HorizontalContentAlignment="Stretch"
+                        materialDesign:HintAssist.Hint="Choose occupation"
+                        SelectedValue="{Binding occupationType, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                </StackPanel>
+
+                <!--  Address  -->
+                <StackPanel
+                    Grid.Row="5"
+                    Grid.Column="0"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655">
+                        <Run Text="Address:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter house address"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!--  Next of Kin Name  -->
+                <StackPanel
+                    Grid.Row="5"
+                    Grid.Column="1"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655">
+                        <Run Text="Next of Kin name:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter name of next of kin"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding NextOfKinName, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!--  Next of Kin Contact  -->
+                <StackPanel
+                    Grid.Row="6"
+                    Grid.Column="0"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655">
+                        <Run Text="Next of Kin contact:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter contact of next of kin"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding NextOfKinContact, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!--  Hometown  -->
+                <StackPanel
+                    Grid.Row="6"
+                    Grid.Column="1"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
                         Foreground="#374655"
-                        Text="Upload Picture:" />
+                        Text="Hometown:" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter hometown"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding Hometown, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!--  Skills  -->
+                <StackPanel
+                    Grid.Row="7"
+                    Grid.Column="0"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655"
+                        Text="Skills:" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter what you can do in church"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding Skills, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!--  Education Level  -->
+                <StackPanel
+                    Grid.Row="7"
+                    Grid.Column="1"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655">
+                        <Run Text="Education:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
+                    <ComboBox
+                        x:Name="EducationComboBox"
+                        Height="40"
+                        Padding="5,0,10,0"
+                        HorizontalContentAlignment="Stretch"
+                        materialDesign:HintAssist.Hint="Choose education level"
+                        SelectedValue="{Binding educationalLevel, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                </StackPanel>
+
+                <!--  Baptism Section  -->
+                <StackPanel
+                    Grid.Row="8"
+                    Grid.Column="0"
+                    Margin="10">
+                    <CheckBox
+                        x:Name="IsBaptizedCheckBox"
+                        Margin="0,0,0,5"
+                        Checked="IsBaptizedCheckBox_Checked"
+                        Content="Is Baptized"
+                        IsChecked="{Binding IsBaptized}"
+                        Unchecked="IsBaptizedCheckBox_Unchecked" />
+                    <DatePicker
+                        x:Name="BaptismDatePicker"
+                        materialDesign:HintAssist.Hint="Choose baptism date"
+                        SelectedDate="{Binding BaptismDate, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                        Visibility="Collapsed" />
+                </StackPanel>
+
+                <!--  Family Member Section  -->
+                <StackPanel
+                    Grid.Row="8"
+                    Grid.Column="1"
+                    Margin="10">
+                    <CheckBox
+                        x:Name="FamilyMemberCheckBox"
+                        Margin="0,0,0,5"
+                        Checked="FamilyMemberCheckBox_Checked"
+                        Content="Has Family Member In Church"
+                        IsChecked="{Binding HasFamilyMemberInChurch}"
+                        Unchecked="FamilyMemberCheckBox_Unchecked" />
+                    <TextBox
+                        x:Name="FamilyMemberNameTextBox"
+                        Margin="0,0,0,5"
+                        materialDesign:HintAssist.Hint="Enter family member name"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding FamilyMemberName, UpdateSourceTrigger=PropertyChanged}"
+                        Visibility="Collapsed" />
+                    <TextBox
+                        x:Name="FamilyMemberContactTextBox"
+                        Margin="0,18,0,5"
+                        materialDesign:HintAssist.Hint="Enter family member contact"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding FamilyMemberContact, UpdateSourceTrigger=PropertyChanged}"
+                        Visibility="Collapsed" />
+                </StackPanel>
+
+                <!--  Upload Picture Section  -->
+                <StackPanel
+                    Grid.Row="9"
+                    Grid.Column="0"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655">
+                        <Run Text="Upload Picture:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
                     <Button
                         Height="40"
                         Background="#4880FF"
@@ -173,8 +443,6 @@
                         FontSize="12"
                         Foreground="#888"
                         Text="{Binding SelectedPicturePath, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <!--  Image Preview  -->
                     <Border
                         Width="150"
                         Height="150"
@@ -188,7 +456,8 @@
 
                 <!--  Action Buttons  -->
                 <StackPanel
-                    Grid.Row="4"
+                    Grid.Row="10"
+                    Grid.ColumnSpan="2"
                     Margin="10"
                     HorizontalAlignment="Left"
                     Orientation="Horizontal">

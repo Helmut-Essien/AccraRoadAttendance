@@ -160,6 +160,13 @@
                                     </Button>
                                     <Button
                                         Margin="5,0,0,0"
+                                        Click="MemberDetails_Click"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource gridDetailsButton}">
+                                        <Icon:PackIconMaterial Style="{StaticResource gridDetailsIcon}" />
+                                    </Button>
+                                    <Button
+                                        Margin="5,0,0,0"
                                         Click="DeleteMember_Click"
                                         CommandParameter="{Binding}"
                                         Style="{StaticResource gridRemoveButton}">
