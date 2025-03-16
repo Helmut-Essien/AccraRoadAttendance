@@ -30,6 +30,8 @@ namespace AccraRoadAttendance.Views
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             _navigationService.NavigateTo<Members>();
+            //var login = new Login();
+            //login.Show();
         }
 
         private void Navigate(object sender, RoutedEventArgs e)

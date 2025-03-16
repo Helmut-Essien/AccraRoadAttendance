@@ -1,4 +1,5 @@
 ﻿using AccraRoadAttendance.Models;
+using AccraRoadAttendance.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
     /// <summary>
     /// Interaction logic for MemberDetails.xaml
     /// </summary>
-    public partial class MemberDetails : UserControl
+    public partial class MemberDetails : UserControl, IParameterReceiver
     {
         // DependencyProperty for Member
         public static readonly DependencyProperty MemberProperty = DependencyProperty.Register(
@@ -32,6 +33,14 @@ namespace AccraRoadAttendance.Views.Pages.Members
         {
             get { return (Member)GetValue(MemberProperty); }
             set { SetValue(MemberProperty, value); }
+        }
+
+        public void ReceiveParameter(object parameter)
+        {
+            if (parameter is Member member)
+            {
+                Member = member; // Set the Member property when receiving the parameter
+            }
         }
 
         public MemberDetails()
