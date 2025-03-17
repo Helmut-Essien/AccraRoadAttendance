@@ -15,14 +15,20 @@
         <converters:BooleanToStringConverter x:Key="BooleanToStringConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
 
-        <Style x:Key="DetailLabel" TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}">
+        <Style
+            x:Key="DetailLabel"
+            BasedOn="{StaticResource MaterialDesignBody1TextBlock}"
+            TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBodyLight}" />
-            <Setter Property="Margin" Value="0 0 0 4" />
+            <Setter Property="Margin" Value="0,0,0,4" />
         </Style>
 
-        <Style x:Key="DetailValue" TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}">
+        <Style
+            x:Key="DetailValue"
+            BasedOn="{StaticResource MaterialDesignBody1TextBlock}"
+            TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Medium" />
-            <Setter Property="Margin" Value="0 0 0 4" />
+            <Setter Property="Margin" Value="0,0,0,4" />
         </Style>
     </UserControl.Resources>
 
@@ -33,26 +39,29 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <!-- Profile Header -->
-            <Grid Grid.Row="0" Margin="0 0 24 24">
+            <!--  Profile Header  -->
+            <Grid Grid.Row="0" Margin="0,0,24,24">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Profile Picture Section (Fixed Child Property) -->
+                <!--  Profile Picture Section  -->
                 <Border
                     Grid.Column="0"
                     Width="120"
                     Height="120"
-                    CornerRadius="60"
                     Background="{DynamicResource MaterialDesignPaper}"
                     BorderBrush="{DynamicResource MaterialDesignDivider}"
-                    BorderThickness="1">
+                    BorderThickness="1"
+                    CornerRadius="60">
                     <Grid>
                         <Image Source="{Binding Member.PicturePath}" Stretch="UniformToFill">
                             <Image.Clip>
-                                <EllipseGeometry Center="60,60" RadiusX="60" RadiusY="60" />
+                                <EllipseGeometry
+                                    Center="60,60"
+                                    RadiusX="60"
+                                    RadiusY="60" />
                             </Image.Clip>
                             <Image.Style>
                                 <Style TargetType="Image">
@@ -61,173 +70,434 @@
                                         <DataTrigger Binding="{Binding Member.PicturePath}" Value="{x:Null}">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
+                                        <DataTrigger Binding="{Binding Member.PicturePath}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Image.Style>
                         </Image>
                         <materialDesign:PackIcon
-                            Kind="AccountCircle"
                             Width="120"
                             Height="120"
-                            Visibility="{Binding Member.PicturePath, Converter={StaticResource BoolToVisConverter}, ConverterParameter=Inverse}"
-                            Foreground="{DynamicResource MaterialDesignBodyLight}" />
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
+                            Kind="AccountCircle">
+                            <materialDesign:PackIcon.Style>
+                                <Style TargetType="materialDesign:PackIcon">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Member.PicturePath}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Member.PicturePath}" Value="">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </materialDesign:PackIcon.Style>
+                        </materialDesign:PackIcon>
                     </Grid>
                 </Border>
 
-                <!-- Profile Info -->
-                <StackPanel Grid.Column="1" Margin="24 0 0 0" VerticalAlignment="Center">
+                <!--  Profile Info  -->
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="24,0,0,0"
+                    VerticalAlignment="Center">
+                    <TextBlock Style="{StaticResource MaterialDesignHeadline4TextBlock}" Text="{Binding Member.FullName}" />
                     <TextBlock
-                        Style="{StaticResource MaterialDesignHeadline4TextBlock}"
-                        Text="{Binding Member.FullName}" />
-                    <TextBlock
-                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                         Foreground="{DynamicResource MaterialDesignBodyLight}"
+                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                         Text="{Binding Member.OccupationType, Converter={StaticResource EnumDisplayConverter}}" />
                     <TextBlock
-                        Style="{StaticResource MaterialDesignBody1TextBlock}"
                         Foreground="{DynamicResource MaterialDesignBodyLight}"
+                        Style="{StaticResource MaterialDesignBody1TextBlock}"
                         Text="{Binding Member.Email}" />
                 </StackPanel>
             </Grid>
 
-            <!-- Details Sections -->
-            <ScrollViewer Grid.Row="1">
+            <!--  Details Section  -->
+            <ScrollViewer Grid.Row="1" Margin="10">
                 <StackPanel>
-                    <!-- Personal Information Card -->
-                    <materialDesign:Card Margin="0 0 0 16" Padding="16">
-                        <StackPanel>
+                    <!--  Personal Information  -->
+                    <Expander Margin="0,0,0,10" IsExpanded="False">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon VerticalAlignment="Center" Kind="Account" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                    Text="Personal Information" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <Grid Margin="20,10,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
                             <TextBlock
-                                Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                Margin="0 0 0 12"
-                                Text="Personal Information" />
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource DetailLabel}" Text="Date of Birth" />
-                                <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource DetailValue}" 
-                                         Text="{Binding Member.DateOfBirth, StringFormat=d}" />
-
-                                <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource DetailLabel}" Text="Gender" />
-                                <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource DetailValue}" 
-                                         Text="{Binding Member.Gender, Converter={StaticResource EnumDisplayConverter}}" />
-
-                                <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource DetailLabel}" Text="Nationality" />
-                                <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource DetailValue}" 
-                                         Text="{Binding Member.Nationality}" />
-                            </Grid>
-                        </StackPanel>
-                    </materialDesign:Card>
-
-                    <!-- Contact Information Card -->
-                    <materialDesign:Card Margin="0 0 0 16" Padding="16">
-                        <StackPanel>
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="First Name:" />
                             <TextBlock
-                                Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                Margin="0 0 0 12"
-                                Text="Contact Information" />
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource DetailLabel}" Text="Phone Number" />
-                                <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource DetailValue}" 
-                                         Text="{Binding Member.PhoneNumber}" />
-
-                                <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource DetailLabel}" Text="Address" />
-                                <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource DetailValue}" 
-                                         Text="{Binding Member.Address}" TextWrapping="Wrap" />
-
-                                <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource DetailLabel}" Text="Hometown" />
-                                <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource DetailValue}" 
-                                         Text="{Binding Member.Hometown}" />
-                            </Grid>
-                        </StackPanel>
-                    </materialDesign:Card>
-
-                    <!-- Family & Emergency Contacts Card (Fixed Ampersand) -->
-                    <materialDesign:Card Margin="0 0 0 16" Padding="16">
-                        <StackPanel>
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.FirstName}" />
                             <TextBlock
-                                Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                Margin="0 0 0 12"
-                                Text="Family &amp; Emergency Contacts" />
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource DetailLabel}" Text="Marital Status" />
-                                <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource DetailValue}" 
-                                         Text="{Binding Member.MaritalStatus, Converter={StaticResource EnumDisplayConverter}}" />
-
-                                <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource DetailLabel}" Text="Next of Kin" />
-                                <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource DetailValue}" 
-                                         Text="{Binding Member.NextOfKinName}" />
-
-                                <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource DetailLabel}" Text="Kin Contact" />
-                                <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource DetailValue}" 
-                                         Text="{Binding Member.NextOfKinContact}" />
-                            </Grid>
-                        </StackPanel>
-                    </materialDesign:Card>
-
-                    <!-- Additional Information Card -->
-                    <materialDesign:Card Margin="0 0 0 16" Padding="16">
-                        <StackPanel>
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Last Name:" />
                             <TextBlock
-                                Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                Margin="0 0 0 12"
-                                Text="Additional Information" />
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.LastName}" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Other Names:" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.OtherNames}" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Gender:" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.Gender, Converter={StaticResource EnumDisplayConverter}}" />
+                            <TextBlock
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Date of Birth:" />
+                            <TextBlock
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.DateOfBirth, StringFormat=d}" />
+                            <TextBlock
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Nationality:" />
+                            <TextBlock
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.Nationality}" />
+                        </Grid>
+                    </Expander>
 
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
+                    <!--  Contact Information  -->
+                    <Expander Margin="0,0,0,10" IsExpanded="False">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon VerticalAlignment="Center" Kind="Phone" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                    Text="Contact Information" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <Grid Margin="20,10,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Phone Number:" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.PhoneNumber}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Email:" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.Email}" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Address:" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.Address}"
+                                TextWrapping="Wrap" />
+                        </Grid>
+                    </Expander>
 
-                                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource DetailLabel}" Text="Education Level" />
-                                <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource DetailValue}" 
-                                         Text="{Binding Member.EducationalLevel, Converter={StaticResource EnumDisplayConverter}}" />
+                    <!--  Family Details  -->
+                    <Expander Margin="0,0,0,10" IsExpanded="False">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon VerticalAlignment="Center" Kind="AccountGroup" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                    Text="Family Details" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <Grid Margin="20,10,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Marital Status:" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.MaritalStatus, Converter={StaticResource EnumDisplayConverter}}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Family Member in Church:" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.HasFamilyMemberInChurch, Converter={StaticResource BooleanToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Family Member Name:"
+                                Visibility="{Binding Member.HasFamilyMemberInChurch, Converter={StaticResource BoolToVisConverter}}" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.FamilyMemberName}"
+                                Visibility="{Binding Member.HasFamilyMemberInChurch, Converter={StaticResource BoolToVisConverter}}" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Family Member Contact:"
+                                Visibility="{Binding Member.HasFamilyMemberInChurch, Converter={StaticResource BoolToVisConverter}}" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.FamilyMemberContact}"
+                                Visibility="{Binding Member.HasFamilyMemberInChurch, Converter={StaticResource BoolToVisConverter}}" />
+                        </Grid>
+                    </Expander>
 
-                                <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource DetailLabel}" Text="Skills" />
-                                <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource DetailValue}" 
-                                         Text="{Binding Member.Skills}" TextWrapping="Wrap" />
+                    <!--  Next of Kin  -->
+                    <Expander Margin="0,0,0,10" IsExpanded="False">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon VerticalAlignment="Center" Kind="AccountAlert" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                    Text="Next of Kin" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <Grid Margin="20,10,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Name:" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.NextOfKinName}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Contact:" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.NextOfKinContact}" />
+                        </Grid>
+                    </Expander>
 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource DetailLabel}" Text="Baptism Status" />
-                                <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource DetailValue}" 
-                                         Text="{Binding Member.IsBaptized, Converter={StaticResource BooleanToStringConverter}}" />
-                            </Grid>
-                        </StackPanel>
-                    </materialDesign:Card>
+                    <!--  Other Details  -->
+                    <Expander Margin="0,0,0,10" IsExpanded="False">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon VerticalAlignment="Center" Kind="Information" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                    Text="Other Details" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <Grid Margin="20,10,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Education Level:" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.EducationalLevel, Converter={StaticResource EnumDisplayConverter}}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Skills:" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.Skills}"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Hometown:" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.Hometown}" />
+                        </Grid>
+                    </Expander>
+
+                    <!--  Baptism Details  -->
+                    <Expander Margin="0,0,0,10" IsExpanded="False">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon VerticalAlignment="Center" Kind="Water" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                    Text="Baptism Details" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <Grid Margin="20,10,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Is Baptized:" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.IsBaptized, Converter={StaticResource BooleanToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Baptism Date:"
+                                Visibility="{Binding Member.IsBaptized, Converter={StaticResource BoolToVisConverter}}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.BaptismDate, StringFormat=d}"
+                                Visibility="{Binding Member.IsBaptized, Converter={StaticResource BoolToVisConverter}}" />
+                        </Grid>
+                    </Expander>
                 </StackPanel>
             </ScrollViewer>
         </Grid>
