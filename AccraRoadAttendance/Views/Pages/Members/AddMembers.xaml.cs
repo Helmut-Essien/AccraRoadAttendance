@@ -95,7 +95,15 @@ namespace AccraRoadAttendance.Views.Pages.Members
 
         private void UpdateErrors(string propertyName, List<string> errors)
         {
-            _errors[propertyName] = errors;
+            if (errors.Any())
+            {
+                _errors[propertyName] = errors; // Add errors if any
+            }
+            else
+            {
+                _errors.Remove(propertyName); // Remove entry if no errors
+            }
+
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
             OnPropertyChanged(nameof(HasErrors));
         }
@@ -113,10 +121,12 @@ namespace AccraRoadAttendance.Views.Pages.Members
             ValidateEducationLevel();
             ValidateNationality();
             ValidateAddress();
-            ValidateProfilePicture();
+            //ValidateProfilePicture();
             ValidateDateOfBirth();
             ValidateEmail();
             ValidateBaptism();
+            ValidateNextOfKinName();
+            ValidateNextOfKinContact();
             ValidateFamilyMember();
         }
 
@@ -203,20 +213,38 @@ namespace AccraRoadAttendance.Views.Pages.Members
             UpdateErrors(nameof(Address), errors);
         }
 
-        private void ValidateProfilePicture()
-        {
-            var errors = new List<string>();
-            if (string.IsNullOrEmpty(SelectedPicturePath))
-                errors.Add("Profile Picture is required.");
-            UpdateErrors(nameof(SelectedPicturePath), errors);
-        }
+        //private void ValidateProfilePicture()
+        //{
+        //    var errors = new List<string>();
+        //    if (string.IsNullOrEmpty(SelectedPicturePath))
+        //        errors.Add("Profile Picture is required.");
+        //    UpdateErrors(nameof(SelectedPicturePath), errors);
+        //}
 
         private void ValidateDateOfBirth()
         {
             var errors = new List<string>();
-            if (DateOfBirth == null || DateOfBirth > DateTime.Today)
-                errors.Add("Date of Birth must be a valid past date.");
+            if (DateOfBirth == null)
+                errors.Add("Date of Birth is required");
+            else if (DateOfBirth > DateTime.Today)
+                errors.Add("Date of Birth must be a valid past date."); 
             UpdateErrors(nameof(DateOfBirth), errors);
+        }
+
+        private void ValidateNextOfKinName()
+        {
+            var errors = new List<string>();
+            if (string.IsNullOrWhiteSpace(NextOfKinName))
+                errors.Add("Next of Kin Name is required.");
+            UpdateErrors(nameof(NextOfKinName), errors);
+        }
+
+        private void ValidateNextOfKinContact()
+        {
+            var errors = new List<string>();
+            if (string.IsNullOrWhiteSpace(NextOfKinContact))
+                errors.Add("Next of Kin Contact is required.");
+            UpdateErrors(nameof(NextOfKinContact), errors);
         }
 
         private void ValidateBaptism()
@@ -224,6 +252,8 @@ namespace AccraRoadAttendance.Views.Pages.Members
             var errors = new List<string>();
             if (IsBaptized && BaptismDate == null)
                 errors.Add("Baptism Date is required if marked as baptized.");
+            else if (IsBaptized && BaptismDate > DateTime.Today)
+                errors.Add("Date of Baptism must be a valid past date.");
             UpdateErrors(nameof(BaptismDate), errors);
         }
 
@@ -487,6 +517,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
+
         // 19. Hometown
         private string _hometown;
         public string Hometown
@@ -509,6 +540,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
             {
                 if (_nextOfKinName == value) return;
                 _nextOfKinName = value;
+                ValidateNextOfKinName();
                 OnPropertyChanged(nameof(NextOfKinName));
             }
         }
@@ -522,6 +554,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
             {
                 if (_nextOfKinContact == value) return;
                 _nextOfKinContact = value;
+                ValidateNextOfKinContact();
                 OnPropertyChanged(nameof(NextOfKinContact));
             }
         }
@@ -534,7 +567,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
             set
             {
                 _selectedPicturePath = value;
-                ValidateProfilePicture();
+                //ValidateProfilePicture();
                 OnPropertyChanged(nameof(SelectedPicturePath));
             }
         }
@@ -761,6 +794,8 @@ namespace AccraRoadAttendance.Views.Pages.Members
         {
             try
             {
+                // Trigger all validations
+                ValidateAll();
                 // Validate inputs
                 //if (string.IsNullOrWhiteSpace(FirstName) ||
                 //    string.IsNullOrWhiteSpace(LastName) ||
@@ -808,24 +843,31 @@ namespace AccraRoadAttendance.Views.Pages.Members
 
                 };
 
-                // Generate filename
-                string fileName = SanitizeFilename(newMember.FullName) + Path.GetExtension(SelectedPicturePath);
-                string folderPath = Path.Combine(AppContext.BaseDirectory, "ProfilePictures");
-                Directory.CreateDirectory(folderPath);
-                string newFilePath = Path.Combine(folderPath, fileName);
-
-                // Copy the selected image to the new filename
+                // Process the profile picture **only if a file is selected**
                 if (!string.IsNullOrEmpty(SelectedPicturePath))
                 {
-                    File.Copy(SelectedPicturePath, newFilePath, true);
-                }
+                    // Generate filename
+                    string fileName = SanitizeFilename(newMember.FullName) + Path.GetExtension(SelectedPicturePath);
+                    string folderPath = Path.Combine(AppContext.BaseDirectory, "ProfilePictures");
+                    Directory.CreateDirectory(folderPath);
+                    string newFilePath = Path.Combine(folderPath, fileName);
 
-                // Update PicturePath to the new filename path
-                newMember.PicturePath = newFilePath;
+                    // Copy the selected image
+                    File.Copy(SelectedPicturePath, newFilePath, true);
+
+                    // Update PicturePath
+                    newMember.PicturePath = newFilePath;
+                }
+                else
+                {
+                    // Set to null or a default value if no image is selected
+                    newMember.PicturePath = null; // Or a default image path
+                }
 
                 // Save to database
                 _context.Members.Add(newMember);
                 await _context.SaveChangesAsync();
+
 
                 MessageBox.Show("Member saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 

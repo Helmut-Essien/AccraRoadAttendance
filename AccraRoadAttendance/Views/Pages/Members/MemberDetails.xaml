@@ -108,7 +108,7 @@
                     <TextBlock
                         Foreground="{DynamicResource MaterialDesignBodyLight}"
                         Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                        Text="{Binding Member.OccupationType, Converter={StaticResource EnumDisplayConverter}}" />
+                        Text="{Binding Member.occupationType, Converter={StaticResource EnumDisplayConverter}}" />
                     <TextBlock
                         Foreground="{DynamicResource MaterialDesignBodyLight}"
                         Style="{StaticResource MaterialDesignBody1TextBlock}"
@@ -187,7 +187,7 @@
                                 Grid.Column="1"
                                 Margin="10,0,0,0"
                                 Style="{StaticResource DetailValue}"
-                                Text="{Binding Member.Gender, Converter={StaticResource EnumDisplayConverter}}" />
+                                Text="{Binding Member.Sex, Converter={StaticResource EnumDisplayConverter}}" />
                             <TextBlock
                                 Grid.Row="4"
                                 Grid.Column="0"
@@ -305,7 +305,7 @@
                                 Grid.Column="1"
                                 Margin="10,0,0,0"
                                 Style="{StaticResource DetailValue}"
-                                Text="{Binding Member.MaritalStatus, Converter={StaticResource EnumDisplayConverter}}" />
+                                Text="{Binding Member.maritalStatus, Converter={StaticResource EnumDisplayConverter}}" />
                             <TextBlock
                                 Grid.Row="1"
                                 Grid.Column="0"
@@ -424,7 +424,7 @@
                                 Grid.Column="1"
                                 Margin="10,0,0,0"
                                 Style="{StaticResource DetailValue}"
-                                Text="{Binding Member.EducationalLevel, Converter={StaticResource EnumDisplayConverter}}" />
+                                Text="{Binding Member.educationalLevel, Converter={StaticResource EnumDisplayConverter}}" />
                             <TextBlock
                                 Grid.Row="1"
                                 Grid.Column="0"

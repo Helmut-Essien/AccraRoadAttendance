@@ -89,16 +89,22 @@ namespace AccraRoadAttendance.Models
         // Enums
         public enum Gender
         {
+            [Display(Name = "Male")]
             Male,
+            [Display(Name = "Female")]
             Female,
            
         }
 
         public enum MaritalStatus
         {
+            [Display(Name = "Married")]
             Married,
+            [Display(Name = "Single")]
             Single,
+            [Display(Name = "Widowed")]
             Widowed,
+            [Display(Name = "Divorced")]
             Divorced
         }
 
