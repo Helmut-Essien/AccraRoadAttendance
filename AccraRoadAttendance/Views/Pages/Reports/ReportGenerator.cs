@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.ExtendedProperties;
+﻿using AccraRoadAttendance.Models;
+using DocumentFormat.OpenXml.ExtendedProperties;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
@@ -500,6 +501,219 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                 var row = table.AddRow();
                 row.Cells[0].AddParagraph(record.FullName.ToString());
                 row.Cells[1].AddParagraph($"{record.AttendancePercentage:F2}%");
+            }
+        }
+
+
+
+
+        //Method to print member profile details
+        public void GenerateMemberDetailsReport(Member member, string filePath)
+        {
+            _document = new Document();
+            _section = _document.AddSection();
+
+            // Same margins as other reports
+            _section.PageSetup.TopMargin = "5.2cm";
+            _section.PageSetup.HeaderDistance = "1cm";
+            _section.PageSetup.LeftMargin = "1cm";
+            _section.PageSetup.RightMargin = "1cm";
+
+            AddHeader();
+            AddMemberDetailsContent(member);
+            AddFooter();
+            RenderAndSavePdf(filePath);
+        }
+
+        //    private void AddMemberDetailsContent(Member member)
+        //    {
+        //        // Report Title
+        //        var title = _section.AddParagraph("MEMBER DETAILS REPORT");
+        //        title.Format.Font.Size = 14;
+        //        title.Format.Font.Bold = true;
+        //        title.Format.Alignment = ParagraphAlignment.Center;
+        //        title.Format.SpaceAfter = "1cm";
+
+        //        // Profile Section
+        //        var profileTable = _section.AddTable();
+        //        profileTable.AddColumn("4cm");  // Photo column
+        //        profileTable.AddColumn("12cm"); // Details column
+
+        //        var row = profileTable.AddRow();
+
+        //        // Profile Photo Cell
+        //        var photoCell = row.Cells[0];
+        //        if (!string.IsNullOrEmpty(member.PicturePath))
+        //        {
+        //            try
+        //            {
+        //                var image = photoCell.AddImage(member.PicturePath);
+        //                image.Height = "3.5cm";
+        //                image.Width = "3.5cm";
+        //            }
+        //            catch
+        //            {
+        //                photoCell.AddParagraph("No Photo Available");
+        //            }
+        //        }
+
+        //        // Profile Details Cell
+        //        var detailsCell = row.Cells[1];
+        //        detailsCell.AddParagraph(member.FullName.ToUpper())
+        //                  .Format.Font.Size = 16;
+
+        //        detailsCell.AddParagraph($"Occupation: {member.occupationType.GetDisplayName()}")
+        //                  .Format.Font.Italic = true;
+
+        //        detailsCell.AddParagraph($"Membership Date: {member.MembershipStartDate:dd-MMM-yyyy}")
+        //                  .Format.SpaceAfter = "0.5cm";
+
+        //        // Add Sections similar to your XAML structure
+        //        AddDetailsSection("Personal Information", new Dictionary<string, string>
+        //{
+        //    { "First Name", member.FirstName },
+        //    { "Last Name", member.LastName },
+        //    { "Gender", member.Sex.GetDisplayName() },
+        //    { "Date of Birth", member.DateOfBirth.ToString() },
+        //    { "Nationality", member.Nationality }
+        //});
+
+        //        AddDetailsSection("Contact Information", new Dictionary<string, string>
+        //{
+        //    { "Phone Number", member.PhoneNumber },
+        //    { "Email", member.Email },
+        //    { "Address", member.Address }
+        //});
+
+        //        // Add other sections following the same pattern...
+        //    }
+
+        //    private void AddDetailsSection(string sectionTitle, Dictionary<string, string> details)
+        //    {
+        //        // Create the section title paragraph
+        //        var titleParagraph = _section.AddParagraph(sectionTitle);
+        //        titleParagraph.Format.Font.Bold = true;
+        //        titleParagraph.Format.SpaceBefore = "0.5cm";
+        //        titleParagraph.Format.SpaceAfter = "0.2cm";
+
+        //        var table = _section.AddTable();
+        //        table.AddColumn("5cm"); // Field names
+        //        table.AddColumn("11cm"); // Values
+
+        //        foreach (var detail in details)
+        //        {
+        //            var row = table.AddRow();
+        //            row.Cells[0].AddParagraph(detail.Key + ":")
+        //                       .Format.Font.Bold = true;
+        //            row.Cells[1].AddParagraph(detail.Value ?? "N/A");
+        //        }
+        //    }
+
+        private void AddMemberDetailsContent(Member member)
+        {
+            Paragraph title = _section.AddParagraph("MEMBER DETAILS REPORT");
+            title.Format.Font.Size = 16;
+            title.Format.Font.Bold = true;
+            title.Format.Alignment = ParagraphAlignment.Center;
+            title.Format.SpaceAfter = Unit.FromCentimeter(0.8);
+
+            // Profile header: photo and basic info
+            Table profileTable = _section.AddTable();
+            profileTable.AddColumn("4cm");
+            profileTable.AddColumn("12cm");
+            Row profileRow = profileTable.AddRow();
+            if (!string.IsNullOrEmpty(member.PicturePath))
+            {
+                try
+                {
+                    var image = profileRow.Cells[0].AddImage(member.PicturePath);
+                    image.Height = Unit.FromCentimeter(4);
+                    image.Width = Unit.FromCentimeter(4);
+                }
+                catch
+                {
+                    profileRow.Cells[0].AddParagraph("No Photo Available");
+                }
+            }
+            else
+            {
+                profileRow.Cells[0].AddParagraph("No Photo Available");
+            }
+            Paragraph basicInfo = profileRow.Cells[1].AddParagraph();
+            basicInfo.AddFormattedText(member.FullName.ToUpper(), TextFormat.Bold);
+            basicInfo.Format.Font.Size = 20;
+            basicInfo.Format.SpaceAfter = Unit.FromCentimeter(0.3);
+            profileRow.Cells[1].AddParagraph($"Occupation: {member.occupationType.GetDisplayName()}");
+            profileRow.Cells[1].AddParagraph($"Email: {member.Email}");
+            profileRow.Cells[1].AddParagraph($"Member Since: {member.MembershipStartDate:dd-MMM-yyyy}");
+            profileRow.Cells[1].AddParagraph();
+
+            // Personal Information Section
+            AddDetailsSection("Personal Information", new Dictionary<string, string>
+            {
+                {"First Name", member.FirstName},
+                {"Last Name", member.LastName},
+                {"Other Names", member.OtherNames},
+                {"Gender", member.Sex.GetDisplayName()},
+                {"Date of Birth", member.DateOfBirth.HasValue ? member.DateOfBirth.Value.ToString("dd-MMM-yyyy") : "N/A"},
+                {"Nationality", member.Nationality}
+            });
+
+            // Contact Information Section
+            AddDetailsSection("Contact Information", new Dictionary<string, string>
+            {
+                {"Phone Number", member.PhoneNumber},
+                {"Email", member.Email},
+                {"Address", member.Address}
+            });
+
+            // Family Details Section
+            AddDetailsSection("Family Details", new Dictionary<string, string>
+            {
+                {"Marital Status", member.maritalStatus.GetDisplayName()},
+                {"Family Member in Church", member.HasFamilyMemberInChurch ? "Yes" : "No"},
+                {"Family Member Name", member.HasFamilyMemberInChurch ? member.FamilyMemberName : "N/A"},
+                {"Family Member Contact", member.HasFamilyMemberInChurch ? member.FamilyMemberContact : "N/A"}
+            });
+
+            // Next of Kin Section
+            AddDetailsSection("Next of Kin", new Dictionary<string, string>
+            {
+                {"Name", member.NextOfKinName},
+                {"Contact", member.NextOfKinContact}
+            });
+
+            // Other Details Section
+            AddDetailsSection("Other Details", new Dictionary<string, string>
+            {
+                {"Education Level", member.educationalLevel.GetDisplayName()},
+                {"Skills", member.Skills},
+                {"Hometown", member.Hometown}
+            });
+
+            // Baptism Details Section
+            AddDetailsSection("Baptism Details", new Dictionary<string, string>
+            {
+                {"Is Baptized", member.IsBaptized ? "Yes" : "No"},
+                {"Baptism Date", member.IsBaptized ? member.BaptismDate.HasValue ? member.BaptismDate.Value.ToString("dd-MMM-yyyy") : "N/A" : "N/A"}
+            });
+        }
+
+        private void AddDetailsSection(string sectionTitle, Dictionary<string, string> details)
+        {
+            Paragraph sectionHeader = _section.AddParagraph(sectionTitle);
+            sectionHeader.Format.Font.Bold = true;
+            sectionHeader.Format.SpaceBefore = Unit.FromCentimeter(0.5);
+            sectionHeader.Format.SpaceAfter = Unit.FromCentimeter(0.2);
+            Table detailsTable = _section.AddTable();
+            detailsTable.AddColumn("5cm");
+            detailsTable.AddColumn("11cm");
+            foreach (var detail in details)
+            {
+                Row row = detailsTable.AddRow();
+                Paragraph keyPara = row.Cells[0].AddParagraph(detail.Key + ":");
+                keyPara.Format.Font.Bold = true;
+                row.Cells[1].AddParagraph(detail.Value ?? "N/A");
             }
         }
     }

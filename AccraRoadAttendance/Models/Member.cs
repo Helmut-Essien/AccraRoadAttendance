@@ -57,6 +57,9 @@ namespace AccraRoadAttendance.Models
         [Display(Name = "Is Baptized")]
         public bool IsBaptized { get; set; }
 
+        //[Display(Name = "Place of baptism")]
+        //public string? PlaceOfBaptism { get; set; }
+
         [Column(TypeName = "date")]
         public DateTime? BaptismDate { get; set; }
 

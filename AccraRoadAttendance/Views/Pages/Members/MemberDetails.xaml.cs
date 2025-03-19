@@ -1,5 +1,7 @@
 ﻿using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Services;
+using AccraRoadAttendance.Views.Pages.Reports;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +49,35 @@ namespace AccraRoadAttendance.Views.Pages.Members
         {
             InitializeComponent();
             DataContext = this; // Bind to the UserControl itself
+        }
+
+        private void PrintToPdf_Click(object sender, RoutedEventArgs e)
+        {
+            if (Member == null)
+            {
+                MessageBox.Show("No member data to print.");
+                return;
+            }
+
+            var saveFileDialog = new SaveFileDialog
+            {
+                Filter = "PDF files (*.pdf)|*.pdf",
+                FileName = $"{Member.FullName}_Details_{DateTime.Now:yyyyMMdd}.pdf"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var generator = new ReportGenerator();
+                    generator.GenerateMemberDetailsReport(Member, saveFileDialog.FileName);
+                    MessageBox.Show($"PDF saved to {saveFileDialog.FileName}");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error generating PDF: {ex.Message}");
+                }
+            }
         }
     }
 }

@@ -37,6 +37,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!--  Profile Header  -->
@@ -500,6 +501,13 @@
                     </Expander>
                 </StackPanel>
             </ScrollViewer>
+            <Button
+                Grid.Row="2"
+                Margin="16"
+                HorizontalAlignment="Right"
+                Click="PrintToPdf_Click"
+                Content="Print to PDF"
+                Style="{StaticResource MaterialDesignRaisedButton}" />
         </Grid>
     </materialDesign:Card>
 </UserControl>
