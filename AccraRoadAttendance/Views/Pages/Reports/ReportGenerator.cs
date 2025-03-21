@@ -1,12 +1,14 @@
 ﻿using AccraRoadAttendance.Models;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using MigraDoc.DocumentObjectModel;
+using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment;
 
 namespace AccraRoadAttendance.Views.Pages.Reports
 {
@@ -23,7 +25,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             //_document.DefaultPageSetup.RightMargin = "2cm";
             _section = _document.AddSection();
             // Set page margins on the section's PageSetup instead of modifying DefaultPageSetup
-            _section.PageSetup.TopMargin = "5.2cm";
+            _section.PageSetup.TopMargin = "5.7cm";
             _section.PageSetup.HeaderDistance = "1cm";
             _section.PageSetup.LeftMargin = "1cm";
             _section.PageSetup.RightMargin = "1cm";
@@ -38,8 +40,8 @@ namespace AccraRoadAttendance.Views.Pages.Reports
 
         private void AddReportContent(string reportType, DateTime startDate, DateTime endDate, object data, string memberName)
         {
-        
-            
+
+
             // Add report title
             var title = _section.AddParagraph(reportType);
             title.Format.Font.Size = 14;
@@ -67,11 +69,11 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             else if (reportType == "Service Type Report")
             {
                 var service = "";
-                foreach (var record in (IEnumerable<dynamic>)data) 
+                foreach (var record in (IEnumerable<dynamic>)data)
                 {
                     service = record.ServiceType.ToString();
                 }
-                 var dateRange = _section.AddParagraph($"This is the attendance history of the Church on {service.ToUpper()} from {startDate.ToString("dd-MMM-yyyy").ToUpper()} to {endDate.ToString("dd-MMM-yyyy").ToUpper()}");
+                var dateRange = _section.AddParagraph($"This is the attendance history of the Church on {service.ToUpper()} from {startDate.ToString("dd-MMM-yyyy").ToUpper()} to {endDate.ToString("dd-MMM-yyyy").ToUpper()}");
                 dateRange.Format.Font.Size = 12;
                 dateRange.Format.Alignment = ParagraphAlignment.Left;
                 dateRange.Format.SpaceAfter = "1cm";
@@ -201,9 +203,9 @@ namespace AccraRoadAttendance.Views.Pages.Reports
 
 
             // Add simulated document classification
-            var classificationBar = _section.AddParagraph();
+            var classificationBar = _section.Headers.Primary.AddParagraph();
             classificationBar.Format.Shading.Color = Colors.Black;
-            //classificationBar.Format.SpaceBefore = "0.01cm";
+            classificationBar.Format.SpaceBefore = "0.3cm";
             classificationBar.Format.SpaceAfter = "0.3cm"; // Removed the invalid 'Height' property
 
         }
@@ -230,8 +232,8 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             bibleVerse.Format.Font.Size = 10;
             bibleVerse.Format.Font.Italic = true;
             bibleVerse.Format.Alignment = ParagraphAlignment.Left;
-            
-              // Text container
+
+            // Text container
             var pageCell = footRow.Cells[1].AddParagraph();
             pageCell.AddText("Page ");
             pageCell.AddPageField();
@@ -239,7 +241,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             pageCell.AddNumPagesField();
             pageCell.Format.Alignment = ParagraphAlignment.Right;
 
-            
+
         }
 
         private void RenderAndSavePdf(string filePath)
@@ -299,7 +301,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                 // Convert dates to classified format
                 var dateCell = row.Cells[0];
                 dateCell.AddParagraph(record.ServiceDate.ToString("dd-MMM-yyyy").ToUpper());
-                
+
                 row.Cells[1].AddParagraph(record.ServiceType.ToString());
                 row.Cells[2].AddParagraph(record.Status.ToString());
                 row.Cells[3].AddParagraph(record.Notes?.ToString() ?? "");
@@ -514,7 +516,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             _section = _document.AddSection();
 
             // Same margins as other reports
-            _section.PageSetup.TopMargin = "5.2cm";
+            _section.PageSetup.TopMargin = "5.7cm";
             _section.PageSetup.HeaderDistance = "1cm";
             _section.PageSetup.LeftMargin = "1cm";
             _section.PageSetup.RightMargin = "1cm";
@@ -525,196 +527,183 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             RenderAndSavePdf(filePath);
         }
 
-        //    private void AddMemberDetailsContent(Member member)
-        //    {
-        //        // Report Title
-        //        var title = _section.AddParagraph("MEMBER DETAILS REPORT");
-        //        title.Format.Font.Size = 14;
-        //        title.Format.Font.Bold = true;
-        //        title.Format.Alignment = ParagraphAlignment.Center;
-        //        title.Format.SpaceAfter = "1cm";
 
-        //        // Profile Section
-        //        var profileTable = _section.AddTable();
-        //        profileTable.AddColumn("4cm");  // Photo column
-        //        profileTable.AddColumn("12cm"); // Details column
-
-        //        var row = profileTable.AddRow();
-
-        //        // Profile Photo Cell
-        //        var photoCell = row.Cells[0];
-        //        if (!string.IsNullOrEmpty(member.PicturePath))
-        //        {
-        //            try
-        //            {
-        //                var image = photoCell.AddImage(member.PicturePath);
-        //                image.Height = "3.5cm";
-        //                image.Width = "3.5cm";
-        //            }
-        //            catch
-        //            {
-        //                photoCell.AddParagraph("No Photo Available");
-        //            }
-        //        }
-
-        //        // Profile Details Cell
-        //        var detailsCell = row.Cells[1];
-        //        detailsCell.AddParagraph(member.FullName.ToUpper())
-        //                  .Format.Font.Size = 16;
-
-        //        detailsCell.AddParagraph($"Occupation: {member.occupationType.GetDisplayName()}")
-        //                  .Format.Font.Italic = true;
-
-        //        detailsCell.AddParagraph($"Membership Date: {member.MembershipStartDate:dd-MMM-yyyy}")
-        //                  .Format.SpaceAfter = "0.5cm";
-
-        //        // Add Sections similar to your XAML structure
-        //        AddDetailsSection("Personal Information", new Dictionary<string, string>
-        //{
-        //    { "First Name", member.FirstName },
-        //    { "Last Name", member.LastName },
-        //    { "Gender", member.Sex.GetDisplayName() },
-        //    { "Date of Birth", member.DateOfBirth.ToString() },
-        //    { "Nationality", member.Nationality }
-        //});
-
-        //        AddDetailsSection("Contact Information", new Dictionary<string, string>
-        //{
-        //    { "Phone Number", member.PhoneNumber },
-        //    { "Email", member.Email },
-        //    { "Address", member.Address }
-        //});
-
-        //        // Add other sections following the same pattern...
-        //    }
-
-        //    private void AddDetailsSection(string sectionTitle, Dictionary<string, string> details)
-        //    {
-        //        // Create the section title paragraph
-        //        var titleParagraph = _section.AddParagraph(sectionTitle);
-        //        titleParagraph.Format.Font.Bold = true;
-        //        titleParagraph.Format.SpaceBefore = "0.5cm";
-        //        titleParagraph.Format.SpaceAfter = "0.2cm";
-
-        //        var table = _section.AddTable();
-        //        table.AddColumn("5cm"); // Field names
-        //        table.AddColumn("11cm"); // Values
-
-        //        foreach (var detail in details)
-        //        {
-        //            var row = table.AddRow();
-        //            row.Cells[0].AddParagraph(detail.Key + ":")
-        //                       .Format.Font.Bold = true;
-        //            row.Cells[1].AddParagraph(detail.Value ?? "N/A");
-        //        }
-        //    }
 
         private void AddMemberDetailsContent(Member member)
         {
-            Paragraph title = _section.AddParagraph("MEMBER DETAILS REPORT");
-            title.Format.Font.Size = 16;
-            title.Format.Font.Bold = true;
-            title.Format.Alignment = ParagraphAlignment.Center;
-            title.Format.SpaceAfter = Unit.FromCentimeter(0.8);
+            // Add member name
+            var nameParagraph = _section.AddParagraph(member.FullName.ToUpper());
+            nameParagraph.Format.Font.Name = "Arial";
+            nameParagraph.Format.Font.Size = 18;
+            nameParagraph.Format.Font.Bold = true;
+            nameParagraph.Format.Alignment = ParagraphAlignment.Center;
+            nameParagraph.Format.SpaceAfter = "0.5cm";
 
-            // Profile header: photo and basic info
-            Table profileTable = _section.AddTable();
-            profileTable.AddColumn("4cm");
-            profileTable.AddColumn("12cm");
-            Row profileRow = profileTable.AddRow();
-            if (!string.IsNullOrEmpty(member.PicturePath))
+            // Add photo
+            if (!string.IsNullOrEmpty(member.PicturePath) && File.Exists(member.PicturePath))
             {
                 try
                 {
-                    var image = profileRow.Cells[0].AddImage(member.PicturePath);
-                    image.Height = Unit.FromCentimeter(4);
-                    image.Width = Unit.FromCentimeter(4);
+                    var image = _section.AddImage(member.PicturePath);
+                    image.Height = "4cm";
+                    image.Width = "4cm";
+                    image.LockAspectRatio = true;
+                    image.RelativeHorizontal = RelativeHorizontal.Page;
+                    image.Left = ShapePosition.Center;
+                    image.Top = "0.5cm";
+                    //image.Format.SpaceAfter = "0.5cm";
                 }
                 catch
                 {
-                    profileRow.Cells[0].AddParagraph("No Photo Available");
+                    var noPhoto = _section.AddParagraph("No Photo Available");
+                    noPhoto.Format.Font.Name = "Arial";
+                    noPhoto.Format.Font.Size = 10;
+                    noPhoto.Format.Alignment = ParagraphAlignment.Center;
+                    noPhoto.Format.SpaceAfter = "0.5cm";
                 }
             }
             else
             {
-                profileRow.Cells[0].AddParagraph("No Photo Available");
+                var noPhoto = _section.AddParagraph("No Photo Available");
+                noPhoto.Format.Font.Name = "Arial";
+                noPhoto.Format.Font.Size = 10;
+                noPhoto.Format.Alignment = ParagraphAlignment.Center;
+                noPhoto.Format.SpaceAfter = "0.5cm";
             }
-            Paragraph basicInfo = profileRow.Cells[1].AddParagraph();
-            basicInfo.AddFormattedText(member.FullName.ToUpper(), TextFormat.Bold);
-            basicInfo.Format.Font.Size = 20;
-            basicInfo.Format.SpaceAfter = Unit.FromCentimeter(0.3);
-            profileRow.Cells[1].AddParagraph($"Occupation: {member.occupationType.GetDisplayName()}");
-            profileRow.Cells[1].AddParagraph($"Email: {member.Email}");
-            profileRow.Cells[1].AddParagraph($"Member Since: {member.MembershipStartDate:dd-MMM-yyyy}");
-            profileRow.Cells[1].AddParagraph();
 
-            // Personal Information Section
-            AddDetailsSection("Personal Information", new Dictionary<string, string>
-            {
-                {"First Name", member.FirstName},
-                {"Last Name", member.LastName},
-                {"Other Names", member.OtherNames},
-                {"Gender", member.Sex.GetDisplayName()},
-                {"Date of Birth", member.DateOfBirth.HasValue ? member.DateOfBirth.Value.ToString("dd-MMM-yyyy") : "N/A"},
-                {"Nationality", member.Nationality}
-            });
+            // Add summary line
+            var summary = _section.AddParagraph();
+            summary.AddText($"Member since {member.MembershipStartDate:dd-MMM-yyyy}, {(member.IsActive ? "Active" : "Inactive")}");
+            if (member.IsBaptized)
+                summary.AddText($", Baptized on {member.BaptismDate?.ToString("dd-MMM-yyyy") ?? "N/A"}");
+            else
+                summary.AddText(", Not Baptized");
+            summary.Format.Font.Name = "Arial";
+            summary.Format.Font.Size = 10;
+            summary.Format.Font.Italic = true;
+            summary.Format.Alignment = ParagraphAlignment.Center;
+            summary.Format.SpaceAfter = "1cm";
 
-            // Contact Information Section
-            AddDetailsSection("Contact Information", new Dictionary<string, string>
-            {
-                {"Phone Number", member.PhoneNumber},
-                {"Email", member.Email},
-                {"Address", member.Address}
-            });
+            // Add sections with bullet points and lines
+            AddCardSection("PERSONAL INFO", new Dictionary<string, string>
+    {
+        {"Full Name", member.FullName},
+        {"Gender", member.Sex.ToString()},
+        {"Date of Birth", member.DateOfBirth?.ToString("dd-MMM-yyyy") ?? "N/A"},
+        {"Nationality", member.Nationality ?? "N/A"}
+    });
 
-            // Family Details Section
-            AddDetailsSection("Family Details", new Dictionary<string, string>
-            {
-                {"Marital Status", member.maritalStatus.GetDisplayName()},
-                {"Family Member in Church", member.HasFamilyMemberInChurch ? "Yes" : "No"},
-                {"Family Member Name", member.HasFamilyMemberInChurch ? member.FamilyMemberName : "N/A"},
-                {"Family Member Contact", member.HasFamilyMemberInChurch ? member.FamilyMemberContact : "N/A"}
-            });
+            AddHorizontalLine();
 
-            // Next of Kin Section
-            AddDetailsSection("Next of Kin", new Dictionary<string, string>
-            {
-                {"Name", member.NextOfKinName},
-                {"Contact", member.NextOfKinContact}
-            });
+            AddCardSection("CONTACT INFO", new Dictionary<string, string>
+    {
+        {"Phone Number", member.PhoneNumber ?? "N/A"},
+        {"Email Address", member.Email ?? "N/A"},
+        {"Physical Address", member.Address ?? "N/A"}
+    });
 
-            // Other Details Section
-            AddDetailsSection("Other Details", new Dictionary<string, string>
-            {
-                {"Education Level", member.educationalLevel.GetDisplayName()},
-                {"Skills", member.Skills},
-                {"Hometown", member.Hometown}
-            });
+            AddHorizontalLine();
 
-            // Baptism Details Section
-            AddDetailsSection("Baptism Details", new Dictionary<string, string>
-            {
-                {"Is Baptized", member.IsBaptized ? "Yes" : "No"},
-                {"Baptism Date", member.IsBaptized ? member.BaptismDate.HasValue ? member.BaptismDate.Value.ToString("dd-MMM-yyyy") : "N/A" : "N/A"}
-            });
+            AddCardSection("MEMBERSHIP INFO", new Dictionary<string, string>
+    {
+        {"Membership Status", member.IsActive ? "Active" : "Inactive"},
+        {"Member Since", member.MembershipStartDate.ToString("dd-MMM-yyyy")},
+        {"Baptism Status", member.IsBaptized ? "Baptized" : "Not Baptized"},
+        {"Baptism Date", member.IsBaptized ? (member.BaptismDate?.ToString("dd-MMM-yyyy") ?? "N/A") : "N/A"}
+    });
+
+            AddHorizontalLine();
+
+            AddCardSection("FAMILY INFO", new Dictionary<string, string>
+    {
+        {"Marital Status", member.maritalStatus.ToString()},
+        {"Family Member in Church", member.HasFamilyMemberInChurch ? "Yes" : "No"},
+        {"Family Member Name", member.HasFamilyMemberInChurch ? (member.FamilyMemberName ?? "N/A") : "N/A"},
+        {"Family Member Contact", member.HasFamilyMemberInChurch ? (member.FamilyMemberContact ?? "N/A") : "N/A"}
+    });
+
+            AddHorizontalLine();
+
+            AddCardSection("OTHER INFO", new Dictionary<string, string>
+    {
+        {"Occupation", member.occupationType.ToString()},
+        {"Education Level", member.educationalLevel?.ToString() ?? "N/A"},
+        {"Skills", member.Skills ?? "N/A"},
+        {"Hometown", member.Hometown ?? "N/A"}
+    });
+
+            AddHorizontalLine();
+
+            AddCardSection("EMERGENCY CONTACT", new Dictionary<string, string>
+    {
+        {"Next of Kin Name", member.NextOfKinName ?? "N/A"},
+        {"Next of Kin Contact", member.NextOfKinContact ?? "N/A"}
+    });
         }
 
-        private void AddDetailsSection(string sectionTitle, Dictionary<string, string> details)
+        private void AddFormalSection(string sectionTitle, Dictionary<string, string> details)
         {
-            Paragraph sectionHeader = _section.AddParagraph(sectionTitle);
+            // Section header
+            var sectionHeader = _section.AddParagraph(sectionTitle.ToUpper());
+            sectionHeader.Format.Font.Name = "Arial";
+            sectionHeader.Format.Font.Size = 12;
             sectionHeader.Format.Font.Bold = true;
-            sectionHeader.Format.SpaceBefore = Unit.FromCentimeter(0.5);
-            sectionHeader.Format.SpaceAfter = Unit.FromCentimeter(0.2);
-            Table detailsTable = _section.AddTable();
-            detailsTable.AddColumn("5cm");
-            detailsTable.AddColumn("11cm");
+            sectionHeader.Format.Font.Color = Colors.Blue; // Professional blue for headings
+            sectionHeader.Format.SpaceBefore = Unit.FromCentimeter(0.8);
+            sectionHeader.Format.SpaceAfter = Unit.FromCentimeter(0.3);
+
+            // Details table
+            var detailTable = _section.AddTable();
+            detailTable.Borders.Width = 0.5;
+            detailTable.AddColumn(Unit.FromCentimeter(4)); // Label column
+            detailTable.AddColumn(Unit.FromCentimeter(12)); // Value column
+
             foreach (var detail in details)
             {
-                Row row = detailsTable.AddRow();
-                Paragraph keyPara = row.Cells[0].AddParagraph(detail.Key + ":");
-                keyPara.Format.Font.Bold = true;
+                var row = detailTable.AddRow();
+                row.Format.Font.Name = "Arial";
+                row.Format.Font.Size = 10;
+
+                var keyParagraph = row.Cells[0].AddParagraph(detail.Key + ":");
+                keyParagraph.Format.Font.Bold = true;
+
                 row.Cells[1].AddParagraph(detail.Value ?? "N/A");
             }
         }
+
+        private void AddCardSection(string title, Dictionary<string, string> details)
+        {
+            // Add section title
+            var titleParagraph = _section.AddParagraph(title);
+            titleParagraph.Format.Font.Name = "Arial";
+            titleParagraph.Format.Font.Size = 12;
+            titleParagraph.Format.Font.Bold = true;
+            titleParagraph.Format.Font.Color = _blueColor; // Matches header/footer
+            titleParagraph.Format.SpaceBefore = "0.5cm";
+            titleParagraph.Format.SpaceAfter = "0.3cm";
+
+            // Add bullet-pointed details
+            foreach (var detail in details)
+            {
+                var p = _section.AddParagraph();
+                p.AddText("• "); // Bullet point
+                p.AddFormattedText($"{detail.Key}: ", TextFormat.Bold);
+                p.AddText(detail.Value ?? "N/A");
+                p.Format.Font.Name = "Arial";
+                p.Format.Font.Size = 10;
+                p.Format.SpaceAfter = "0.2cm";
+            }
+        }
+
+        private void AddHorizontalLine()
+        {
+            var line = _section.AddParagraph();
+            line.Format.Borders.Bottom.Width = "0.5pt";
+            line.Format.Borders.Bottom.Color = Colors.Black;
+            line.Format.SpaceBefore = "0.5cm";
+            line.Format.SpaceAfter = "0.5cm";
+        }
     }
 }
+        
+    

@@ -91,6 +91,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private void InitializeVisibility()
         {
             BaptismDatePicker.Visibility = Visibility.Collapsed;
+            BaptismPlaceTextBox.Visibility = Visibility.Collapsed;
             FamilyMemberNameTextBox.Visibility = Visibility.Collapsed;
             FamilyMemberContactTextBox.Visibility = Visibility.Collapsed;
         }
@@ -128,10 +129,13 @@ namespace AccraRoadAttendance.Views.Pages.Members
             educationalLevel = member.educationalLevel;
             IsBaptized = member.IsBaptized;
             BaptismDate = member.BaptismDate;
+            PlaceOfBaptism = member.PlaceOfBaptism;
             HasFamilyMemberInChurch = member.HasFamilyMemberInChurch;
             FamilyMemberName = member.FamilyMemberName;
             FamilyMemberContact = member.FamilyMemberContact;
             SelectedPicturePath = member.PicturePath;
+            SpouseName = member.SpouseName;
+            SpouseContact = member.SpouseContact;
             ImagePreview.Source = string.IsNullOrEmpty(SelectedPicturePath) ? null : new BitmapImage(new Uri(SelectedPicturePath));
             _pictureChanged = false;
 
@@ -293,6 +297,32 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
+        private string _spouseName;
+        public string SpouseName
+        {
+            get => _spouseName;
+            set
+            {
+                if (_spouseName == value) return;
+                _spouseName = value;
+                ValidateMaritalStatus();
+                OnPropertyChanged(nameof(SpouseName));
+            }
+        }
+
+        private string _spouseContact;
+        public string SpouseContact
+        {
+            get => _spouseContact;
+            set
+            {
+                if (_spouseContact == value) return;
+                _spouseContact = value;
+                ValidateMaritalStatus();
+                OnPropertyChanged(nameof(SpouseContact));
+            }
+        }
+
         private OccupationType? _occupationType;
         public OccupationType? occupationType
         {
@@ -408,6 +438,20 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
+        // 9. Place of Baptism (Textbox?)
+        private string? _placeOfBaptism;
+        public string? PlaceOfBaptism
+        {
+            get => _placeOfBaptism;
+            set
+            {
+                if (_placeOfBaptism == value) return;
+                _placeOfBaptism = value;
+                ValidateBaptism();
+                OnPropertyChanged(nameof(PlaceOfBaptism));
+            }
+        }
+
         private bool _hasFamilyMemberInChurch;
         public bool HasFamilyMemberInChurch
         {
@@ -455,7 +499,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
             {
                 if (_selectedPicturePath == value) return;
                 _selectedPicturePath = value;
-                ValidateProfilePicture();
+                //ValidateProfilePicture();
                 OnPropertyChanged(nameof(SelectedPicturePath));
             }
         }
@@ -481,7 +525,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
             ValidateEducationLevel();
             ValidateBaptism();
             ValidateFamilyMember();
-            ValidateProfilePicture();
+            //ValidateProfilePicture();
         }
 
         private void ValidateFirstName()
@@ -545,9 +589,18 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private void ValidateMaritalStatus()
         {
             var errors = new List<string>();
+            var nameError = new List<string>();
+            var contactError = new List<string>();
             if (maritalStatus == null)
                 errors.Add("Marital Status is required.");
+            if ((string.IsNullOrWhiteSpace(SpouseName)))
+                nameError.Add("Name of spouse is required");
+            if ((string.IsNullOrWhiteSpace(SpouseContact)))
+                contactError.Add("Contact of spouse is required");
+
             UpdateErrors(nameof(maritalStatus), errors);
+            UpdateErrors(nameof(SpouseName), nameError);
+            UpdateErrors(nameof(SpouseContact), contactError);
         }
 
         private void ValidateOccupation()
@@ -593,9 +646,20 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private void ValidateBaptism()
         {
             var errors = new List<string>();
-            if (IsBaptized && BaptismDate == null)
-                errors.Add("Baptism Date is required if marked as baptized.");
+            var PlaceErrors = new List<string>();
+            if (IsBaptized)
+            {
+                if (BaptismDate == null)
+                    errors.Add("Baptism Date is required.");
+                else if (BaptismDate > DateTime.Today)
+                    errors.Add("Date of Baptism must be a valid past date.");
+
+                if (string.IsNullOrWhiteSpace(PlaceOfBaptism))
+                    PlaceErrors.Add("Place of Baptism is required");
+            }
             UpdateErrors(nameof(BaptismDate), errors);
+            UpdateErrors(nameof(PlaceOfBaptism), PlaceErrors);
+
         }
 
         private void ValidateFamilyMember()
@@ -613,13 +677,13 @@ namespace AccraRoadAttendance.Views.Pages.Members
             UpdateErrors(nameof(FamilyMemberContact), contactErrors);
         }
 
-        private void ValidateProfilePicture()
-        {
-            var errors = new List<string>();
-            if (string.IsNullOrEmpty(SelectedPicturePath))
-                errors.Add("Profile Picture is required.");
-            UpdateErrors(nameof(SelectedPicturePath), errors);
-        }
+        //private void ValidateProfilePicture()
+        //{
+        //    var errors = new List<string>();
+        //    if (string.IsNullOrEmpty(SelectedPicturePath))
+        //        errors.Add("Profile Picture is required.");
+        //    UpdateErrors(nameof(SelectedPicturePath), errors);
+        //}
 
         #endregion
 
@@ -628,6 +692,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private void IsBaptizedCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             BaptismDatePicker.Visibility = Visibility.Visible;
+            BaptismPlaceTextBox.Visibility = Visibility.Visible;
             ValidateBaptism();
         }
 
@@ -635,6 +700,8 @@ namespace AccraRoadAttendance.Views.Pages.Members
         {
             BaptismDatePicker.Visibility = Visibility.Collapsed;
             BaptismDate = null;
+            BaptismPlaceTextBox.Visibility=Visibility.Collapsed;
+            PlaceOfBaptism = string.Empty;
             ValidateBaptism();
         }
 
@@ -653,6 +720,20 @@ namespace AccraRoadAttendance.Views.Pages.Members
             FamilyMemberContact = string.Empty;
             ValidateFamilyMember();
         }
+        private void MaritalStatus_Married(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItem = maritalStatus.Value;
+            if (selectedItem == 0)
+            {
+                SpouseNameTextBox.Visibility = Visibility.Visible;
+                SpouseContactTextBox.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                SpouseNameTextBox.Visibility = Visibility.Collapsed;
+                SpouseContactTextBox.Visibility = Visibility.Collapsed;
+            }
+        }
 
         private void UploadPicture_Click(object sender, RoutedEventArgs e)
         {
@@ -667,7 +748,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 SelectedPicturePath = openFileDialog.FileName;
                 ImagePreview.Source = new BitmapImage(new Uri(SelectedPicturePath));
                 _pictureChanged = true;
-                ValidateProfilePicture();
+                //ValidateProfilePicture();
             }
         }
 
@@ -708,9 +789,22 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 memberToUpdate.educationalLevel = educationalLevel.Value;
                 memberToUpdate.IsBaptized = IsBaptized;
                 memberToUpdate.BaptismDate = IsBaptized ? BaptismDate : null;
+                memberToUpdate.PlaceOfBaptism = IsBaptized ? PlaceOfBaptism : null;
                 memberToUpdate.HasFamilyMemberInChurch = HasFamilyMemberInChurch;
                 memberToUpdate.FamilyMemberName = HasFamilyMemberInChurch ? FamilyMemberName : null;
                 memberToUpdate.FamilyMemberContact = HasFamilyMemberInChurch ? FamilyMemberContact : null;
+               
+                if (maritalStatus.Value != 0)
+                {
+                    memberToUpdate.SpouseName = null;
+                    memberToUpdate.SpouseContact = null;
+                }
+                else
+                {
+                    memberToUpdate.SpouseName = SpouseName;
+                    memberToUpdate.SpouseContact = SpouseContact;
+                }
+                    
 
                 // Handle picture update
                 if (_pictureChanged && !string.IsNullOrEmpty(SelectedPicturePath))

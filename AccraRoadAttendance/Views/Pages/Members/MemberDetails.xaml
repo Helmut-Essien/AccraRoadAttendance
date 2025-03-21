@@ -295,6 +295,8 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <TextBlock
                                 Grid.Row="0"
@@ -311,34 +313,56 @@
                                 Grid.Row="1"
                                 Grid.Column="0"
                                 Style="{StaticResource DetailLabel}"
-                                Text="Family Member in Church:" />
+                                Text="Name of spouse:" />
                             <TextBlock
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 Margin="10,0,0,0"
                                 Style="{StaticResource DetailValue}"
-                                Text="{Binding Member.HasFamilyMemberInChurch, Converter={StaticResource BooleanToStringConverter}}" />
+                                Text="{Binding Member.SpouseName, Converter={StaticResource EnumDisplayConverter}}" />
                             <TextBlock
                                 Grid.Row="2"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Contact of spouse:" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.SpouseContact, Converter={StaticResource EnumDisplayConverter}}" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Family Member in Church:" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.HasFamilyMemberInChurch, Converter={StaticResource BooleanToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="4"
                                 Grid.Column="0"
                                 Style="{StaticResource DetailLabel}"
                                 Text="Family Member Name:"
                                 Visibility="{Binding Member.HasFamilyMemberInChurch, Converter={StaticResource BoolToVisConverter}}" />
                             <TextBlock
-                                Grid.Row="2"
+                                Grid.Row="4"
                                 Grid.Column="1"
                                 Margin="10,0,0,0"
                                 Style="{StaticResource DetailValue}"
                                 Text="{Binding Member.FamilyMemberName}"
                                 Visibility="{Binding Member.HasFamilyMemberInChurch, Converter={StaticResource BoolToVisConverter}}" />
                             <TextBlock
-                                Grid.Row="3"
+                                Grid.Row="5"
                                 Grid.Column="0"
                                 Style="{StaticResource DetailLabel}"
                                 Text="Family Member Contact:"
                                 Visibility="{Binding Member.HasFamilyMemberInChurch, Converter={StaticResource BoolToVisConverter}}" />
                             <TextBlock
-                                Grid.Row="3"
+                                Grid.Row="5"
                                 Grid.Column="1"
                                 Margin="10,0,0,0"
                                 Style="{StaticResource DetailValue}"
@@ -472,6 +496,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <TextBlock
                                 Grid.Row="0"
@@ -496,6 +521,19 @@
                                 Margin="10,0,0,0"
                                 Style="{StaticResource DetailValue}"
                                 Text="{Binding Member.BaptismDate, StringFormat=d}"
+                                Visibility="{Binding Member.IsBaptized, Converter={StaticResource BoolToVisConverter}}" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Place of Baptism:"
+                                Visibility="{Binding Member.IsBaptized, Converter={StaticResource BoolToVisConverter}}" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.PlaceOfBaptism}"
                                 Visibility="{Binding Member.IsBaptized, Converter={StaticResource BoolToVisConverter}}" />
                         </Grid>
                     </Expander>

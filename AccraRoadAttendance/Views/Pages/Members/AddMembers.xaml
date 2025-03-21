@@ -232,11 +232,28 @@
                     <ComboBox
                         x:Name="MaritalStatusComboBox"
                         Height="40"
+                        Margin="0,0,0,20"
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
                         materialDesign:HintAssist.Hint="Choose marital status"
                         SelectedValue="{Binding maritalStatus, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                        SelectionChanged="MaritalStatus_Married"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                    <TextBox
+                        x:Name="SpouseNameTextBox"
+                        Margin="0,0,0,5"
+                        materialDesign:HintAssist.Hint="Enter name of spouse"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding SpouseName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                        Visibility="Collapsed" />
+                    <TextBox
+                        x:Name="SpouseContactTextBox"
+                        Margin="0,18,0,5"
+                        materialDesign:HintAssist.Hint="Enter contact of spouse"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding SpouseContact, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                        Visibility="Collapsed" />
+
                 </StackPanel>
 
                 <!--  Occupation  -->
@@ -391,6 +408,14 @@
                         materialDesign:HintAssist.Hint="Choose baptism date"
                         SelectedDate="{Binding BaptismDate, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                        Visibility="Collapsed" />
+
+                    <TextBox
+                        x:Name="BaptismPlaceTextBox"
+                        Margin="0,23,0,5"
+                        materialDesign:HintAssist.Hint="Enter name of church you were baptized"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding PlaceOfBaptism, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Visibility="Collapsed" />
                 </StackPanel>
 

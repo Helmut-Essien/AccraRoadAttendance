@@ -45,6 +45,9 @@ namespace AccraRoadAttendance.Models
         [MaxLength(200)]
         public string? Address { get; set; }
 
+        [MaxLength(200)]
+        public string? Location { get; set; }
+
         [Display(Name = "Has Family Member In Church")]
         public bool HasFamilyMemberInChurch { get; set; }
 
@@ -57,8 +60,8 @@ namespace AccraRoadAttendance.Models
         [Display(Name = "Is Baptized")]
         public bool IsBaptized { get; set; }
 
-        //[Display(Name = "Place of baptism")]
-        //public string? PlaceOfBaptism { get; set; }
+        [Display(Name = "Place of baptism")]
+        public string? PlaceOfBaptism { get; set; }
 
         [Column(TypeName = "date")]
         public DateTime? BaptismDate { get; set; }
@@ -73,6 +76,22 @@ namespace AccraRoadAttendance.Models
         [MaxLength(50)]
         [Display(Name = "Next Of Kin Contact")]
         public string? NextOfKinContact { get; set; }
+
+        [MaxLength(100)]
+        [Display(Name = "Mother's name")]
+        public string? MotherName { get; set; }
+
+        [MaxLength(50)]
+        [Display(Name = "Mother's contact")]
+        public string? MotherContact { get; set; }
+
+        [MaxLength(100)]
+        [Display(Name = "Father's name")]
+        public string? FatherName { get; set; }
+
+        [MaxLength(50)]
+        [Display(Name = "Father's contact")]
+        public string? FatherContact { get; set; }
 
         [MaxLength(100)]
         [Display(Name = "Family Member Name")]
@@ -111,17 +130,33 @@ namespace AccraRoadAttendance.Models
             Divorced
         }
 
+        [MaxLength(100)]
+        [Display(Name = "Spouse name")]
+        public string? SpouseName { get; set; }
+
+        [MaxLength(50)]
+        [Display(Name = "Spouse contact")]
+        public string? SpouseContact { get; set; }
+
         public enum OccupationType
         {
             [Display(Name = "Self Employed")]
             SelfEmployed,
-            [Display(Name = "Salary Worker")]
+            [Display(Name = "Employed")]
             SalaryWorker,
             [Display(Name = "Student")]
             Student,
             [Display(Name = "Unemployed")]
-            Unemployed
+            Unemployed,
+            [Display(Name = "Apprentice")]
+            Apprentice,
+            [Display(Name = "Retired")]
+            Retired
         }
+
+        [MaxLength(100)]
+        [Display(Name = "Occupation description")]
+        public string? OccupationDescription { get; set; }
 
         public enum EducationalLevel
         {
@@ -165,13 +200,7 @@ namespace AccraRoadAttendance.Models
         }
 
 
-        //// Define Gender FIRST
-        //public enum Gender
-        //{
-        //    Male,
-        //    Female,
-        //    Other // Added for inclusivity
-        //}
+       
 
         // Navigation property
         public List<Attendance> Attendances { get; set; } = new();
