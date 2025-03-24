@@ -593,9 +593,9 @@ namespace AccraRoadAttendance.Views.Pages.Members
             var contactError = new List<string>();
             if (maritalStatus == null)
                 errors.Add("Marital Status is required.");
-            if ((string.IsNullOrWhiteSpace(SpouseName)))
+            if (maritalStatus == 0 && (string.IsNullOrWhiteSpace(SpouseName)))
                 nameError.Add("Name of spouse is required");
-            if ((string.IsNullOrWhiteSpace(SpouseContact)))
+            if (maritalStatus == 0 && (string.IsNullOrWhiteSpace(SpouseContact)))
                 contactError.Add("Contact of spouse is required");
 
             UpdateErrors(nameof(maritalStatus), errors);

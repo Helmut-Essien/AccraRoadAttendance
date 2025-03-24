@@ -89,7 +89,7 @@
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter first name"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
                 <!--  Last Name  -->
@@ -107,7 +107,7 @@
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter last name"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
                 <!--  Other Names  -->
@@ -123,7 +123,7 @@
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter other names"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding OtherNames, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding OtherNames, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
                 <!--  Gender  -->
@@ -144,7 +144,7 @@
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
                         materialDesign:HintAssist.Hint="Choose gender"
-                        SelectedValue="{Binding Gender, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedValue="{Binding Gender, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                 </StackPanel>
 
@@ -163,7 +163,7 @@
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter phone number"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
                 <!--  Email  -->
@@ -179,7 +179,7 @@
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter email"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
                 <!--  Date of Birth  -->
@@ -197,7 +197,7 @@
                     <DatePicker
                         x:Name="DateOfBirthPicker"
                         materialDesign:HintAssist.Hint="Select date of birth"
-                        SelectedDate="{Binding DateOfBirth, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedDate="{Binding DateOfBirth, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
                 </StackPanel>
 
@@ -216,7 +216,7 @@
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter nationality"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding Nationality, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding Nationality, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
                 <!--  Marital Status  -->
@@ -276,7 +276,7 @@
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
                         materialDesign:HintAssist.Hint="Choose occupation"
-                        SelectedValue="{Binding occupationType, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedValue="{Binding occupationType, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                 </StackPanel>
 
@@ -295,7 +295,7 @@
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter house address"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding Address, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
                 <!--  Next of Kin Name  -->
@@ -313,7 +313,7 @@
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter name of next of kin"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding NextOfKinName, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding NextOfKinName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
                 <!--  Next of Kin Contact  -->
@@ -331,7 +331,7 @@
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter contact of next of kin"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding NextOfKinContact, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding NextOfKinContact, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
                 <!--  Hometown  -->
@@ -347,7 +347,7 @@
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter hometown"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding Hometown, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding Hometown, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
                 <!--  Skills  -->
@@ -363,7 +363,7 @@
                     <TextBox
                         materialDesign:HintAssist.Hint="Enter what you can do in church"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding Skills, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding Skills, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
                 <!--  Education Level  -->
@@ -384,7 +384,7 @@
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
                         materialDesign:HintAssist.Hint="Choose education level"
-                        SelectedValue="{Binding educationalLevel, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedValue="{Binding educationalLevel, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                 </StackPanel>
 
@@ -403,7 +403,7 @@
                     <DatePicker
                         x:Name="BaptismDatePicker"
                         materialDesign:HintAssist.Hint="Choose baptism date"
-                        SelectedDate="{Binding BaptismDate, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedDate="{Binding BaptismDate, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Style="{StaticResource MaterialDesignOutlinedDatePicker}"
                         Visibility="Collapsed" />
 
@@ -433,14 +433,14 @@
                         Margin="0,0,0,5"
                         materialDesign:HintAssist.Hint="Enter family member name"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding FamilyMemberName, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding FamilyMemberName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Visibility="Collapsed" />
                     <TextBox
                         x:Name="FamilyMemberContactTextBox"
                         Margin="0,18,0,5"
                         materialDesign:HintAssist.Hint="Enter family member contact"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding FamilyMemberContact, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding FamilyMemberContact, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Visibility="Collapsed" />
                 </StackPanel>
 
@@ -467,7 +467,7 @@
                         Margin="0,5,0,0"
                         FontSize="12"
                         Foreground="#888"
-                        Text="{Binding SelectedPicturePath, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding SelectedPicturePath, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                     <Border
                         Width="150"
                         Height="150"

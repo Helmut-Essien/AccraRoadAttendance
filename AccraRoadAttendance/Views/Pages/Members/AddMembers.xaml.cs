@@ -180,12 +180,13 @@ namespace AccraRoadAttendance.Views.Pages.Members
             var nameError = new List<string>();
             var contactError = new List<string>();
             if (maritalStatus == null)
-                errors.Add("Marital Status is required."); 
-                if ((string.IsNullOrWhiteSpace(SpouseName)))
-                    nameError.Add("Name of spouse is required");
-                if ((string.IsNullOrWhiteSpace(SpouseContact)))
-                    contactError.Add("Contact of spouse is required");
-            
+                errors.Add("Marital Status is required.");
+            if (maritalStatus == 0 && (string.IsNullOrWhiteSpace(SpouseName)))
+                nameError.Add("Name of spouse is required");
+            if (maritalStatus == 0 && (string.IsNullOrWhiteSpace(SpouseContact)))
+                contactError.Add("Contact of spouse is required");
+
+
             UpdateErrors(nameof(maritalStatus), errors);
             UpdateErrors(nameof(SpouseName), nameError);
             UpdateErrors(nameof(SpouseContact), contactError);
@@ -710,8 +711,8 @@ namespace AccraRoadAttendance.Views.Pages.Members
 
         private void MaritalStatus_Married(object sender, SelectionChangedEventArgs e)
         {
-            var selectedItem = maritalStatus.Value;
-            if (selectedItem == 0)
+            //var selectedItem = maritalStatus.Value;
+            if (maritalStatus.HasValue && maritalStatus.Value == MaritalStatus.Married)
             {
                 SpouseNameTextBox.Visibility = Visibility.Visible;
                 SpouseContactTextBox.Visibility = Visibility.Visible;
