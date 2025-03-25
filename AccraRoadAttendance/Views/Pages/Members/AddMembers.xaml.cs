@@ -438,6 +438,19 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
+        private string _location;
+        public string? Location
+        {
+            get => _location;
+            set
+            {
+                if (_location == value) return;
+                _location = value;
+                //ValidateAddress();
+                OnPropertyChanged(nameof(Location));
+            }
+        }
+
         // 9. Date of Birth (DateTime?)
         private DateTime? _dateOfBirth;
         public DateTime? DateOfBirth
@@ -492,7 +505,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
-        // 11. Occupation Type (Enum)
+        // 11. Occupation Type (Enum) OccupationDescription
         private OccupationType? _occupationType;
         public OccupationType? occupationType
         {
@@ -502,6 +515,18 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 _occupationType = value;
                 ValidateOccupation();
                 OnPropertyChanged(nameof(occupationType));
+            }
+        }
+
+        private string? _occupationDescription;
+        public string? OccupationDescription
+        {
+            get => _occupationDescription;
+            set
+            {
+                _occupationDescription = value;
+                //ValidateOccupation();
+                OnPropertyChanged(nameof(OccupationDescription));
             }
         }
 
@@ -623,6 +648,58 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 if (_hometown == value) return;
                 _hometown = value;
                 OnPropertyChanged(nameof(Hometown));
+            }
+        }
+
+        private string? _motherName;
+        public string? MotherName
+        {
+            get => _motherName;
+            set
+            {
+                if (_motherName == value) return;
+                _motherName = value;
+                //ValidateNextOfKinName();
+                OnPropertyChanged(nameof(MotherName));
+            }
+        }
+
+        private string? _motherContact;
+        public string? MotherContact
+        {
+            get => _motherContact;
+            set
+            {
+                if (_motherContact == value) return;
+                _motherContact = value;
+                //ValidateNextOfKinName();
+                OnPropertyChanged(nameof(MotherContact));
+            }
+        }
+
+        private string? _fatherName;
+        public string? FatherName
+        {
+            get => _fatherName;
+            set
+            {
+                if (_fatherName == value) return;
+                _fatherName = value;
+                //ValidateNextOfKinName();
+                OnPropertyChanged(nameof(FatherName));
+            }
+        }
+
+        private string? _fatherContact;
+        public string? FatherContact
+        {
+            get => _fatherContact;
+            set
+            {
+                if (_fatherContact == value) return;
+                _fatherContact = value;
+                //ValidateNextOfKinName();
+                OnPropertyChanged(nameof(FatherContact));
             }
         }
 
@@ -956,7 +1033,13 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     FamilyMemberContact = FamilyMemberContact,
                     PlaceOfBaptism = PlaceOfBaptism,
                     SpouseName = SpouseName,
-                    SpouseContact = SpouseContact
+                    SpouseContact = SpouseContact,
+                    Location = Location,
+                    MotherName = MotherName,
+                    MotherContact = MotherContact,
+                    FatherName = FatherName,
+                    FatherContact = FatherContact,
+                    OccupationDescription = OccupationDescription,
 
                 };
 
@@ -1059,6 +1142,12 @@ namespace AccraRoadAttendance.Views.Pages.Members
             FamilyMemberName = string.Empty;
             FamilyMemberContact = string.Empty;
             PlaceOfBaptism = string.Empty;
+            Location = string.Empty;
+            MotherName = string.Empty;
+            MotherContact = string.Empty;
+            FatherName = string.Empty;
+            FatherContact = string.Empty;
+            OccupationDescription = string.Empty;
 
             _errors.Clear();
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(string.Empty));
@@ -1089,6 +1178,12 @@ namespace AccraRoadAttendance.Views.Pages.Members
             OnPropertyChanged(nameof(PlaceOfBaptism));
             OnPropertyChanged(nameof(SpouseName));
             OnPropertyChanged(nameof(SpouseContact));
+            OnPropertyChanged(nameof(Location));
+            OnPropertyChanged(nameof(MotherName));
+            OnPropertyChanged(nameof(MotherContact));
+            OnPropertyChanged(nameof(FatherName));
+            OnPropertyChanged(nameof(FatherContact));
+            OnPropertyChanged(nameof(OccupationDescription));
         }
 
         
