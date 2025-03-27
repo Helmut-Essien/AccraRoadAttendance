@@ -235,6 +235,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <TextBlock
                                 Grid.Row="0"
@@ -270,6 +271,18 @@
                                 Style="{StaticResource DetailValue}"
                                 Text="{Binding Member.Address}"
                                 TextWrapping="Wrap" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Location:" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.Location}"
+                                TextWrapping="Wrap" />
                         </Grid>
                     </Expander>
 
@@ -291,6 +304,10 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -368,6 +385,51 @@
                                 Style="{StaticResource DetailValue}"
                                 Text="{Binding Member.FamilyMemberContact}"
                                 Visibility="{Binding Member.HasFamilyMemberInChurch, Converter={StaticResource BoolToVisConverter}}" />
+                            <TextBlock
+                                Grid.Row="6"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Father's name:" />
+                            <TextBlock
+                                Grid.Row="6"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.FatherName}" />
+                            <TextBlock
+                                Grid.Row="7"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Father's contact:" />
+                            <TextBlock
+                                Grid.Row="7"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.FatherContact}" />
+                            <TextBlock
+                                Grid.Row="8"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Mother's name:" />
+                            <TextBlock
+                                Grid.Row="8"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.MotherName}" />
+                            <TextBlock
+                                Grid.Row="9"
+                                Grid.Column="0"
+                                Style="{StaticResource DetailLabel}"
+                                Text="Mother's contact:" />
+                            <TextBlock
+                                Grid.Row="9"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource DetailValue}"
+                                Text="{Binding Member.MotherContact}" />
+
                         </Grid>
                     </Expander>
 

@@ -493,31 +493,33 @@
                         Text="{Binding Skills, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
-                <!--  Education Level  -->
+                <!--  Family Member Section  -->
                 <StackPanel
-                    Grid.Row="11"
-                    Grid.Column="1"
+                    Grid.Row="10"
+                    Grid.Column="0"
                     Margin="10">
-                    <TextBlock
+                    <CheckBox
+                        x:Name="FamilyMemberCheckBox"
                         Margin="0,0,0,5"
-                        FontWeight="SemiBold"
-                        Foreground="#374655">
-                        <Run Text="Education:" />
-                        <Run Foreground="Red" Text="*" />
-                    </TextBlock>
-                    <ComboBox
-                        x:Name="EducationComboBox"
-                        Height="40"
-                        Padding="5,0,10,0"
-                        HorizontalContentAlignment="Stretch"
-                        materialDesign:HintAssist.Hint="Choose education level"
-                        SelectedValue="{Binding educationalLevel, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
-                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
-
+                        Checked="FamilyMemberCheckBox_Checked"
+                        Content="Has Family Member In Church"
+                        IsChecked="{Binding HasFamilyMemberInChurch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                        Unchecked="FamilyMemberCheckBox_Unchecked" />
+                    <TextBox
+                        x:Name="FamilyMemberNameTextBox"
+                        Margin="0,0,0,5"
+                        materialDesign:HintAssist.Hint="Enter family member name"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding FamilyMemberName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                        Visibility="Collapsed" />
+                    <TextBox
+                        x:Name="FamilyMemberContactTextBox"
+                        Margin="0,18,0,5"
+                        materialDesign:HintAssist.Hint="Enter family member contact"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding FamilyMemberContact, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                        Visibility="Collapsed" />
                 </StackPanel>
-
-
-
 
                 <!--  Baptism Section  -->
                 <StackPanel
@@ -544,34 +546,6 @@
                         materialDesign:HintAssist.Hint="Enter name of church you were baptized"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
                         Text="{Binding PlaceOfBaptism, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
-                        Visibility="Collapsed" />
-                </StackPanel>
-
-                <!--  Family Member Section  -->
-                <StackPanel
-                    Grid.Row="10"
-                    Grid.Column="0"
-                    Margin="10">
-                    <CheckBox
-                        x:Name="FamilyMemberCheckBox"
-                        Margin="0,0,0,5"
-                        Checked="FamilyMemberCheckBox_Checked"
-                        Content="Has Family Member In Church"
-                        IsChecked="{Binding HasFamilyMemberInChurch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
-                        Unchecked="FamilyMemberCheckBox_Unchecked" />
-                    <TextBox
-                        x:Name="FamilyMemberNameTextBox"
-                        Margin="0,0,0,5"
-                        materialDesign:HintAssist.Hint="Enter family member name"
-                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding FamilyMemberName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
-                        Visibility="Collapsed" />
-                    <TextBox
-                        x:Name="FamilyMemberContactTextBox"
-                        Margin="0,18,0,5"
-                        materialDesign:HintAssist.Hint="Enter family member contact"
-                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding FamilyMemberContact, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Visibility="Collapsed" />
                 </StackPanel>
 
@@ -609,6 +583,31 @@
                         <Image x:Name="ImagePreview" Stretch="UniformToFill" />
                     </Border>
                 </StackPanel>
+
+                <!--  Education Level  -->
+                <StackPanel
+                    Grid.Row="11"
+                    Grid.Column="1"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655">
+                        <Run Text="Education:" />
+                        <Run Foreground="Red" Text="*" />
+                    </TextBlock>
+                    <ComboBox
+                        x:Name="EducationComboBox"
+                        Height="40"
+                        Padding="5,0,10,0"
+                        HorizontalContentAlignment="Stretch"
+                        materialDesign:HintAssist.Hint="Choose education level"
+                        SelectedValue="{Binding educationalLevel, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+
+                </StackPanel>
+
+
                 <!--  Action Buttons  -->
                 <StackPanel
                     Grid.Row="12"

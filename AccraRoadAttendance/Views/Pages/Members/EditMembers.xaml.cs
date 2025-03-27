@@ -121,7 +121,13 @@ namespace AccraRoadAttendance.Views.Pages.Members
             Nationality = member.Nationality;
             maritalStatus = member.maritalStatus;
             occupationType = member.occupationType;
+            OccupationDescription = member.OccupationDescription;
             Address = member.Address;
+            Location = member.Location;
+            MotherName = member.MotherName;
+            MotherContact = member.MotherContact;
+            FatherName = member.FatherName;
+            FatherContact = member.FatherContact;
             NextOfKinName = member.NextOfKinName;
             NextOfKinContact = member.NextOfKinContact;
             Hometown = member.Hometown;
@@ -336,6 +342,18 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
+        private string? _occupationDescription;
+        public string? OccupationDescription
+        {
+            get => _occupationDescription;
+            set
+            {
+                _occupationDescription = value;
+                //ValidateOccupation();
+                OnPropertyChanged(nameof(OccupationDescription));
+            }
+        }
+
         private string _address;
         public string Address
         {
@@ -346,6 +364,71 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 _address = value;
                 ValidateAddress();
                 OnPropertyChanged(nameof(Address));
+            }
+        }
+
+        private string _location;
+        public string? Location
+        {
+            get => _location;
+            set
+            {
+                if (_location == value) return;
+                _location = value;
+                //ValidateAddress();
+                OnPropertyChanged(nameof(Location));
+            }
+        }
+
+        private string? _motherName;
+        public string? MotherName
+        {
+            get => _motherName;
+            set
+            {
+                if (_motherName == value) return;
+                _motherName = value;
+                //ValidateNextOfKinName();
+                OnPropertyChanged(nameof(MotherName));
+            }
+        }
+
+        private string? _motherContact;
+        public string? MotherContact
+        {
+            get => _motherContact;
+            set
+            {
+                if (_motherContact == value) return;
+                _motherContact = value;
+                //ValidateNextOfKinName();
+                OnPropertyChanged(nameof(MotherContact));
+            }
+        }
+
+        private string? _fatherName;
+        public string? FatherName
+        {
+            get => _fatherName;
+            set
+            {
+                if (_fatherName == value) return;
+                _fatherName = value;
+                //ValidateNextOfKinName();
+                OnPropertyChanged(nameof(FatherName));
+            }
+        }
+
+        private string? _fatherContact;
+        public string? FatherContact
+        {
+            get => _fatherContact;
+            set
+            {
+                if (_fatherContact == value) return;
+                _fatherContact = value;
+                //ValidateNextOfKinName();
+                OnPropertyChanged(nameof(FatherContact));
             }
         }
 
@@ -781,7 +864,13 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 memberToUpdate.Nationality = Nationality;
                 memberToUpdate.maritalStatus = maritalStatus.Value;
                 memberToUpdate.occupationType = occupationType.Value;
+                memberToUpdate.OccupationDescription = OccupationDescription;
                 memberToUpdate.Address = Address;
+                memberToUpdate.Location = Location;
+                memberToUpdate.MotherName = MotherName;
+                memberToUpdate.MotherContact = MotherContact;
+                memberToUpdate.FatherName = FatherName;
+                memberToUpdate.FatherContact = FatherContact;
                 memberToUpdate.NextOfKinName = NextOfKinName;
                 memberToUpdate.NextOfKinContact = NextOfKinContact;
                 memberToUpdate.Hometown = Hometown;
