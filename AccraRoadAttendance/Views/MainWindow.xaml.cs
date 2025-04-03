@@ -2,6 +2,7 @@
 using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Services;
 using AccraRoadAttendance.Views.Pages.Attendance;
+using AccraRoadAttendance.Views.Pages.Dashboard;
 using AccraRoadAttendance.Views.Pages.Members;
 using AccraRoadAttendance.Views.Pages.Reports;
 using DocumentFormat.OpenXml.Bibliography;
@@ -29,7 +30,7 @@ namespace AccraRoadAttendance.Views
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            _navigationService.NavigateTo<Members>();
+            _navigationService.NavigateTo<Dashboard>();
             //var login = new Login();
             //login.Show();
         }
@@ -41,6 +42,9 @@ namespace AccraRoadAttendance.Views
 
             switch (viewName)
             {
+                case "Dashboard":
+                    _navigationService.NavigateTo<Dashboard>();
+                    break;
                 case "Members":
                     _navigationService.NavigateTo<Members>();
                     break;
