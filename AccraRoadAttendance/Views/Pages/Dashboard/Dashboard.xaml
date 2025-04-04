@@ -105,8 +105,9 @@
                 </StackPanel>
             </materialDesign:Card>
 
-            <!--  Last Sunday Attendance  -->
-            <materialDesign:Card
+            <!--  Replace the existing Last Sunday Attendance card with these two cards  -->
+            <!--  Last Sunday Attendance Card  -->
+            <!--<materialDesign:Card
                 Grid.Column="3"
                 Margin="0,0,0,10"
                 materialDesign:ElevationAssist.Elevation="Dp2"
@@ -121,40 +122,167 @@
                     <TextBlock
                         Margin="0,10,0,5"
                         FontSize="14"
+                        FontWeight="Bold"
                         Foreground="White"
                         Text="Last Sunday Attendance" />
                     <TextBlock
                         x:Name="LastSundayDate"
-                        Margin="0,2"
+                        Margin="0,5,0,0"
                         FontSize="12"
                         Foreground="White"
                         Text="Date: N/A" />
-                    <TextBlock
-                        x:Name="LastSundayMen"
-                        Margin="0,2"
-                        FontSize="12"
-                        Foreground="White"
-                        Text="Men: 0" />
-                    <TextBlock
-                        x:Name="LastSundayWomen"
-                        Margin="0,2"
-                        FontSize="12"
-                        Foreground="White"
-                        Text="Women: 0" />
-                    <TextBlock
-                        x:Name="LastSundayTotal"
-                        Margin="0,2"
-                        FontSize="12"
-                        Foreground="White"
-                        Text="Total: 0" />
-                    <TextBlock
-                        x:Name="LastSundayOffering"
-                        Margin="0,2"
-                        FontSize="12"
-                        Foreground="White"
-                        Text="Offering: 0.00" />
                 </StackPanel>
+            </materialDesign:Card>-->
+
+            <!--  Last Sunday Attendance  -->
+            <materialDesign:Card
+                Grid.Column="3"
+                Margin="0,0,0,10"
+                materialDesign:ElevationAssist.Elevation="Dp2"
+                Background="#FFB300"
+                UniformCornerRadius="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <!--  Header Row: Icon and Title  -->
+                        <RowDefinition Height="Auto" />
+                        <!--  Summary Row: Attendance Details  -->
+                        <RowDefinition Height="Auto" />
+
+
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid />
+
+                    <!--  Header Section  -->
+                    <StackPanel
+                        Grid.Row="0"
+                        Margin="15"
+                        Orientation="Horizontal">
+                        <materialDesign:PackIcon
+                            Width="30"
+                            Height="30"
+                            Foreground="White"
+                            Kind="Church" />
+                        <TextBlock
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Text="Last Sunday Attendance" />
+                    </StackPanel>
+
+                    <!--  Summary Section using Binding and Two-Column Grid  -->
+                    <Border
+                        Grid.Row="1"
+                        Margin="10"
+                        Background="#009688"
+                        CornerRadius="5">
+                        <Grid Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!--  Date  -->
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="Date:" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="5,4,0,0"
+                                FontSize="12"
+                                Foreground="White"
+                                Text="{Binding LastSundayDate}" />
+
+                            <!--  Men  -->
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="0,4,0,0"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="Men:" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="5,4,0,0"
+                                FontSize="12"
+                                Foreground="White"
+                                Text="{Binding LastSundayMen}" />
+
+                            <!--  Women  -->
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Margin="0,4,0,0"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="Women:" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="5,4,0,0"
+                                FontSize="12"
+                                Foreground="White"
+                                Text="{Binding LastSundayWomen}" />
+
+                            <!--  Total  -->
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Margin="0,4,0,0"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="Total:" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Margin="5,4,0,0"
+                                FontSize="12"
+                                Foreground="White"
+                                Text="{Binding LastSundayTotal}" />
+
+                            <!--  Offering  -->
+                            <TextBlock
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Margin="0,4,0,0"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="Offering:" />
+                            <TextBlock
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                Margin="5,4,0,0"
+                                FontSize="12"
+                                Foreground="White"
+                                Text="{Binding LastSundayOffering}" />
+                        </Grid>
+                    </Border>
+                </Grid>
             </materialDesign:Card>
+
         </Grid>
 
         <!--  Main Content  -->

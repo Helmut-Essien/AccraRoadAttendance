@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
@@ -10,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AccraRoadAttendance.Views.Pages.Dashboard
 {
-    public partial class Dashboard : UserControl
+    public partial class Dashboard : UserControl, INotifyPropertyChanged
     {
         private readonly AttendanceDbContext _context;
 
@@ -18,6 +20,7 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
         {
             InitializeComponent();
             _context = context;
+            DataContext = this;
             LoadDashboardData();
         }
 
@@ -42,19 +45,19 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
                     .FirstOrDefault();
                 if (lastSundaySummary != null)
                 {
-                    LastSundayDate.Text = $"Date: {lastSundaySummary.SummaryDate.ToShortDateString()}";
-                    LastSundayMen.Text = $"Men: {lastSundaySummary.TotalMalePresent}";
-                    LastSundayWomen.Text = $"Women: {lastSundaySummary.TotalFemalePresent}";
-                    LastSundayTotal.Text = $"Total: {lastSundaySummary.TotalPresent}";
-                    LastSundayOffering.Text = $"Offering: {lastSundaySummary.OfferingAmount:C}";
+                    LastSundayDate = lastSundaySummary.SummaryDate.ToShortDateString();
+                    LastSundayMen = lastSundaySummary.TotalMalePresent.ToString();
+                    LastSundayWomen = lastSundaySummary.TotalFemalePresent.ToString();
+                    LastSundayTotal = lastSundaySummary.TotalPresent.ToString();
+                    LastSundayOffering = lastSundaySummary.OfferingAmount.ToString("C");
                 }
                 else
                 {
-                    LastSundayDate.Text = "Date: N/A";
-                    LastSundayMen.Text = "Men: 0";
-                    LastSundayWomen.Text = "Women: 0";
-                    LastSundayTotal.Text = "Total: 0";
-                    LastSundayOffering.Text = "Offering: 0.00";
+                    LastSundayDate = "N/A";
+                    LastSundayMen = "0";
+                    LastSundayWomen = "0";
+                    LastSundayTotal = "0";
+                    LastSundayOffering = "0.00";
                 }
 
                 // Load absent members (2+ weeks)
@@ -121,6 +124,47 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
                 // Basic error handling - you might want to log this or show a message to the user
                 Console.WriteLine($"Error loading dashboard data: {ex.Message}");
             }
+        }
+
+        private string _lastSundayDate;
+        public string LastSundayDate
+        {
+            get => _lastSundayDate;
+            set { _lastSundayDate = value; OnPropertyChanged(nameof(LastSundayDate)); }
+        }
+
+        private string _lastSundayMen;
+        public string LastSundayMen
+        {
+            get => _lastSundayMen;
+            set { _lastSundayMen = value; OnPropertyChanged(nameof(LastSundayMen)); }
+        }
+
+        private string _lastSundayWomen;
+        public string LastSundayWomen
+        {
+            get => _lastSundayWomen;
+            set { _lastSundayWomen = value; OnPropertyChanged(nameof(LastSundayWomen)); }
+        }
+
+        private string _lastSundayTotal;
+        public string LastSundayTotal
+        {
+            get => _lastSundayTotal;
+            set { _lastSundayTotal = value; OnPropertyChanged(nameof(LastSundayTotal)); }
+        }
+
+        private string _lastSundayOffering;
+        public string LastSundayOffering
+        {
+            get => _lastSundayOffering;
+            set { _lastSundayOffering = value; OnPropertyChanged(nameof(LastSundayOffering)); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
