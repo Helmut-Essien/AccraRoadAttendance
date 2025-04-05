@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using LiveCharts;
@@ -30,13 +31,43 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
             {
                 // Load total members
                 var totalMembers = _context.Members.Count();
-                TotalMembersCount.Text = totalMembers.ToString();
-
                 // Load total men and women
                 var totalMen = _context.Members.Count(m => m.Sex == Member.Gender.Male);
                 var totalWomen = _context.Members.Count(m => m.Sex == Member.Gender.Female);
-                TotalMenCount.Text = totalMen.ToString();
-                TotalWomenCount.Text = totalWomen.ToString();
+
+                // Initialize display values
+                DisplayTotalMembers = 0;
+                DisplayMen = 0;
+                DisplayWomen = 0;
+
+                // Start animation
+                int steps = 50;
+                int duration = 100; // 1 second
+                int stepTime = duration / steps; // 20ms
+                int currentStep = 0;
+
+                var timer = new DispatcherTimer();
+                timer.Interval = TimeSpan.FromMilliseconds(stepTime);
+                timer.Tick += (s, e) =>
+                {
+                    currentStep++;
+                    if (currentStep <= steps)
+                    {
+                        double progress = (double)currentStep / steps;
+                        DisplayTotalMembers = (int)(progress * totalMembers);
+                        DisplayMen = (int)(progress * totalMen);
+                        DisplayWomen = (int)(progress * totalWomen);
+                    }
+                    else
+                    {
+                        // Ensure final values are exact
+                        DisplayTotalMembers = totalMembers;
+                        DisplayMen = totalMen;
+                        DisplayWomen = totalWomen;
+                        timer.Stop();
+                    }
+                };
+                timer.Start();
 
                 // Load last Sunday attendance
                 var lastSundaySummary = _context.ChurchAttendanceSummaries
@@ -75,49 +106,44 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
                     .ToList();
                 AbsentMembersList.ItemsSource = absentMembers;
 
-                // Load attendance trends for charting
-                var attendanceData = _context.Attendances
-                    .Where(a => a.Status == AttendanceStatus.Present)
-                    .GroupBy(a => a.ServiceDate)
-                    .Select(g => new
-                    {
-                        Date = g.Key,
-                        Count = g.Count()
-                    })
-                    .OrderBy(a => a.Date)
+                // Load attendance trends for the past six Sundays
+                var lastSixSundays = _context.ChurchAttendanceSummaries
+                    .Where(s => s.ServiceType == ServiceType.SundayService)
+                    .OrderByDescending(s => s.SummaryDate)
+                    .Take(6)
+                    .OrderBy(s => s.SummaryDate)
                     .ToList();
 
-                // Prepare data for LiveCharts
-                var dates = attendanceData.Select(a => a.Date.ToString("dd/MM/yyyy")).ToArray();
-                var counts = attendanceData.Select(a => (double)a.Count).ToArray();
+                var dates = lastSixSundays.Select(s => s.SummaryDate.ToString("dd/MM/yyyy")).ToArray();
+                var counts = lastSixSundays.Select(s => (double)s.TotalPresent).ToArray();
 
                 // Set up the chart as a bar chart
                 AttendanceChart.Series = new SeriesCollection
-                {
-                    new ColumnSeries
-                    {
-                        Title = "Attendance",
-                        Values = new ChartValues<double>(counts)
-                    }
-                };
+        {
+            new ColumnSeries
+            {
+                Title = "Attendance",
+                Values = new ChartValues<double>(counts)
+            }
+        };
 
                 AttendanceChart.AxisX = new AxesCollection
-                {
-                    new Axis
-                    {
-                        Title = "Date",
-                        Labels = dates
-                    }
-                };
+        {
+            new Axis
+            {
+                Title = "Date",
+                Labels = dates
+            }
+        };
 
                 AttendanceChart.AxisY = new AxesCollection
-                {
-                    new Axis
-                    {
-                        Title = "Attendance Count",
-                        LabelFormatter = value => value.ToString("N0")
-                    }
-                };
+        {
+            new Axis
+            {
+                Title = "Attendance Count",
+                LabelFormatter = value => value.ToString("N0")
+            }
+        };
             }
             catch (Exception ex)
             {
@@ -159,6 +185,40 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
         {
             get => _lastSundayOffering;
             set { _lastSundayOffering = value; OnPropertyChanged(nameof(LastSundayOffering)); }
+        }
+
+        // Displayed values for animation
+        private int _displayTotalMembers;
+        public int DisplayTotalMembers
+        {
+            get => _displayTotalMembers;
+            set
+            {
+                _displayTotalMembers = value;
+                OnPropertyChanged(nameof(DisplayTotalMembers));
+            }
+        }
+
+        private int _displayMen;
+        public int DisplayMen
+        {
+            get => _displayMen;
+            set
+            {
+                _displayMen = value;
+                OnPropertyChanged(nameof(DisplayMen));
+            }
+        }
+
+        private int _displayWomen;
+        public int DisplayWomen
+        {
+            get => _displayWomen;
+            set
+            {
+                _displayWomen = value;
+                OnPropertyChanged(nameof(DisplayWomen));
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

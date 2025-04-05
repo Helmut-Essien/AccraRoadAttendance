@@ -31,23 +31,29 @@
                 materialDesign:ElevationAssist.Elevation="Dp2"
                 Background="#2196F3"
                 UniformCornerRadius="10">
-                <StackPanel Margin="15">
+                <StackPanel
+                    Margin="15"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
                     <materialDesign:PackIcon
                         Width="30"
                         Height="30"
+                        HorizontalAlignment="Center"
                         Foreground="White"
                         Kind="Accounts" />
                     <TextBlock
                         Margin="0,10,0,5"
+                        HorizontalAlignment="Center"
                         FontSize="14"
                         Foreground="White"
                         Text="Total Members" />
                     <TextBlock
                         x:Name="TotalMembersCount"
+                        HorizontalAlignment="Center"
                         FontSize="24"
                         FontWeight="Bold"
                         Foreground="White"
-                        Text="0" />
+                        Text="{Binding DisplayTotalMembers}" />
                 </StackPanel>
             </materialDesign:Card>
 
@@ -58,23 +64,29 @@
                 materialDesign:ElevationAssist.Elevation="Dp2"
                 Background="#4CAF50"
                 UniformCornerRadius="10">
-                <StackPanel Margin="15">
+                <StackPanel
+                    Margin="15"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
                     <materialDesign:PackIcon
                         Width="30"
                         Height="30"
+                        HorizontalAlignment="Center"
                         Foreground="White"
                         Kind="HumanMale" />
                     <TextBlock
                         Margin="0,10,0,5"
+                        HorizontalAlignment="Center"
                         FontSize="14"
                         Foreground="White"
                         Text="Men" />
                     <TextBlock
                         x:Name="TotalMenCount"
+                        HorizontalAlignment="Center"
                         FontSize="24"
                         FontWeight="Bold"
                         Foreground="White"
-                        Text="0" />
+                        Text="{Binding DisplayMen}" />
                 </StackPanel>
             </materialDesign:Card>
 
@@ -85,23 +97,29 @@
                 materialDesign:ElevationAssist.Elevation="Dp2"
                 Background="#F06292"
                 UniformCornerRadius="10">
-                <StackPanel Margin="15">
+                <StackPanel
+                    Margin="15"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
                     <materialDesign:PackIcon
                         Width="30"
                         Height="30"
+                        HorizontalAlignment="Center"
                         Foreground="White"
                         Kind="HumanFemale" />
                     <TextBlock
                         Margin="0,10,0,5"
+                        HorizontalAlignment="Center"
                         FontSize="14"
                         Foreground="White"
                         Text="Women" />
                     <TextBlock
                         x:Name="TotalWomenCount"
+                        HorizontalAlignment="Center"
                         FontSize="24"
                         FontWeight="Bold"
                         Foreground="White"
-                        Text="0" />
+                        Text="{Binding DisplayWomen}" />
                 </StackPanel>
             </materialDesign:Card>
 
@@ -161,6 +179,8 @@
                     <StackPanel
                         Grid.Row="0"
                         Margin="15"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
                         Orientation="Horizontal">
                         <materialDesign:PackIcon
                             Width="30"
@@ -180,9 +200,12 @@
                     <Border
                         Grid.Row="1"
                         Margin="10"
-                        Background="#009688"
+                        Background="#FFB300"
                         CornerRadius="5">
-                        <Grid Margin="10">
+                        <Grid
+                            Margin="10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
@@ -200,14 +223,14 @@
                                 Grid.Row="0"
                                 Grid.Column="0"
                                 FontSize="14"
-                                FontWeight="Bold"
                                 Foreground="White"
                                 Text="Date:" />
                             <TextBlock
                                 Grid.Row="0"
                                 Grid.Column="1"
                                 Margin="5,4,0,0"
-                                FontSize="12"
+                                FontSize="14"
+                                FontWeight="Bold"
                                 Foreground="White"
                                 Text="{Binding LastSundayDate}" />
 
@@ -217,14 +240,14 @@
                                 Grid.Column="0"
                                 Margin="0,4,0,0"
                                 FontSize="14"
-                                FontWeight="Bold"
                                 Foreground="White"
                                 Text="Men:" />
                             <TextBlock
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 Margin="5,4,0,0"
-                                FontSize="12"
+                                FontSize="14"
+                                FontWeight="Bold"
                                 Foreground="White"
                                 Text="{Binding LastSundayMen}" />
 
@@ -234,14 +257,14 @@
                                 Grid.Column="0"
                                 Margin="0,4,0,0"
                                 FontSize="14"
-                                FontWeight="Bold"
                                 Foreground="White"
                                 Text="Women:" />
                             <TextBlock
                                 Grid.Row="2"
                                 Grid.Column="1"
                                 Margin="5,4,0,0"
-                                FontSize="12"
+                                FontSize="14"
+                                FontWeight="Bold"
                                 Foreground="White"
                                 Text="{Binding LastSundayWomen}" />
 
@@ -251,14 +274,14 @@
                                 Grid.Column="0"
                                 Margin="0,4,0,0"
                                 FontSize="14"
-                                FontWeight="Bold"
                                 Foreground="White"
                                 Text="Total:" />
                             <TextBlock
                                 Grid.Row="3"
                                 Grid.Column="1"
                                 Margin="5,4,0,0"
-                                FontSize="12"
+                                FontSize="14"
+                                FontWeight="Bold"
                                 Foreground="White"
                                 Text="{Binding LastSundayTotal}" />
 
@@ -268,14 +291,14 @@
                                 Grid.Column="0"
                                 Margin="0,4,0,0"
                                 FontSize="14"
-                                FontWeight="Bold"
                                 Foreground="White"
                                 Text="Offering:" />
                             <TextBlock
                                 Grid.Row="4"
                                 Grid.Column="1"
                                 Margin="5,4,0,0"
-                                FontSize="12"
+                                FontSize="14"
+                                FontWeight="Bold"
                                 Foreground="White"
                                 Text="{Binding LastSundayOffering}" />
                         </Grid>
