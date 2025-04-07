@@ -207,7 +207,6 @@
                                     DockPanel.Dock="Left"
                                     FontSize="24"
                                     FontWeight="Bold"
-                                    Foreground="{DynamicResource MaterialDesignBody}"
                                     Text="Attendance Management System" />
                                 <materialDesign:PopupBox
                                     Height="25"

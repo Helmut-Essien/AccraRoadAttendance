@@ -97,7 +97,6 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
                     .Select(m => new
                     {
                         m.FullName,
-                        m.PhoneNumber,
                         LastAttendanceDate = _context.Attendances
                             .Where(a => a.MemberId == m.Id && a.Status == AttendanceStatus.Present)
                             .Max(a => (DateTime?)a.ServiceDate) ?? m.MembershipStartDate

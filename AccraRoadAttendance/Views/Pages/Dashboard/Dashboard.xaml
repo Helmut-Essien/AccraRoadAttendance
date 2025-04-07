@@ -356,24 +356,35 @@
                         Margin="15,0,15,15">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn
-                                    Width="150"
-                                    DisplayMemberBinding="{Binding FullName}"
-                                    Header="Name" />
-                                <GridViewColumn Width="100" Header="Last Attended">
+                                <GridViewColumn Header="Name">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding LastAttendanceDate, StringFormat='dd/MM/yyyy'}" />
+
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                Text="{Binding FullName}"
+                                                TextAlignment="Center" />
+
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn
-                                    Width="120"
-                                    DisplayMemberBinding="{Binding PhoneNumber}"
-                                    Header="Phone Number" />
+                                <GridViewColumn Header="Last Attended">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                Text="{Binding LastAttendanceDate, StringFormat='dd/MM/yyyy'}"
+                                                TextAlignment="Center" />
+
+
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                             </GridView>
                         </ListView.View>
                     </ListView>
+
                 </Grid>
             </materialDesign:Card>
         </Grid>
