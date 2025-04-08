@@ -8,6 +8,8 @@ using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Views.Pages.Members;
 using System.ComponentModel;
+using static AccraRoadAttendance.Models.Member;
+using System.ComponentModel.DataAnnotations;
 
 namespace AccraRoadAttendance.Views.Pages.Attendance
 {
@@ -18,7 +20,7 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
         private List<Member> allMembers;
         private List<Member> displayedMembers;
         private int currentPage = 1;
-        private const int pageSize = 1;
+        private const int pageSize = 5;
 
         public MarkAttendance(AttendanceDbContext context)
         {
@@ -26,8 +28,29 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
             _context = context;
             DataContext = this;
             ServiceDatePicker.SelectedDate = DateTime.Today;
-            ServiceTypeComboBox.ItemsSource = Enum.GetValues(typeof(ServiceType));
+
+            // Initialize OccupationType ComboBox
+            var ServiceTypeItems = Enum.GetValues(typeof(ServiceType))
+                .Cast<ServiceType>()
+                .Select(ot => new {
+                    Value = ot,
+                    DisplayName = GetEnumDisplayName(ot)
+                }).ToList();
+
+            ServiceTypeComboBox.ItemsSource = ServiceTypeItems;
+            ServiceTypeComboBox.DisplayMemberPath = "DisplayName";
+            ServiceTypeComboBox.SelectedValuePath = "Value";
+
+            
             LoadMembers();
+        }
+
+        private static string GetEnumDisplayName(Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            var attribute = (DisplayAttribute)Attribute.GetCustomAttribute(
+                field, typeof(DisplayAttribute));
+            return attribute?.Name ?? value.ToString();
         }
 
 
@@ -36,6 +59,17 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private ServiceType? _serviceType;
+        public ServiceType? serviceType
+        {
+            get => _serviceType;
+            set
+            {
+                _serviceType = value;
+                OnPropertyChanged(nameof(serviceType));
+            }
         }
 
         private bool _isPaginationVisible;

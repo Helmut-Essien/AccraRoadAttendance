@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
+using AccraRoadAttendance.Services;
+using AccraRoadAttendance.Views.Pages.Members;
 using LiveCharts;
 using LiveCharts.Wpf;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +20,13 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
     public partial class Dashboard : UserControl, INotifyPropertyChanged
     {
         private readonly AttendanceDbContext _context;
+        private readonly INavigationService _navigationService;
 
-        public Dashboard(AttendanceDbContext context)
+        public Dashboard(AttendanceDbContext context, INavigationService navigationService)
         {
             InitializeComponent();
             _context = context;
+            _navigationService = navigationService;
             DataContext = this;
             LoadDashboardData();
         }
@@ -96,7 +102,7 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
                 var absentMembers = _context.Members
                     .Select(m => new
                     {
-                        m.FullName,
+                        Member = m,
                         LastAttendanceDate = _context.Attendances
                             .Where(a => a.MemberId == m.Id && a.Status == AttendanceStatus.Present)
                             .Max(a => (DateTime?)a.ServiceDate) ?? m.MembershipStartDate
@@ -217,6 +223,16 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
             {
                 _displayWomen = value;
                 OnPropertyChanged(nameof(DisplayWomen));
+            }
+        }
+
+        private void NavigateToMemberDetails_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var memberWrapper = button?.CommandParameter as dynamic;
+            if (memberWrapper?.Member is Member member)
+            {
+                _navigationService.NavigateTo<MemberDetails>(member);
             }
         }
 

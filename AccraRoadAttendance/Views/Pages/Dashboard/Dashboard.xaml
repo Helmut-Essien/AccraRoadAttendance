@@ -350,34 +350,41 @@
                         FontWeight="Bold"
                         Text="Absent for 2+ Weeks" />
 
+                    <!--  Update AbsentMembersList GridViewColumns  -->
                     <ListView
                         x:Name="AbsentMembersList"
                         Grid.Row="1"
                         Margin="15,0,15,15">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Name">
+                                <GridViewColumn Width="auto" Header="Name">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-
-                                            <TextBlock
-                                                HorizontalAlignment="Center"
-                                                Text="{Binding FullName}"
-                                                TextAlignment="Center" />
-
+                                            <Button
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Click="NavigateToMemberDetails_Click"
+                                                CommandParameter="{Binding}"
+                                                Content="{Binding Member.FullName}"
+                                                Cursor="Hand" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Last Attended">
+                                <GridViewColumn Width="auto" Header="Last Attended">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-
-                                            <TextBlock
+                                            <Button
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Click="NavigateToMemberDetails_Click"
+                                                CommandParameter="{Binding}"
+                                                Content="{Binding LastAttendanceDate, StringFormat='dd/MM/yyyy'}"
+                                                Cursor="Hand" />
+                                            <!--<TextBlock
                                                 HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
                                                 Text="{Binding LastAttendanceDate, StringFormat='dd/MM/yyyy'}"
-                                                TextAlignment="Center" />
-
-
+                                                TextAlignment="Center" />-->
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

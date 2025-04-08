@@ -75,6 +75,25 @@
                 <models:AttendanceStatus>Excused</models:AttendanceStatus>
             </x:Array>-->
 
+
+            <!--  Button link for absentee list in dashboard  -->
+            <Style x:Key="HyperlinkButtonStyle" TargetType="Button">
+                <Setter Property="Foreground" Value="#2196F3" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <TextBlock
+                                Foreground="#2196F3"
+                                Text="{TemplateBinding Content}"
+                                TextDecorations="Underline" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <!--  Global style for corner radius  -->
 
             <Style x:Key="menuButton" TargetType="Button">
