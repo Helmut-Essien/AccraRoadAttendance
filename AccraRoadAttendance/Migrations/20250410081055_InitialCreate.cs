@@ -26,39 +26,6 @@ namespace AccraRoadAttendance.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    OtherNames = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Sex = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PicturePath = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    MembershipStartDate = table.Column<DateTime>(type: "date", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "date", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ChurchAttendanceSummaries",
                 columns: table => new
                 {
@@ -79,6 +46,51 @@ namespace AccraRoadAttendance.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Members",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    OtherNames = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Sex = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PicturePath = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    MembershipStartDate = table.Column<DateTime>(type: "date", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "date", nullable: true),
+                    Nationality = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    educationalLevel = table.Column<int>(type: "int", maxLength: 100, nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Location = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    HasFamilyMemberInChurch = table.Column<bool>(type: "bit", nullable: false),
+                    maritalStatus = table.Column<int>(type: "int", nullable: false),
+                    occupationType = table.Column<int>(type: "int", nullable: false),
+                    IsBaptized = table.Column<bool>(type: "bit", nullable: false),
+                    PlaceOfBaptism = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BaptismDate = table.Column<DateTime>(type: "date", nullable: true),
+                    Hometown = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    NextOfKinName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    NextOfKinContact = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    MotherName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    MotherContact = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    FatherName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    FatherContact = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    FamilyMemberName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    FamilyMemberContact = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    MemberRole = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Skills = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    SpouseName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    SpouseContact = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    OccupationDescription = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Members", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -95,6 +107,62 @@ namespace AccraRoadAttendance.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MemberId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Members_MemberId",
+                        column: x => x.MemberId,
+                        principalTable: "Members",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Attendances",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MemberId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ServiceDate = table.Column<DateTime>(type: "date", nullable: false),
+                    ServiceType = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RecordedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attendances", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Attendances_Members_MemberId",
+                        column: x => x.MemberId,
+                        principalTable: "Members",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -184,30 +252,6 @@ namespace AccraRoadAttendance.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Attendances",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MemberId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ServiceDate = table.Column<DateTime>(type: "date", nullable: false),
-                    ServiceType = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RecordedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Attendances", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Attendances_AspNetUsers_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -248,6 +292,12 @@ namespace AccraRoadAttendance.Migrations
                 filter: "[Email] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_MemberId",
+                table: "AspNetUsers",
+                column: "MemberId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -278,6 +328,20 @@ namespace AccraRoadAttendance.Migrations
                 name: "IX_Summary_ServiceType",
                 table: "ChurchAttendanceSummaries",
                 column: "ServiceType");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Members_Email",
+                table: "Members",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Members_PhoneNumber",
+                table: "Members",
+                column: "PhoneNumber",
+                unique: true,
+                filter: "[PhoneNumber] IS NOT NULL");
         }
 
         /// <inheritdoc />
@@ -309,6 +373,9 @@ namespace AccraRoadAttendance.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Members");
         }
     }
 }

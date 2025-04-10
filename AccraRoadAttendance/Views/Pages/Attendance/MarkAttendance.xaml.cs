@@ -20,7 +20,7 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
         private List<Member> allMembers;
         private List<Member> displayedMembers;
         private int currentPage = 1;
-        private const int pageSize = 5;
+        private const int pageSize = 7;
 
         public MarkAttendance(AttendanceDbContext context)
         {

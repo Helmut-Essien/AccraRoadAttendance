@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AccraRoadAttendance.Data
 {
-    public class AttendanceDbContext : IdentityDbContext<Member>
+    public class AttendanceDbContext : IdentityDbContext<User>
     {
-        public DbSet<Member> Members { get; set; }
+        public new DbSet<Member> Members { get; set; }
+        public new DbSet<User> Users { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<ChurchAttendanceSummary> ChurchAttendanceSummaries { get; set; }
 
@@ -22,17 +23,30 @@ namespace AccraRoadAttendance.Data
 
             // Rename Identity tables for SQLite compatibility
             builder.Entity<IdentityRole>().ToTable("AspNetRoles");
-            builder.Entity<Member>().ToTable("AspNetUsers");
+            builder.Entity<User>().ToTable("AspNetUsers");
+           
             builder.Entity<IdentityUserClaim<string>>().ToTable("AspNetUserClaims");
             builder.Entity<IdentityUserLogin<string>>().ToTable("AspNetUserLogins");
             builder.Entity<IdentityUserToken<string>>().ToTable("AspNetUserTokens");
             builder.Entity<IdentityRoleClaim<string>>().ToTable("AspNetRoleClaims");
             builder.Entity<IdentityUserRole<string>>().ToTable("AspNetUserRoles");
 
+
+            // Configure User entity
+            builder.Entity<User>(entity =>
+            {
+                entity.HasOne(u => u.Member)
+                      .WithOne(m => m.User)
+                      .HasForeignKey<User>(u => u.MemberId)
+                      .IsRequired();
+                entity.HasIndex(u => u.Email).IsUnique();
+            });
+
             // Configure Member entity
             builder.Entity<Member>(entity =>
             {
                 entity.HasIndex(m => m.Email).IsUnique();
+                entity.HasIndex(m => m.PhoneNumber).IsUnique();
 
                 entity.HasMany(m => m.Attendances)
                     .WithOne(a => a.Member)

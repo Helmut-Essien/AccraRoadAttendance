@@ -35,7 +35,7 @@ namespace AccraRoadAttendance
 
 
                     // Configure Identity
-                    services.AddIdentityCore<Member>()
+                    services.AddIdentityCore<User>()
                         .AddEntityFrameworkStores<AttendanceDbContext>();
 
                     // Register windows and pages with correct lifetimes
