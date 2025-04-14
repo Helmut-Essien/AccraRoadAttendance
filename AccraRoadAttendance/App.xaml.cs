@@ -38,6 +38,9 @@ namespace AccraRoadAttendance
                     services.AddIdentityCore<User>()
                         .AddEntityFrameworkStores<AttendanceDbContext>();
 
+                   
+
+
                     // Register windows and pages with correct lifetimes
                     services.AddSingleton<MainWindow>();
                     services.AddTransient<SplashScreen>();

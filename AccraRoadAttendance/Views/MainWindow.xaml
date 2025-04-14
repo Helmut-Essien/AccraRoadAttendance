@@ -161,7 +161,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="17"
                                         Foreground="White"
-                                        Text="Settings" />
+                                        Text="Users" />
                                 </StackPanel>
                             </Button>
                             <Button
