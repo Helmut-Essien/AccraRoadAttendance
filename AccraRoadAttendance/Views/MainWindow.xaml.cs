@@ -5,6 +5,7 @@ using AccraRoadAttendance.Views.Pages.Attendance;
 using AccraRoadAttendance.Views.Pages.Dashboard;
 using AccraRoadAttendance.Views.Pages.Members;
 using AccraRoadAttendance.Views.Pages.Reports;
+using AccraRoadAttendance.Views.Pages.Users;
 using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -54,7 +55,10 @@ namespace AccraRoadAttendance.Views
                 case "Reports":
                     _navigationService.NavigateTo<ReportsPage>();
                     break;
-                    
+                case "Users":
+                    _navigationService.NavigateTo<UsersManagement>();
+                    break;
+
             }
         }
 

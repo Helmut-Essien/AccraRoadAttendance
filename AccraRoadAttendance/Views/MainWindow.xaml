@@ -148,7 +148,7 @@
                                 Margin="12,12,50,0"
                                 HorizontalAlignment="Stretch"
                                 Click="Navigate"
-                                CommandParameter="Settings"
+                                CommandParameter="Users"
                                 Style="{StaticResource menuButton}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon

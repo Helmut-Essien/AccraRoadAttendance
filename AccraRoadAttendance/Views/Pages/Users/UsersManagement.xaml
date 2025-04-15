@@ -30,19 +30,15 @@
 
                 <!--  Member Search  -->
                 <StackPanel Orientation="Horizontal">
-                    <Icon:PackIconMaterial Kind="AccountSearch" />
+
                     <TextBox
                         x:Name="searchTextBox"
                         Width="300"
                         Margin="0,0,10,0"
                         materialDesign:HintAssist.Hint="Search members..."
                         materialDesign:TextFieldAssist.HasLeadingIcon="True"
-                        TextChanged="SearchTextBox_TextChanged">
-
-
-                        <!--<materialDesign:TextFieldAssist.LeadingIcon>
-                        </materialDesign:TextFieldAssist.LeadingIcon>-->
-                    </TextBox>
+                        materialDesign:TextFieldAssist.LeadingIcon="AccountSearch"
+                        TextChanged="SearchTextBox_TextChanged" />
 
                     <ComboBox
                         x:Name="roleComboBox"
@@ -90,8 +86,8 @@
                 AutoGenerateColumns="False"
                 IsReadOnly="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding UserName}" Header="Username" />
-                    <DataGridTextColumn Binding="{Binding Member.FullName}" Header="Member Name" />
+                    <DataGridTextColumn Binding="{Binding User.UserName}" Header="Username" />
+                    <DataGridTextColumn Binding="{Binding User.Member.FullName}" Header="Member Name" />
                     <DataGridTemplateColumn Header="Roles">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
