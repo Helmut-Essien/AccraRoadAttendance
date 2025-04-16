@@ -96,6 +96,7 @@
                     Margin="0,20,0,0"
                     materialDesign:ButtonAssist.CornerRadius="10"
                     materialDesign:ElevationAssist.Elevation="Dp0"
+                    Click="LoginBtn_Click"
                     Content="LOG IN"
                     FontSize="18"
                     Foreground="White"

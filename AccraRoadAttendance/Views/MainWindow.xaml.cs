@@ -8,6 +8,7 @@ using AccraRoadAttendance.Views.Pages.Reports;
 using AccraRoadAttendance.Views.Pages.Users;
 using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,23 +21,35 @@ namespace AccraRoadAttendance.Views
     public partial class MainWindow : Window
     {
         private readonly INavigationService _navigationService;
+        private readonly CurrentUserService _currentUserService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public MainWindow(INavigationService navigationService)
+        public MainWindow(INavigationService navigationService, CurrentUserService currentUserService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _navigationService = navigationService;
+            _currentUserService = currentUserService;
+            _serviceProvider = serviceProvider;
             ((NavigationService)_navigationService).SetContentFrame(MainContent);
+            DataContext = this;
             Loaded += OnLoaded;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            _navigationService.NavigateTo<Dashboard>();
-            //var login = new Login();
-            //login.Show();
+            if (!_currentUserService.IsLoggedIn)
+            {
+                var login = _serviceProvider.GetRequiredService<Login>();
+                login.Show();
+                Close();
+            }
+            else
+            {
+                _navigationService.NavigateTo<Dashboard>();
+            }
         }
 
-        private void Navigate(object sender, RoutedEventArgs e)
+        private async void Navigate(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
             var viewName = button?.CommandParameter as string;
@@ -56,12 +69,23 @@ namespace AccraRoadAttendance.Views
                     _navigationService.NavigateTo<ReportsPage>();
                     break;
                 case "Users":
-                    _navigationService.NavigateTo<UsersManagement>();
+                    
+                    if (await _currentUserService.IsInRoleAsync("Admin"))
+                        _navigationService.NavigateTo<UsersManagement>();
+                    else
+                        MessageBox.Show("Access Denied: You do not have permission to manage users.");
                     break;
 
             }
         }
 
+        private void Logout(object sender, RoutedEventArgs e)
+        {
+            _currentUserService.Logout();
+            var login = _serviceProvider.GetRequiredService<Login>();
+            login.Show();
+            Close();
+        }
 
         private void ExitApp(object sender, RoutedEventArgs e)
         {
