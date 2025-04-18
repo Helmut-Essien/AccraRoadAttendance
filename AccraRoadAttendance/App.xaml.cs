@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.IO;
 using System.Windows;
 using System.Windows.Navigation;
 using AccraRoadAttendance.Data;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using SplashScreen = AccraRoadAttendance.Views.SplashScreen;
 
 namespace AccraRoadAttendance
@@ -31,13 +33,34 @@ namespace AccraRoadAttendance
                 .ConfigureServices((context, services) =>
                 {
                     // Configure DbContext
+                    //          services.AddDbContext<AttendanceDbContext>(options =>
+                    //              //options.UseSqlServer("Server=FINSERVE\\SQLEXPRESS;Database=AttendanceDb;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True;"));
+
+                    //                                  options.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;
+                    //AttachDbFilename=|DataDirectory|\AttendanceDb.mdf;
+                    //Integrated Security=True;
+                    //Connect Timeout=30;
+                    //Initial Catalog=AttendanceDb"));
+
                     services.AddDbContext<AttendanceDbContext>(options =>
-                        options.UseSqlServer("Server=FINSERVE\\SQLEXPRESS;Database=AttendanceDb;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True;"));
+                    {
+                        // Build a path to LocalAppData (user-specific writable directory)
+                        string dbFolder = Path.Combine(
+                            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                            "AccraRoadAttendance"
+                        );
 
+                        string dbPath = Path.Combine(dbFolder, "AttendanceDb.mdf");
 
-                    // Configure Identity
-                    //services.AddIdentityCore<User>()
-                    //    .AddEntityFrameworkStores<AttendanceDbContext>();
+                        options.UseSqlServer(
+                            $@"Data Source=(LocalDB)\MSSQLLocalDB;
+                            Initial Catalog=AttendanceDb;
+                            AttachDbFilename={dbPath};
+                            Integrated Security=True;
+                            Connect Timeout=30;
+                            MultipleActiveResultSets=True");
+                    });
+
 
                     // Configure Identity
                     services.AddIdentityCore<User>(options =>
@@ -77,21 +100,63 @@ namespace AccraRoadAttendance
 
         protected override async void OnStartup(StartupEventArgs e)
         {
+            
             base.OnStartup(e);
 
             await InitializeDatabaseAsync();
 
-            var loginWindow = _host.Services.GetRequiredService<Login>();
-            loginWindow.Show();
+            //var loginWindow = _host.Services.GetRequiredService<Login>();
+            //loginWindow.Show();
 
-            //var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-            //mainWindow.Show();
+            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            mainWindow.Show();
         }
 
         private async Task InitializeDatabaseAsync()
         {
+            // Ensure database directory exists
+            string dbFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "AccraRoadAttendance"
+            );
+
+            if (!Directory.Exists(dbFolder))
+            {
+                Directory.CreateDirectory(dbFolder);
+            }
+
+            // Clean up previous database files
+            string[] dbFiles = {
+        Path.Combine(dbFolder, "AttendanceDb.mdf"),
+        Path.Combine(dbFolder, "AttendanceDb_log.ldf")
+    };
+
+            foreach (var file in dbFiles)
+            {
+                if (File.Exists(file))
+                {
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch (IOException)
+                    {
+                        // If file is locked, wait and retry
+                        await Task.Delay(500);
+                        File.Delete(file);
+                    }
+                }
+            }
+
+            // Ensure database is created and migrations are applied
             using var scope = _host.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
+            // Ensure clean connection state
+            if (context.Database.GetDbConnection().State == System.Data.ConnectionState.Open)
+            {
+                await context.Database.CloseConnectionAsync();
+            }
+
             await context.Database.MigrateAsync();
 
             // Seed roles
