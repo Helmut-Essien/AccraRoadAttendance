@@ -1,0 +1,91 @@
+<!-- This is a randomly generated index.html file for demonstration purposes. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+            color: #000080;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        nav a {
+            color: #000080;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        img {
+            display: block;
+            margin: 0 auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+        </ul>
+    </nav>
+    <h1>Welcome to My Random Page</h1>
+    <p id="mainText">This is a randomly generated HTML page.</p>
+    <button id="changeText">Change Text</button>
+    <a href="https://github.com">Visit GitHub</a>
+    <section>
+        <h2>About This Page</h2>
+        <p>This page was generated randomly for demonstration purposes. It includes basic HTML elements and some simple CSS styling.</p>
+        <ul>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </ul>
+        <table>
+            <tr>
+                <th>Header 1</th>
+                <th>Header 2</th>
+            </tr>
+            <tr>
+                <td>Data 1</td>
+                <td>Data 2</td>
+            </tr>
+        </table>
+    </section>
+    <img src="https://via.placeholder.com/150" alt="Placeholder Image">
+    <footer>
+        <p>© 2023 Random Page</p>
+    </footer>
+    <script>
+        document.getElementById("changeText").addEventListener("click", function() {
+            document.getElementById("mainText").textContent = "The text has been changed!";
+        });
+    </script>
+</body>
+</html>
