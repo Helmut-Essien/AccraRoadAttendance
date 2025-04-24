@@ -81,11 +81,11 @@ namespace AccraRoadAttendance
 
             await InitializeDatabaseAsync();
 
-            var loginWindow = _host.Services.GetRequiredService<Login>();
-            loginWindow.Show();
+            //var loginWindow = _host.Services.GetRequiredService<Login>();
+            //loginWindow.Show();
 
-            //var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-            //mainWindow.Show();
+            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            mainWindow.Show();
         }
 
         private async Task InitializeDatabaseAsync()
