@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccraRoadAttendance.Migrations
 {
     [DbContext(typeof(AttendanceDbContext))]
-    [Migration("20250410081055_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250424070853_initialCreate")]
+    partial class initialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,12 @@ namespace AccraRoadAttendance.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AttendanceLastModified")
+                        .HasColumnType("datetime");
+
+                    b.Property<bool>("AttendanceSyncStatus")
+                        .HasColumnType("bit");
 
                     b.Property<string>("MemberId")
                         .IsRequired()
@@ -85,6 +91,12 @@ namespace AccraRoadAttendance.Migrations
                     b.Property<string>("ServiceTheme")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("SummaryLastModified")
+                        .HasColumnType("datetime");
+
+                    b.Property<bool>("SummarySyncStatus")
+                        .HasColumnType("bit");
 
                     b.Property<int>("TotalFemalePresent")
                         .HasColumnType("int");
@@ -165,6 +177,9 @@ namespace AccraRoadAttendance.Migrations
                     b.Property<bool>("IsBaptized")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("datetime");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -234,6 +249,9 @@ namespace AccraRoadAttendance.Migrations
                     b.Property<string>("SpouseName")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("SyncStatus")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("educationalLevel")
                         .HasMaxLength(100)

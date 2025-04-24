@@ -40,6 +40,7 @@
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.104.2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.69.0.3740" />
     <PackageReference Include="iTextSharp" Version="5.5.13.4" />
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
     <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="5.1.0" />
@@ -64,7 +65,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Migrations\" />
     <Folder Include="ProfilePictures\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\service-account-key.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

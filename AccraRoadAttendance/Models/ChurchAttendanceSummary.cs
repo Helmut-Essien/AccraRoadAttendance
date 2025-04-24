@@ -26,5 +26,10 @@ namespace AccraRoadAttendance.Models
 
         [MaxLength(500)]
         public string? ServiceTheme { get; set; }
+
+        [Column(TypeName = "datetime")]
+        public DateTime SummaryLastModified { get; set; } = DateTime.UtcNow;
+
+        public bool SummarySyncStatus { get; set; } = false;
     }
 }
