@@ -112,12 +112,25 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
                 AbsentMembersList.ItemsSource = absentMembers;
 
                 // Load attendance trends for the past six Sundays
-                var lastSixSundays = _context.ChurchAttendanceSummaries
+
+                // 1) Pull down just the latest six, ordered descending
+                var recentSix = _context.ChurchAttendanceSummaries
                     .Where(s => s.ServiceType == ServiceType.SundayService)
                     .OrderByDescending(s => s.SummaryDate)
                     .Take(6)
+                    .ToList();   // <-- execute the SQL here
+
+                // 2) Now reorder ascending in memory
+                var lastSixSundays = recentSix
                     .OrderBy(s => s.SummaryDate)
                     .ToList();
+
+                //var lastSixSundays = _context.ChurchAttendanceSummaries
+                //    .Where(s => s.ServiceType == ServiceType.SundayService)
+                //    .OrderByDescending(s => s.SummaryDate)
+                //    .Take(6)
+                //    .OrderBy(s => s.SummaryDate)
+                //    .ToList();
 
                 var dates = lastSixSundays.Select(s => s.SummaryDate.ToString("dd/MM/yyyy")).ToArray();
                 var counts = lastSixSundays.Select(s => (double)s.TotalPresent).ToArray();

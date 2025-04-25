@@ -165,6 +165,26 @@
                                         Text="Users" />
                                 </StackPanel>
                             </Button>
+                            <!--  New Test Google Drive Button  -->
+                            <Button
+                                Margin="12,12,50,0"
+                                HorizontalAlignment="Stretch"
+                                Click="TestGoogleDrive"
+                                Style="{StaticResource menuButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon
+                                        Width="24"
+                                        Height="24"
+                                        Margin="15,2,8,0"
+                                        Foreground="White"
+                                        Kind="CloudUpload" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="17"
+                                        Foreground="White"
+                                        Text="Test Google Drive" />
+                                </StackPanel>
+                            </Button>
                             <Button
                                 Margin="12,12,50,0"
                                 HorizontalAlignment="Stretch"
