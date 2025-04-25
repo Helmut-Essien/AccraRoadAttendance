@@ -143,12 +143,12 @@ namespace AccraRoadAttendance.Views
                             "Upload Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
                         // Optionally test download (uncomment to enable)
-                        /*
+
                         Console.WriteLine($"Testing download for URL: {driveUrl}");
                         string downloadedPath = _googleDriveService.DownloadImage(driveUrl);
                         Console.WriteLine($"Image downloaded successfully to: {downloadedPath}");
                         MessageBox.Show($"Image downloaded to: {downloadedPath}", "Download Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        */
+
                     }
                     catch (Exception ex)
                     {
