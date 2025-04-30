@@ -18,9 +18,15 @@ jobs:
       with:
         dotnet-version: 8.0.x # Match your .NET version
 
+    - name: Update Chocolatey
+      run: |
+        choco upgrade chocolatey --yes
+
     - name: Install Visual Studio Build Tools
       run: |
-        choco install visualstudio2022-buildtools --include-optional --yes
+        for /l %%x in (1, 1, 3) do (
+            choco install visualstudio2022-buildtools --include-optional --yes && exit /b || echo Retry %%x
+        )
       env:
         CHOCO_LOG_LEVEL: debug # Enable debug logging for Chocolatey
 
