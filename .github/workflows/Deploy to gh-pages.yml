@@ -20,7 +20,9 @@ jobs:
 
     - name: Install Visual Studio Build Tools
       run: |
-        choco install visualstudio2019-buildtools --include-optional --yes
+        choco install visualstudio2022-buildtools --include-optional --yes
+      env:
+        CHOCO_LOG_LEVEL: debug # Enable debug logging for Chocolatey
 
     - name: Verify MSBuild Installation
       run: |
