@@ -2,7 +2,7 @@ name: Deploy ClickOnce App
 
 on:
   push:
-    branches: [ "Deploy" ] # Runs when you push to main branch
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -16,17 +16,17 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x # Use your .NET version
+        dotnet-version: 8.0.x # Match your .NET version
 
-    - name: Publish ClickOnce App
+    - name: Publish Using ClickOnce Profile
       run: |
-        msbuild /t:Restore
-        msbuild /t:Publish /p:Configuration=Release /p:PublishDir=./publish
+        # Use YOUR publish profile
+        msbuild /t:Restore /p:Configuration=Release
+        msbuild /t:Publish /p:PublishProfile=ClickOnceProfile /p:Configuration=Release
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./publish
+        publish_dir: ./publish  # GitHub Actions uses THIS folder (not your C:\ path)
         keep_files: false
-        destination_dir: .
