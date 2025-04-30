@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ProfilePictures\**" />
+    <EmbeddedResource Remove="ProfilePictures\**" />
+    <None Remove="ProfilePictures\**" />
+    <Page Remove="ProfilePictures\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="AppImages\attendance.svg" />
     <None Remove="AppImages\b4.jpg" />
     <None Remove="AppImages\churchLogo.svg" />
@@ -81,7 +88,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="ProfilePictures\" />
   </ItemGroup>
 
   <ItemGroup>
