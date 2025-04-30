@@ -5,8 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AccraRoadAttendance.Models
 {
-    public class Member : IdentityUser
+    public class Member 
     {
+        public string? Id { get; set; }
+
         [MaxLength(50)]
         public required string FirstName { get; set; }
 
@@ -19,6 +21,9 @@ namespace AccraRoadAttendance.Models
         [NotMapped]
         public string FullName => $"{FirstName} {OtherNames} {LastName}".Trim();
 
+        public string? PhoneNumber { get; set; }
+        [MaxLength(50)]
+        public string? Email { get; set; } // Made nullable
         [Required]
         public Gender Sex { get; set; }
 
@@ -200,9 +205,10 @@ namespace AccraRoadAttendance.Models
         }
 
 
-       
+
 
         // Navigation property
+        public User? User { get; set; }
         public List<Attendance> Attendances { get; set; } = new();
 
 

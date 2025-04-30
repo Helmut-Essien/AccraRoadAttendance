@@ -9,6 +9,7 @@ using AccraRoadAttendance.Views.Pages.Attendance;
 using AccraRoadAttendance.Views.Pages.Dashboard;
 using AccraRoadAttendance.Views.Pages.Members;
 using AccraRoadAttendance.Views.Pages.Reports;
+using AccraRoadAttendance.Views.Pages.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,11 +36,28 @@ namespace AccraRoadAttendance
 
 
                     // Configure Identity
-                    services.AddIdentityCore<Member>()
-                        .AddEntityFrameworkStores<AttendanceDbContext>();
+                    //services.AddIdentityCore<User>()
+                    //    .AddEntityFrameworkStores<AttendanceDbContext>();
+
+                    // Configure Identity
+                    services.AddIdentityCore<User>(options =>
+                    {
+                        options.User.RequireUniqueEmail = true;
+                    })
+                    .AddRoles<IdentityRole>()
+                    .AddEntityFrameworkStores<AttendanceDbContext>();
+                    
+
+                    // Add role management services
+                    services.AddScoped<RoleManager<IdentityRole>>();
+                    services.AddScoped<UserManager<User>>();
+                    services.AddScoped<CurrentUserService>();
+
+
+
 
                     // Register windows and pages with correct lifetimes
-                    services.AddSingleton<MainWindow>();
+                    services.AddTransient<MainWindow>();
                     services.AddTransient<SplashScreen>();
                     services.AddTransient<Login>();
                     services.AddTransient<AddMembers>();
@@ -49,6 +67,7 @@ namespace AccraRoadAttendance
                     services.AddTransient<ReportsPage>();
                     services.AddTransient<MemberDetails>();
                     services.AddTransient<Dashboard>();
+                    services.AddTransient<UsersManagement>();
 
                     // Add navigation service
                     services.AddSingleton<INavigationService, Services.NavigationService>();
@@ -62,11 +81,11 @@ namespace AccraRoadAttendance
 
             await InitializeDatabaseAsync();
 
-            //var loginWindow = _host.Services.GetRequiredService<Login>();
-            //loginWindow.Show();
+            var loginWindow = _host.Services.GetRequiredService<Login>();
+            loginWindow.Show();
 
-            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-            mainWindow.Show();
+            //var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            //mainWindow.Show();
         }
 
         private async Task InitializeDatabaseAsync()
@@ -74,6 +93,19 @@ namespace AccraRoadAttendance
             using var scope = _host.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
             await context.Database.MigrateAsync();
+
+            // Seed roles
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            await CreateRoleIfNotExists(roleManager, "Admin");
+            await CreateRoleIfNotExists(roleManager, "User");
+        }
+
+        private async Task CreateRoleIfNotExists(RoleManager<IdentityRole> roleManager, string roleName)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)

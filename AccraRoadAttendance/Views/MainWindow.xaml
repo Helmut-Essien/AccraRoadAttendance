@@ -33,6 +33,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
+
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0">
                         <StackPanel
@@ -148,7 +149,7 @@
                                 Margin="12,12,50,0"
                                 HorizontalAlignment="Stretch"
                                 Click="Navigate"
-                                CommandParameter="Settings"
+                                CommandParameter="Users"
                                 Style="{StaticResource menuButton}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon
@@ -161,7 +162,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="17"
                                         Foreground="White"
-                                        Text="Settings" />
+                                        Text="Users" />
                                 </StackPanel>
                             </Button>
                             <Button
@@ -181,6 +182,25 @@
                                         FontSize="17"
                                         Foreground="White"
                                         Text="Exit" />
+                                </StackPanel>
+                            </Button>
+                            <Button
+                                Margin="12,12,50,0"
+                                HorizontalAlignment="Stretch"
+                                Click="Logout"
+                                Style="{StaticResource menuButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon
+                                        Width="24"
+                                        Height="24"
+                                        Margin="15,2,8,0"
+                                        Foreground="White"
+                                        Kind="Logout" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="17"
+                                        Foreground="White"
+                                        Text="Logout" />
                                 </StackPanel>
                             </Button>
                         </StackPanel>
