@@ -1,0 +1,40 @@
+name: Test Deploy ClickOnce App
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x # Match your .NET version
+
+    - name: Install Visual Studio Build Tools
+      run: |
+        choco install visualstudio2019-buildtools --include-optional --yes
+
+    - name: Verify MSBuild Installation
+      run: |
+        where msbuild
+
+    - name: Publish Using ClickOnce Profile
+      run: |
+        # Use YOUR publish profile
+        msbuild /t:Restore /p:Configuration=Release
+        msbuild /t:Publish /p:PublishProfile=ClickOnceProfile /p:Configuration=Release
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./publish  # GitHub Actions uses THIS folder (not your C:\ path)
+        keep_files: false
