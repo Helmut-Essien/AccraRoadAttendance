@@ -1,0 +1,32 @@
+name: Deploy ClickOnce App
+
+on:
+  push:
+    branches: [ "Deploy" ] # Runs when you push to main branch
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x # Use your .NET version
+
+    - name: Publish ClickOnce App
+      run: |
+        msbuild /t:Restore
+        msbuild /t:Publish /p:Configuration=Release /p:PublishDir=./publish
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./publish
+        keep_files: false
+        destination_dir: .
