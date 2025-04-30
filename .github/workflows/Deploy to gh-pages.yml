@@ -18,26 +18,11 @@ jobs:
       with:
         dotnet-version: 8.0.x # Match your .NET version
 
-    - name: Update Chocolatey
-      run: |
-        choco upgrade chocolatey --yes
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
 
-    - name: Install Visual Studio Build Tools
+    - name: Restore and Publish Using ClickOnce Profile
       run: |
-        for ($i = 1; $i -le 3; $i++) {
-            choco install visualstudio2019-buildtools --include-optional --yes; if ($?) { break } else { Write-Host "Retry $i" }
-        }
-      shell: pwsh
-      env:
-        CHOCO_LOG_LEVEL: debug # Enable debug logging for Chocolatey
-
-    - name: Verify MSBuild Installation
-      run: |
-        where msbuild
-
-    - name: Publish Using ClickOnce Profile
-      run: |
-        # Use YOUR publish profile
         msbuild /t:Restore /p:Configuration=Release
         msbuild /t:Publish /p:PublishProfile=ClickOnceProfile /p:Configuration=Release
 
@@ -45,5 +30,5 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./publish  # GitHub Actions uses THIS folder (not your C:\ path)
+        publish_dir: ./publish
         keep_files: false
