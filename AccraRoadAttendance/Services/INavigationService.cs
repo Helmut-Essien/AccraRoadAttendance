@@ -14,14 +14,15 @@ namespace AccraRoadAttendance.Services
         void NavigateTo<T>(object parameter) where T : UserControl;
     }
 
-    public class NavigationService : INavigationService
+    public class NavigationService : INavigationService, IDisposable
     {
-        private readonly IServiceProvider _serviceProvider;
-        private ContentControl _mainContent;
+        private readonly IServiceScopeFactory _scopeFactory;
+        private IServiceScope? _currentScope;
+        private ContentControl? _mainContent;
 
-        public NavigationService(IServiceProvider serviceProvider)
+        public NavigationService(IServiceScopeFactory scopeFactory)
         {
-            _serviceProvider = serviceProvider;
+            _scopeFactory = scopeFactory;
         }
 
         public void SetContentFrame(ContentControl frame)
@@ -31,20 +32,43 @@ namespace AccraRoadAttendance.Services
 
         public void NavigateTo<T>() where T : UserControl
         {
-            var page = _serviceProvider.GetRequiredService<T>();
-            _mainContent.Content = page;
+            EnsureFrame();
+            DisposeCurrentScope();
+
+            _currentScope = _scopeFactory.CreateScope();
+            var page = _currentScope.ServiceProvider.GetRequiredService<T>();
+            _mainContent!.Content = page;
         }
 
         public void NavigateTo<T>(object parameter) where T : UserControl
         {
-            var page = _serviceProvider.GetRequiredService<T>();
+            EnsureFrame();
+            DisposeCurrentScope();
 
+            _currentScope = _scopeFactory.CreateScope();
+            var page = _currentScope.ServiceProvider.GetRequiredService<T>();
             if (page is IParameterReceiver receiver)
-            {
                 receiver.ReceiveParameter(parameter);
-            }
 
-            _mainContent.Content = page;
+            _mainContent!.Content = page;
+        }
+
+        private void EnsureFrame()
+        {
+            if (_mainContent == null)
+                throw new InvalidOperationException(
+                    "You must call SetContentFrame(...) before navigating.");
+        }
+
+        private void DisposeCurrentScope()
+        {
+            _currentScope?.Dispose();
+            _currentScope = null;
+        }
+
+        public void Dispose()
+        {
+            DisposeCurrentScope();
         }
     }
 

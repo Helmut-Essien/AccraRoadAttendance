@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.IO;
 using System.Windows;
 using System.Windows.Navigation;
 using AccraRoadAttendance.Data;
@@ -12,6 +13,7 @@ using AccraRoadAttendance.Views.Pages.Reports;
 using AccraRoadAttendance.Views.Pages.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SplashScreen = AccraRoadAttendance.Views.SplashScreen;
@@ -28,19 +30,28 @@ namespace AccraRoadAttendance
         public App()
         {
             _host = Host.CreateDefaultBuilder()
-                .ConfigureServices((context, services) =>
-                {
-                    // Configure DbContext
-                    services.AddDbContext<AttendanceDbContext>(options =>
-                        options.UseSqlServer("Server=FINSERVE\\SQLEXPRESS;Database=AttendanceDb;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True;"));
+       .ConfigureAppConfiguration((context, config) =>
+       {
+           config.SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json", optional: true)
+               .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true)
+               .AddEnvironmentVariables();
+       })
+           .ConfigureServices((context, services) =>
+            {
+                // Get connection string from configuration
+                var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
+
+                services.AddDbContext<AttendanceDbContext>(options =>
+                    options.UseSqlServer(connectionString));
 
 
-                    // Configure Identity
-                    //services.AddIdentityCore<User>()
-                    //    .AddEntityFrameworkStores<AttendanceDbContext>();
+                // Configure Identity
+                //services.AddIdentityCore<User>()
+                //    .AddEntityFrameworkStores<AttendanceDbContext>();
 
-                    // Configure Identity
-                    services.AddIdentityCore<User>(options =>
+                // Configure Identity
+                services.AddIdentityCore<User>(options =>
                     {
                         options.User.RequireUniqueEmail = true;
                     })
@@ -81,13 +92,28 @@ namespace AccraRoadAttendance
         {
             base.OnStartup(e);
 
+            // Temporary debug code
+            var env = _host.Services.GetRequiredService<IHostEnvironment>();
+            MessageBox.Show($"Current environment: {env.EnvironmentName}");
+
+            var config = _host.Services.GetRequiredService<IConfiguration>();
+            MessageBox.Show($"Connection string: {config.GetConnectionString("DefaultConnection")}");
+
             await InitializeDatabaseAsync();
+
+            // Create a DI scope for all scoped services
+            var scope = _host.Services.CreateScope();
+            var services = scope.ServiceProvider;
 
             //var loginWindow = _host.Services.GetRequiredService<Login>();
             //loginWindow.Show();
 
-            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            // Show MainWindow
+            var mainWindow = services.GetRequiredService<MainWindow>();
+            mainWindow.Closed += (s, args) => scope.Dispose();
             mainWindow.Show();
+        //    var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+        //    mainWindow.Show();
         }
 
         private async Task InitializeDatabaseAsync()
