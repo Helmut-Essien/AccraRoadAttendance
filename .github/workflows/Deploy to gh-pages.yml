@@ -25,7 +25,7 @@ jobs:
     - name: Install Visual Studio Build Tools
       run: |
         for ($i = 1; $i -le 3; $i++) {
-            choco install visualstudio2022-buildtools --include-optional --yes; if ($?) { break } else { Write-Host "Retry $i" }
+            choco install visualstudio2019-buildtools --include-optional --yes; if ($?) { break } else { Write-Host "Retry $i" }
         }
       shell: pwsh
       env:
