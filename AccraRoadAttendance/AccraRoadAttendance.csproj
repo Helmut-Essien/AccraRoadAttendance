@@ -28,6 +28,7 @@
     <None Remove="AppImages\Picture1.png" />
     <None Remove="appsettings.Development.json" />
     <None Remove="appsettings.json" />
+    <None Remove="icons8-grade-100.ico" />
     <None Remove="Properties\launchSettings.json" />
   </ItemGroup>
 
@@ -38,6 +39,7 @@
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="icons8-grade-100.ico" />
     <Content Include="Properties\launchSettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
