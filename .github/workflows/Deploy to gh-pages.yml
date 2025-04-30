@@ -18,6 +18,14 @@ jobs:
       with:
         dotnet-version: 8.0.x # Match your .NET version
 
+    - name: Install Visual Studio Build Tools
+      run: |
+        choco install visualstudio2019-buildtools --include-optional --yes
+
+    - name: Verify MSBuild Installation
+      run: |
+        where msbuild
+
     - name: Publish Using ClickOnce Profile
       run: |
         # Use YOUR publish profile
