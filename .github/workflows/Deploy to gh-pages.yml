@@ -24,9 +24,10 @@ jobs:
 
     - name: Install Visual Studio Build Tools
       run: |
-        for /l %%x in (1, 1, 3) do (
-            choco install visualstudio2022-buildtools --include-optional --yes && exit /b || echo Retry %%x
-        )
+        for ($i = 1; $i -le 3; $i++) {
+            choco install visualstudio2022-buildtools --include-optional --yes; if ($?) { break } else { Write-Host "Retry $i" }
+        }
+      shell: pwsh
       env:
         CHOCO_LOG_LEVEL: debug # Enable debug logging for Chocolatey
 
