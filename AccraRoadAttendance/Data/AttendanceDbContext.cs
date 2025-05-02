@@ -55,6 +55,15 @@ namespace AccraRoadAttendance.Data
 
                 entity.Property(m => m.Sex)
                     .HasConversion<string>();
+
+                //entity.Property(m => m.LastModified)
+                //     .HasColumnType("datetime")
+                //     .IsRequired()
+                //     .HasDefaultValueSql("GETUTCDATE()");
+
+                //entity.Property(m => m.SyncStatus)
+                //      .IsRequired()
+                //      .HasDefaultValue(false);
             });
 
             // Configure Attendance entity
@@ -71,6 +80,15 @@ namespace AccraRoadAttendance.Data
 
                 entity.Property(a => a.Status)
                     .HasConversion<string>();
+
+                //entity.Property(m => m.LastModified)
+                //     .HasColumnType("datetime")
+                //     .IsRequired()
+                //     .HasDefaultValueSql("GETUTCDATE()");
+
+                //entity.Property(m => m.SyncStatus)
+                //      .IsRequired()
+                //      .HasDefaultValue(false);
             });
 
             // Configure ChurchAttendanceSummary entity
@@ -86,6 +104,15 @@ namespace AccraRoadAttendance.Data
 
                 entity.HasIndex(c => c.ServiceType)
                     .HasDatabaseName("IX_Summary_ServiceType");
+
+                //entity.Property(m => m.LastModified)
+                //     .HasColumnType("datetime")
+                //     .IsRequired()
+                //     .HasDefaultValueSql("GETUTCDATE()");
+
+                //entity.Property(m => m.SyncStatus)
+                //      .IsRequired()
+                //      .HasDefaultValue(false);
             });
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AccraRoadAttendance.Models
 {
@@ -6,5 +7,7 @@ namespace AccraRoadAttendance.Models
     {
         public string? MemberId { get; set; }
         public Member? Member { get; set; }
+
+       
     }
 }

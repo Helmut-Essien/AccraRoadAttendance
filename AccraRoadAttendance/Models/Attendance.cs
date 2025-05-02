@@ -33,6 +33,11 @@ namespace AccraRoadAttendance.Models
 
         [MaxLength(500)]
         public string? Notes { get; set; }
+
+        [Column(TypeName = "datetime")]
+        public DateTime AttendanceLastModified { get; set; } = DateTime.UtcNow;
+
+        public bool AttendanceSyncStatus { get; set; } = false;
     }
 
     public enum ServiceType
@@ -56,6 +61,8 @@ namespace AccraRoadAttendance.Models
         Absent,
         Excused
     }
+
+
 
     public static class EnumExtensions
     {

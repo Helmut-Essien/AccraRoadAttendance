@@ -9,7 +9,9 @@ using AccraRoadAttendance.Views.Pages.Users;
 using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -23,30 +25,35 @@ namespace AccraRoadAttendance.Views
         private readonly INavigationService _navigationService;
         private readonly CurrentUserService _currentUserService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly GoogleDriveService _googleDriveService;
 
-        public MainWindow(INavigationService navigationService, CurrentUserService currentUserService, IServiceProvider serviceProvider)
+        public MainWindow(INavigationService navigationService, CurrentUserService currentUserService, IServiceProvider serviceProvider, GoogleDriveService googleDriveService)
         {
             InitializeComponent();
             _navigationService = navigationService;
             _currentUserService = currentUserService;
             _serviceProvider = serviceProvider;
+            _googleDriveService = googleDriveService;
             ((NavigationService)_navigationService).SetContentFrame(MainContent);
             DataContext = this;
             Loaded += OnLoaded;
+            _googleDriveService = googleDriveService;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (!_currentUserService.IsLoggedIn)
-            {
-                var login = _serviceProvider.GetRequiredService<Login>();
-                login.Show();
-                Close();
-            }
-            else
-            {
-                _navigationService.NavigateTo<Dashboard>();
-            }
+            //if (!_currentUserService.IsLoggedIn)
+            //{
+            //    var login = _serviceProvider.GetRequiredService<Login>();
+            //    login.Show();
+            //    Close();
+            //}
+            //else
+            //{
+            //    _navigationService.NavigateTo<Dashboard>();
+            //}
+
+            _navigationService.NavigateTo<Dashboard>();
         }
 
         private async void Navigate(object sender, RoutedEventArgs e)
@@ -95,6 +102,68 @@ namespace AccraRoadAttendance.Views
         private void ToggleTheme(object sender, RoutedEventArgs e)
         {
             // Logic to toggle light/dark theme
+        }
+
+        private void TestGoogleDrive(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Starting Google Drive test...");
+            try
+            {
+                // Open file picker to select multiple images
+                var openFileDialog = new OpenFileDialog
+                {
+                    Filter = "Image files (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png",
+                    InitialDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProfilePictures"),
+                    Multiselect = true
+                };
+                Console.WriteLine("File picker opened.");
+
+                if (openFileDialog.ShowDialog() != true)
+                {
+                    Console.WriteLine("No images selected by user.");
+                    MessageBox.Show("No images selected.", "Test Cancelled", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                Console.WriteLine($"Selected {openFileDialog.FileNames.Length} file(s) for upload.");
+
+                // Ensure the local ProfilePictures folder exists
+                Directory.CreateDirectory("ProfilePictures");
+                Console.WriteLine("ProfilePictures directory created or already exists.");
+
+                // Process each selected file
+                foreach (string filePath in openFileDialog.FileNames)
+                {
+                    Console.WriteLine($"Processing file: {filePath}");
+                    try
+                    {
+                        // Test UploadImage
+                        string driveUrl = _googleDriveService.UploadImage(filePath);
+                        Console.WriteLine($"Image '{Path.GetFileName(filePath)}' uploaded successfully. URL: {driveUrl}");
+                        MessageBox.Show($"Image '{Path.GetFileName(filePath)}' uploaded to Google Drive. URL: {driveUrl}",
+                            "Upload Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                        // Optionally test download (uncomment to enable)
+
+                        Console.WriteLine($"Testing download for URL: {driveUrl}");
+                        string downloadedPath = _googleDriveService.DownloadImage(driveUrl);
+                        Console.WriteLine($"Image downloaded successfully to: {downloadedPath}");
+                        MessageBox.Show($"Image downloaded to: {downloadedPath}", "Download Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Failed to process file '{Path.GetFileName(filePath)}': {ex.Message}");
+                        MessageBox.Show($"Failed to upload image '{Path.GetFileName(filePath)}': {ex.Message}",
+                            "Upload Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                Console.WriteLine("Google Drive test completed.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Google Drive test failed: {ex.Message}");
+                MessageBox.Show($"Google Drive upload test failed: {ex.Message}", "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

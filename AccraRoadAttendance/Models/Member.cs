@@ -113,6 +113,11 @@ namespace AccraRoadAttendance.Models
         [MaxLength(500)]
         public string? Skills { get; set; }
 
+        [Column(TypeName = "datetime")]
+        public DateTime LastModified { get; set; } = DateTime.UtcNow;
+
+        public bool SyncStatus { get; set; } = false;
+
         // Enums
         public enum Gender
         {

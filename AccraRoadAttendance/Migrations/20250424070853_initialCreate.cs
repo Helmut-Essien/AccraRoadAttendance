@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AccraRoadAttendance.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,7 +38,9 @@ namespace AccraRoadAttendance.Migrations
                     Visitors = table.Column<int>(type: "int", nullable: false),
                     Children = table.Column<int>(type: "int", nullable: false),
                     OfferingAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ServiceTheme = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                    ServiceTheme = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    SummaryLastModified = table.Column<DateTime>(type: "datetime", nullable: false),
+                    SummarySyncStatus = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,6 +83,8 @@ namespace AccraRoadAttendance.Migrations
                     FamilyMemberContact = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MemberRole = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Skills = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime", nullable: false),
+                    SyncStatus = table.Column<bool>(type: "bit", nullable: false),
                     SpouseName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     SpouseContact = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     OccupationDescription = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
@@ -154,7 +158,9 @@ namespace AccraRoadAttendance.Migrations
                     ServiceType = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     RecordedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                    Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    AttendanceLastModified = table.Column<DateTime>(type: "datetime", nullable: false),
+                    AttendanceSyncStatus = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

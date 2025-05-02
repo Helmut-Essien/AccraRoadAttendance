@@ -52,6 +52,7 @@ namespace AccraRoadAttendance
                     services.AddScoped<RoleManager<IdentityRole>>();
                     services.AddScoped<UserManager<User>>();
                     services.AddScoped<CurrentUserService>();
+                    services.AddScoped<GoogleDriveService>();
 
 
 
@@ -68,6 +69,7 @@ namespace AccraRoadAttendance
                     services.AddTransient<MemberDetails>();
                     services.AddTransient<Dashboard>();
                     services.AddTransient<UsersManagement>();
+                    
 
                     // Add navigation service
                     services.AddSingleton<INavigationService, Services.NavigationService>();
@@ -81,11 +83,11 @@ namespace AccraRoadAttendance
 
             await InitializeDatabaseAsync();
 
-            var loginWindow = _host.Services.GetRequiredService<Login>();
-            loginWindow.Show();
+            //var loginWindow = _host.Services.GetRequiredService<Login>();
+            //loginWindow.Show();
 
-            //var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-            //mainWindow.Show();
+            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            mainWindow.Show();
         }
 
         private async Task InitializeDatabaseAsync()
