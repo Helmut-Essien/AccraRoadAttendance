@@ -25,10 +25,16 @@ jobs:
       run: |
         msbuild /t:Restore /p:Configuration=Release
         msbuild /t:Publish /p:PublishProfile=ClickOnceProfile2 /p:Configuration=Release
-
+        
+    - name: Validate Output Structure
+      run: |
+        # Verify critical files exist
+        Test-Path -Path "Installer\Application Files\*" -PathType Container
+        Test-Path -Path "Installer\*.application"
+        
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        publish_dir: ./AccraRoadAttendance/AccraRoadAttendance/Installer
+        publish_dir: ./Installer
         keep_files: false
