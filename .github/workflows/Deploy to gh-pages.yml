@@ -24,11 +24,11 @@ jobs:
     - name: Restore and Publish Using ClickOnce Profile
       run: |
         msbuild /t:Restore /p:Configuration=Release
-        msbuild /t:Publish /p:PublishProfile=ClickOnceProfile1 /p:Configuration=Release
+        msbuild /t:Publish /p:PublishProfile=ClickOnceProfile2 /p:Configuration=Release
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        publish_dir: ./publish
+        publish_dir: ./Installer
         keep_files: false
