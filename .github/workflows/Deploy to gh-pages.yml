@@ -29,12 +29,12 @@ jobs:
     - name: Validate Output Structure
       run: |
         # Verify critical files exist
-        Test-Path -Path "Installer\Application Files\*" -PathType Container
-        Test-Path -Path "Installer\*.application"
+        Test-Path -Path "AccraRoadAttendance\Installer\Application Files\*" -PathType Container
+        Test-Path -Path "AccraRoadAttendance\Installer\*.application"
         
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        publish_dir: ./Installer
+        publish_dir: ./AccraRoadAttendance/Installer
         keep_files: false
