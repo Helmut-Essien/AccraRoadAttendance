@@ -25,13 +25,11 @@ jobs:
       shell: pwsh
       run: |
         $certBytes = [System.Convert]::FromBase64String("${{ secrets.CERTIFICATE_BASE64 }}")
-        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
-        $cert.Import($certBytes, "${{ secrets.CERTIFICATE_PASSWORD }}", [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet)
+        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList $certBytes, "${{ secrets.CERTIFICATE_PASSWORD }}", [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet
         $store = New-Object System.Security.Cryptography.X509Certificates.X509Store("My", "CurrentUser")
         $store.Open("ReadWrite")
         $store.Add($cert)
         $store.Close()
-
     - name: Restore and Publish Using ClickOnce Profile
       run: |
         msbuild /t:Restore /p:Configuration=Release
