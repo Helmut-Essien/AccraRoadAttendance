@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <TargetFramework>net8.0-windows</TargetFramework>
+    <ApplicationIcon>CLogocw.ico</ApplicationIcon>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
 
   <ItemGroup>
