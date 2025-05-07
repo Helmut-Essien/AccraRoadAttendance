@@ -2,7 +2,7 @@ name: Deploy ClickOnce App
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
     - name: Restore and Publish Using ClickOnce Profile
       run: |
         msbuild /t:Restore /p:Configuration=Release
-        msbuild /t:Publish /p:PublishProfile=ClickOnceProfile2 /p:Configuration=Release
+        msbuild /t:Publish /p:PublishProfile=ClickOnceProfile /p:Configuration=Release
         
     - name: Validate Output Structure
       run: |
