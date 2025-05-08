@@ -32,6 +32,11 @@ jobs:
         msbuild /t:Clean /p:Configuration=Release
         msbuild /t:Restore /p:Configuration=Release
         msbuild /t:Publish /p:PublishProfile=ClickOnceProfile /p:Configuration=Release
+
+    - name: Add .nojekyll and .gitattributes
+      run: |
+       New-Item -Path "AccraRoadAttendance\Installer\.nojekyll" -ItemType File
+       New-Item -Path "AccraRoadAttendance\Installer\.gitattributes" -ItemType File -Value "*.manifest binary"
         
     - name: Validate Output Structure
       run: |
