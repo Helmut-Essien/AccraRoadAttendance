@@ -36,7 +36,7 @@ jobs:
     - name: Add .nojekyll and .gitattributes
       run: |
        New-Item -Path "AccraRoadAttendance\Installer\.nojekyll" -ItemType File
-       New-Item -Path "AccraRoadAttendance\Installer\.gitattributes" -ItemType File -Value "*.manifest binary\n*.config binary\n*.json binary"
+       New-Item -Path "AccraRoadAttendance\Installer\.gitattributes" -ItemType File -Value "*.manifest binary"
         
     - name: Validate Output Structure
       run: |
