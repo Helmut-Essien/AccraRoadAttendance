@@ -36,9 +36,11 @@
   <ItemGroup>
     <Content Include="appsettings.Development.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<ExcludeFromClickOnce>true</ExcludeFromClickOnce>
     </Content>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<ExcludeFromClickOnce>true</ExcludeFromClickOnce>
     </Content>
     <Content Include="CLogocw.ico" />
   </ItemGroup>
