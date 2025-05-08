@@ -31,7 +31,6 @@
     <None Remove="appsettings.Development.json" />
     <None Remove="appsettings.json" />
     <None Remove="CLogocw.ico" />
-    <None Remove="Properties\launchSettings.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,9 +41,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="CLogocw.ico" />
-    <Content Include="Properties\launchSettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -95,6 +91,10 @@
   </ItemGroup>
 
   <ItemGroup>
+	  <None Include="Properties\launchSettings.json">
+		  <ExcludeFromClickOnce>true</ExcludeFromClickOnce>
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </None>
     <None Update="Resources\service-account-key.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
