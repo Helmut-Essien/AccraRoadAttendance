@@ -2,7 +2,7 @@ name: Deploy ClickOnce App
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -12,6 +12,11 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+       checkout submodules: true
+       lfs: false
+    # Prevent CRLF changes
+       core.autocrlf: false
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
