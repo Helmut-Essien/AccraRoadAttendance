@@ -15,8 +15,9 @@ jobs:
       with:
        checkout submodules: true
        lfs: false
-    # Prevent CRLF changes
-       core.autocrlf: false
+
+    - name: Disable CRLF conversions
+      run: git config --global core.autocrlf false
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
@@ -39,6 +40,8 @@ jobs:
        New-Item -Path "AccraRoadAttendance\Installer\.gitattributes" -ItemType File -Value @"
        *.manifest binary
        *.application binary
+       *.config binary
+       *.dll binary
        "@
         
     - name: Validate Output Structure
