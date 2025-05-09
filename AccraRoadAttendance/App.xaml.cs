@@ -33,7 +33,7 @@ namespace AccraRoadAttendance
        .ConfigureAppConfiguration((context, config) =>
        {
            config.SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appsettings.json", optional: true)
+               .AddJsonFile("appsettings.json"/*, optional: true*/)
                .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true)
                .AddEnvironmentVariables();
        })

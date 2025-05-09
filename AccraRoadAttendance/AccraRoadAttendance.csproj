@@ -88,12 +88,12 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <None Include="Properties\launchSettings.json">
+	  <Content Include="Properties\launchSettings.json">
 		  <ExcludeFromClickOnce>true</ExcludeFromClickOnce>
-		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	  </None>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	  <None Update="appsettings.json">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	    <ExcludeFromClickOnce>true</ExcludeFromClickOnce>
 	  </None>
     <None Update="Resources\service-account-key.json">
