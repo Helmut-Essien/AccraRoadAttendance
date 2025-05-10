@@ -21,11 +21,12 @@ jobs:
 
     - name: Restore Google service account key
       env:
-          KEY_JSON_B64: ${{ secrets.GOOGLE_KEY_JSON_BASE64 }}
+        KEY_JSON_B64: ${{ secrets.GOOGLE_KEY_JSON_BASE64 }}
       run: |
-          echo "Decoding service account key into Resources/service-account-key.json"
-          mkdir -p Resources
-          echo "$KEY_JSON_B64" | base64 -d > Resources/service-account-key.json  
+       echo "Decoding service account key into Resources/service-account-key.json"
+       mkdir -p Resources
+       # Use PowerShell to decode the base64 string
+       Add-Content -Path Resources/service-account-key.json -Value ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("$env:KEY_JSON_B64")))  
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
