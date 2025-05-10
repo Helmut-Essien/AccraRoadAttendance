@@ -18,8 +18,7 @@ namespace AccraRoadAttendance.Services
             try
             {
                 var asm = Assembly.GetExecutingAssembly();
-                foreach (var name in asm.GetManifestResourceNames())
-                    Console.WriteLine(name);
+                
                 var resourceName = "AccraRoadAttendance.Resources.service-account-key.json";
                 // adjust namespace + folder
                 using var stream = asm.GetManifestResourceStream(resourceName)
