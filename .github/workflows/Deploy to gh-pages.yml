@@ -26,16 +26,16 @@ jobs:
       run: |
         Write-Host "Decoding service account key into Resources/service-account-key.json"
         # Ensure the Resources folder exists
-        New-Item -ItemType Directory -Path Resources -Force | Out-Null
+        New-Item -ItemType Directory -Path AccraRoadAttendance\Resources -Force | Out-Null
 
         # Decode the Base64 secret and write the binary JSON file
         [System.IO.File]::WriteAllBytes(
-          "Resources\service-account-key.json",
+          "AccraRoadAttendance\Resources\service-account-key.json",
           [System.Convert]::FromBase64String($Env:KEY_JSON_B64)
         )
 
         # (Optional) Confirm file was written
-        if (Test-Path "Resources\service-account-key.json") {
+        if (Test-Path "AccraRoadAttendance\Resources\service-account-key.json") {
           Write-Host "✔ service-account-key.json restored"
         } else {
           Write-Error "❌ Failed to restore service-account-key.json"
