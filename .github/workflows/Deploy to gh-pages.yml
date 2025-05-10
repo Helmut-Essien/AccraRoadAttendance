@@ -20,13 +20,26 @@ jobs:
       run: git config --global core.autocrlf false
 
     - name: Restore Google service account key
+      shell: pwsh
       env:
         KEY_JSON_B64: ${{ secrets.GOOGLE_KEY_JSON_BASE64 }}
       run: |
-       echo "Decoding service account key into Resources/service-account-key.json"
-       mkdir -p Resources
-       # Use PowerShell to decode the base64 string
-       Add-Content -Path Resources/service-account-key.json -Value ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("$env:KEY_JSON_B64")))  
+        Write-Host "Decoding service account key into Resources/service-account-key.json"
+        # Ensure the Resources folder exists
+        New-Item -ItemType Directory -Path Resources -Force | Out-Null
+
+        # Decode the Base64 secret and write the binary JSON file
+        [System.IO.File]::WriteAllBytes(
+          "Resources\service-account-key.json",
+          [System.Convert]::FromBase64String($Env:KEY_JSON_B64)
+        )
+
+        # (Optional) Confirm file was written
+        if (Test-Path "Resources\service-account-key.json") {
+          Write-Host "✔ service-account-key.json restored"
+        } else {
+          Write-Error "❌ Failed to restore service-account-key.json"
+        }  
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
