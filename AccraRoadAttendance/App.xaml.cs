@@ -12,7 +12,11 @@ using AccraRoadAttendance.Views.Pages.Members;
 using AccraRoadAttendance.Views.Pages.Reports;
 using AccraRoadAttendance.Views.Pages.Users;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,7 +33,11 @@ namespace AccraRoadAttendance
 
         public App()
         {
-            _host = Host.CreateDefaultBuilder()
+            this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+            try
+            {
+
+                _host = Host.CreateDefaultBuilder()
        .ConfigureAppConfiguration((context, config) =>
        {
            config.SetBasePath(Directory.GetCurrentDirectory())
@@ -87,6 +95,19 @@ namespace AccraRoadAttendance
                 })
                 .Build();
         }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error building host: {ex.Message}", "Configuration Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            throw;
+        }
+}
+
+private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show($"An unhandled exception occurred: {e.Exception.Message}\n{e.Exception.StackTrace}",
+                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            e.Handled = true;
+        }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
@@ -116,16 +137,28 @@ namespace AccraRoadAttendance
         //    mainWindow.Show();
         }
 
+
         private async Task InitializeDatabaseAsync()
         {
             using var scope = _host.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
-            await context.Database.MigrateAsync();
+            try
+            {
 
-            // Seed roles
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            await CreateRoleIfNotExists(roleManager, "Admin");
-            await CreateRoleIfNotExists(roleManager, "User");
+                // If it doesn't exist, create it and apply migrations
+                await context.Database.MigrateAsync();
+
+
+                // Seed roles
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                await CreateRoleIfNotExists(roleManager, "Admin");
+                await CreateRoleIfNotExists(roleManager, "User");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Database initialization failed: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                throw;
+            }
         }
 
         private async Task CreateRoleIfNotExists(RoleManager<IdentityRole> roleManager, string roleName)

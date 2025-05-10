@@ -29,11 +29,16 @@
     <None Remove="AppImages\Logo.png" />
     <None Remove="AppImages\Picture1.png" />
     <None Remove="appsettings.Development.json" />
+    <None Remove="appsettings.json" />
     <None Remove="CLogocw.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromClickOnce>true</ExcludeFromClickOnce>
+    </Content>
+    <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromClickOnce>true</ExcludeFromClickOnce>
     </Content>
@@ -92,10 +97,6 @@
 		  <ExcludeFromClickOnce>true</ExcludeFromClickOnce>
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
-	  <None Update="appsettings.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	    <ExcludeFromClickOnce>true</ExcludeFromClickOnce>
-	  </None>
     <None Update="Resources\service-account-key.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
