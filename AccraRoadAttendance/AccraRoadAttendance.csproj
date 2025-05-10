@@ -31,6 +31,7 @@
     <None Remove="appsettings.Development.json" />
     <None Remove="appsettings.json" />
     <None Remove="CLogocw.ico" />
+    <None Remove="Resources\service-account-key.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -97,9 +98,9 @@
 		  <ExcludeFromClickOnce>true</ExcludeFromClickOnce>
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
-    <None Update="Resources\service-account-key.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+	  <EmbeddedResource Include="Resources\service-account-key.json">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </EmbeddedResource>
   </ItemGroup>
 
 </Project>

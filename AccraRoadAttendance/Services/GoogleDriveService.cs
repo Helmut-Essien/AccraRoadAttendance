@@ -3,6 +3,7 @@ using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace AccraRoadAttendance.Services
 {
@@ -16,10 +17,19 @@ namespace AccraRoadAttendance.Services
             Console.WriteLine("Initializing GoogleDriveService...");
             try
             {
+                var asm = Assembly.GetExecutingAssembly();
+                
+                var resourceName = "AccraRoadAttendance.Resources.service-account-key.json";
+                // adjust namespace + folder
+                using var stream = asm.GetManifestResourceStream(resourceName)
+                                ?? throw new FileNotFoundException(resourceName);
+                var credential = GoogleCredential.FromStream(stream)
+                                   .CreateScoped(DriveService.Scope.Drive);
+
                 // Load Service Account credentials
-                var credential = GoogleCredential.FromFile("Resources/service-account-key.json")
-                    .CreateScoped(DriveService.Scope.Drive);
-                Console.WriteLine("Service account credentials loaded successfully.");
+                //var credential = GoogleCredential.FromFile("Resources/service-account-key.json")
+                //    .CreateScoped(DriveService.Scope.Drive);
+                //Console.WriteLine("Service account credentials loaded successfully.");
 
                 _driveService = new DriveService(new BaseClientService.Initializer()
                 {
