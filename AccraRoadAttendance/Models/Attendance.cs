@@ -12,7 +12,7 @@ namespace AccraRoadAttendance.Models
     public class Attendance
     {
         [Key]
-        public int Id { get; set; }
+        public int Id { get; set; } 
 
         [ForeignKey("Member")]
         public required string MemberId { get; set; }

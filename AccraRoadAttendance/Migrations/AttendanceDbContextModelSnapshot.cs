@@ -68,7 +68,7 @@ namespace AccraRoadAttendance.Migrations
                     b.HasIndex("ServiceDate", "ServiceType")
                         .HasDatabaseName("IX_ServiceDate_ServiceType");
 
-                    b.ToTable("Attendances");
+                    b.ToTable("Attendances", (string)null);
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.ChurchAttendanceSummary", b =>
@@ -118,7 +118,7 @@ namespace AccraRoadAttendance.Migrations
                     b.HasIndex("SummaryDate")
                         .HasDatabaseName("IX_Summary_Date");
 
-                    b.ToTable("ChurchAttendanceSummaries");
+                    b.ToTable("ChurchAttendanceSummaries", (string)null);
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.Member", b =>
@@ -270,7 +270,7 @@ namespace AccraRoadAttendance.Migrations
                         .IsUnique()
                         .HasFilter("[PhoneNumber] IS NOT NULL");
 
-                    b.ToTable("Members");
+                    b.ToTable("Members", (string)null);
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.User", b =>
