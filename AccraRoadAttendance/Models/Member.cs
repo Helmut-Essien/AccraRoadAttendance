@@ -7,7 +7,7 @@ namespace AccraRoadAttendance.Models
 {
     public class Member 
     {
-        public string? Id { get; set; }
+        public string? Id { get; set; } 
 
         [MaxLength(50)]
         public required string FirstName { get; set; }
