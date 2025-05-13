@@ -6,11 +6,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  # 1. Build & Restore Step
-  build:
+  # 1. Build & Restore
+  build-and-restore:
     runs-on: windows-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           lfs: false
@@ -24,13 +24,14 @@ jobs:
         env:
           KEY_JSON_B64: ${{ secrets.GOOGLE_KEY_JSON_BASE64 }}
         run: |
+          Write-Host "Decoding service account key into Resources/service-account-key.json"
           New-Item -ItemType Directory -Path AccraRoadAttendance\Resources -Force | Out-Null
           [System.IO.File]::WriteAllBytes(
             "AccraRoadAttendance\Resources\service-account-key.json",
             [System.Convert]::FromBase64String($Env:KEY_JSON_B64)
           )
 
-      - name: Setup .NET SDK
+      - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
@@ -38,18 +39,21 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
 
-      - name: Clean, Restore & Build
-        run: msbuild /t:Clean;Restore;Build /p:Configuration=Release
+      - name: Clean
+        run: msbuild /t:Clean /p:Configuration=Release
 
-  # 2. Publish ClickOnce Package
+      - name: Restore
+        run: msbuild /t:Restore /p:Configuration=Release
+
+  # 2. Publish ClickOnce
   publish:
     runs-on: windows-latest
-    needs: build
+    needs: build-and-restore
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK
+      - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
@@ -57,12 +61,9 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
 
-      - name: Publish via ClickOnce Profile
+      - name: Publish Using ClickOnce Profile
         run: |
-          msbuild /t:Publish \
-            /p:Configuration=Release \
-            /p:PublishProfile=ClickOnceProfile \
-            /p:Revision=${{ github.run_number }}
+          msbuild /t:Publish /p:PublishProfile=ClickOnceProfile /p:Configuration=Release /p:Revision=${{ github.run_number }}
 
       - name: Add .nojekyll and .gitattributes
         run: |
