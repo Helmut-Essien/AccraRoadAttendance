@@ -368,7 +368,7 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
                 try
                 {
                     var serviceDate = ServiceDatePicker.SelectedDate.Value;
-                    var serviceType = (ServiceType)ServiceTypeComboBox.SelectedItem;
+                    var serviceType = (ServiceType)ServiceTypeComboBox.SelectedValue; ;
                     var serviceTheme = ServiceThemeTextBox.Text;
 
                     using var transaction = await _context.Database.BeginTransactionAsync();
