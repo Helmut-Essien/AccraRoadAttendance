@@ -17,6 +17,8 @@ namespace AccraRoadAttendance.Data
         {
         }
 
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -116,4 +118,5 @@ namespace AccraRoadAttendance.Data
             });
         }
     }
+
 }

@@ -21,14 +21,7 @@ namespace AccraRoadAttendance.Services
             Console.WriteLine("Initializing GoogleDriveService...");
             try
             {
-                //    var asm = Assembly.GetExecutingAssembly();
-
-                //    var resourceName = "AccraRoadAttendance.Resources.service-account-key.json";
-                //    // adjust namespace + folder
-                //    using var stream = asm.GetManifestResourceStream(resourceName)
-                //                    ?? throw new FileNotFoundException(resourceName);
-                //    var credential = GoogleCredential.FromStream(stream)
-                //                       .CreateScoped(DriveService.Scope.Drive);
+                
 
                 // 1)  Locate encrypted blob
                 const string resourceName =
@@ -53,10 +46,7 @@ namespace AccraRoadAttendance.Services
                 var credential = GoogleCredential.FromStream(jsonStream)
                                                  .CreateScoped(DriveService.Scope.Drive);
 
-            //    //Load Service Account credentials
-            //    var credential = GoogleCredential.FromFile("Resources/service-account-key.json")
-            //        .CreateScoped(DriveService.Scope.Drive);
-            //Console.WriteLine("Service account credentials loaded successfully.");
+            
 
             _driveService = new DriveService(new BaseClientService.Initializer()
                 {
@@ -84,8 +74,8 @@ namespace AccraRoadAttendance.Services
             MessageBox.Show($"Starting image upload for file: {localPath}");
             try
             {
-                CheckFolderExists(_profilePicturesFolderId);
-                ListFilesInFolder(_profilePicturesFolderId);
+                //CheckFolderExists(_profilePicturesFolderId);
+                //ListFilesInFolder(_profilePicturesFolderId);
 
                 if (!File.Exists(localPath))
                 {
@@ -108,6 +98,7 @@ namespace AccraRoadAttendance.Services
                     _ => throw new NotSupportedException($"Unsupported image format: {extension}")
                 };
                 Console.WriteLine($"File extension: {extension}, MIME type: {mimeType}");
+                MessageBox.Show($"File extension: {extension}, MIME type: {mimeType}");
 
                 var fileMetadata = new Google.Apis.Drive.v3.Data.File
                 {
@@ -175,19 +166,50 @@ namespace AccraRoadAttendance.Services
                 var fileId = driveUrl.Split('=')[1];
                 Console.WriteLine($"Extracted file ID: {fileId}");
 
+                //var request = _driveService.Files.Get(fileId);
+                //var stream = new MemoryStream();
+                //Console.WriteLine("Downloading file from Google Drive...");
+                //request.Download(stream);
+                //Console.WriteLine("File downloaded successfully.");
+
+                //var localPath = Path.Combine("ProfilePictures", $"{fileId}.jpg");
+                //Console.WriteLine($"Saving file to local path: {localPath}");
+
+                //Directory.CreateDirectory("ProfilePictures");
+                //File.WriteAllBytes(localPath, stream.ToArray());
+                //Console.WriteLine("File saved locally.");
+                // Get file metadata to determine MIME type
+                var metadataRequest = _driveService.Files.Get(fileId);
+                metadataRequest.Fields = "id, mimeType";
+                var file = metadataRequest.Execute();
+                string mimeType = file.MimeType;
+
+                // Map MIME type to extension
+                string extension = mimeType switch
+                {
+                    "image/jpeg" => ".jpg",
+                    "image/png" => ".png",
+                    _ => ".jpg" // Default to .jpg if unknown
+                };
+
+                var localPath = Path.Combine("ProfilePictures", $"{fileId}{extension}");
+                Directory.CreateDirectory("ProfilePictures");
+
+                // Check if file already exists locally
+                if (File.Exists(localPath))
+                {
+                    Console.WriteLine($"File already exists at {localPath}; skipping download.");
+                    return localPath;
+                }
+
+                // Download the file
                 var request = _driveService.Files.Get(fileId);
-                var stream = new MemoryStream();
-                Console.WriteLine("Downloading file from Google Drive...");
+                using var stream = new MemoryStream();
                 request.Download(stream);
                 Console.WriteLine("File downloaded successfully.");
 
-                var localPath = Path.Combine("ProfilePictures", $"{fileId}.jpg");
-                Console.WriteLine($"Saving file to local path: {localPath}");
-
-                Directory.CreateDirectory("ProfilePictures");
                 File.WriteAllBytes(localPath, stream.ToArray());
-                Console.WriteLine("File saved locally.");
-
+                Console.WriteLine($"File saved to: {localPath}");
                 return localPath;
             }
             catch (Exception ex)
@@ -199,52 +221,52 @@ namespace AccraRoadAttendance.Services
 
 
         //DEBUGGING GOOGLE DRIVE ACCESSIBILITY
-        public void ListFilesInFolder(string folderId)
-        {
-            var listRequest = _driveService.Files.List();
-            listRequest.Q = $"'{folderId}' in parents";
-            listRequest.Fields = "files(id, name)";
-            try
-            {
-                var files = listRequest.Execute().Files;
-                Console.WriteLine("Files in folder:");
-                foreach (var file in files)
-                {
-                    Console.WriteLine($"{file.Name} ({file.Id})");
-                    MessageBox.Show($"{file.Name} ({file.Id})");
-                }
-            }
-            catch (GoogleApiException ex)
-            {
-                Console.WriteLine("Error listing files: " + ex.Message);
-                MessageBox.Show("Error listing files: " + ex.Message);
-            }
-        }
+        //public void ListFilesInFolder(string folderId)
+        //{
+        //    var listRequest = _driveService.Files.List();
+        //    listRequest.Q = $"'{folderId}' in parents";
+        //    listRequest.Fields = "files(id, name)";
+        //    try
+        //    {
+        //        var files = listRequest.Execute().Files;
+        //        Console.WriteLine("Files in folder:");
+        //        foreach (var file in files)
+        //        {
+        //            Console.WriteLine($"{file.Name} ({file.Id})");
+        //            MessageBox.Show($"{file.Name} ({file.Id})");
+        //        }
+        //    }
+        //    catch (GoogleApiException ex)
+        //    {
+        //        Console.WriteLine("Error listing files: " + ex.Message);
+        //        MessageBox.Show("Error listing files: " + ex.Message);
+        //    }
+        //}
 
-        public void CheckFolderExists(string folderId)
-        {
-            try
-            {
-                var getRequest = _driveService.Files.Get(folderId);
-                getRequest.Fields = "id, name";
-                var folder = getRequest.Execute();
-                Console.WriteLine($"Folder exists: {folder.Name} ({folder.Id})");
-                MessageBox.Show($"Folder exists: {folder.Name} ({folder.Id})");
-            }
-            catch (GoogleApiException ex)
-            {
-                if (ex.HttpStatusCode == System.Net.HttpStatusCode.NotFound)
-                {
-                    Console.WriteLine("Folder not found.");
-                   MessageBox.Show("Folder not found.");
-                }
-                else
-                {
-                    Console.WriteLine("Error checking folder: " + ex.Message);
-                    MessageBox.Show("Error checking folder: " + ex.Message);
-                }
-            }
-        }
+        //public void CheckFolderExists(string folderId)
+        //{
+        //    try
+        //    {
+        //        var getRequest = _driveService.Files.Get(folderId);
+        //        getRequest.Fields = "id, name";
+        //        var folder = getRequest.Execute();
+        //        Console.WriteLine($"Folder exists: {folder.Name} ({folder.Id})");
+        //        MessageBox.Show($"Folder exists: {folder.Name} ({folder.Id})");
+        //    }
+        //    catch (GoogleApiException ex)
+        //    {
+        //        if (ex.HttpStatusCode == System.Net.HttpStatusCode.NotFound)
+        //        {
+        //            Console.WriteLine("Folder not found.");
+        //           MessageBox.Show("Folder not found.");
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine("Error checking folder: " + ex.Message);
+        //            MessageBox.Show("Error checking folder: " + ex.Message);
+        //        }
+        //    }
+        //}
 
 
         private static byte[] DecryptAes256_OpenSsl(byte[] encData, string pass)
@@ -258,10 +280,7 @@ namespace AccraRoadAttendance.Services
             byte[] cipherText = new byte[encData.Length - 16];
             Array.Copy(encData, 16, cipherText, 0, cipherText.Length);
 
-            // Derive key + IV with PBKDF2 (matches `-pbkdf2` flag)
-            //using var kdf = new Rfc2898DeriveBytes(pass, salt, 10000, HashAlgorithmName.SHA256);
-            //byte[] key = kdf.GetBytes(32);   // 256-bit key
-            //byte[] iv = kdf.GetBytes(16);   // 128-bit IV
+           
 
             using var kdf = new Rfc2898DeriveBytes(pass, salt, 10000, HashAlgorithmName.SHA256);
             byte[] keyIv = kdf.GetBytes(48); // 32 bytes key + 16 bytes IV
@@ -276,14 +295,7 @@ namespace AccraRoadAttendance.Services
             aes.Key = key;
             aes.IV = iv;
 
-            //using var decryptor = aes.CreateDecryptor();
-            //using var msPlain = new MemoryStream();
-            //using (var cs = new CryptoStream(msPlain, decryptor, CryptoStreamMode.Write))
-            //{
-            //    cs.Write(cipherText, 0, cipherText.Length);
-            //    //cs.FlushFinalBlock();
-            //}
-            //return msPlain.ToArray();
+           
             using var decryptor = aes.CreateDecryptor();
             try
             {

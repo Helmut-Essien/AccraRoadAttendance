@@ -47,11 +47,21 @@ namespace AccraRoadAttendance
        })
            .ConfigureServices((context, services) =>
             {
+                // Local DB Context
                 // Get connection string from configuration
                 var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
-
                 services.AddDbContext<AttendanceDbContext>(options =>
                     options.UseSqlServer(connectionString));
+
+                //// Online DB Context
+                //var connectionString1 = context.Configuration.GetConnectionString("OnlineConnection");
+                //services.AddDbContext<AttendanceDbContext>(options =>
+                //    options.UseSqlServer(connectionString1), ServiceLifetime.Transient);
+
+                // Online DB Context (for syncing only)
+                var onlineConnection = context.Configuration.GetConnectionString("OnlineConnection");
+                services.AddDbContext<OnlineAttendanceDbContext>(options =>
+                    options.UseSqlServer(onlineConnection));
 
 
                 // Configure Identity
@@ -72,12 +82,13 @@ namespace AccraRoadAttendance
                     services.AddScoped<UserManager<User>>();
                     services.AddScoped<CurrentUserService>();
                     services.AddScoped<GoogleDriveService>();
+                    services.AddScoped<SyncService>();
 
 
 
 
-                    // Register windows and pages with correct lifetimes
-                    services.AddTransient<MainWindow>();
+                // Register windows and pages with correct lifetimes
+                services.AddTransient<MainWindow>();
                     services.AddTransient<SplashScreen>();
                     services.AddTransient<Login>();
                     services.AddTransient<AddMembers>();
