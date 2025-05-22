@@ -11,11 +11,14 @@ namespace AccraRoadAttendance.Data
         public new DbSet<User> Users { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<ChurchAttendanceSummary> ChurchAttendanceSummaries { get; set; }
+        public DbSet<SyncMetadata> SyncMetadata { get; set; }
 
         public AttendanceDbContext(DbContextOptions<AttendanceDbContext> options)
             : base(options)
         {
         }
+
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -114,6 +117,14 @@ namespace AccraRoadAttendance.Data
                 //      .IsRequired()
                 //      .HasDefaultValue(false);
             });
+
+            //Configure SyncMetadata entity
+            builder.Entity<SyncMetadata>(entity =>
+            {
+                entity.HasKey(sm => sm.Key);
+                entity.Property(sm => sm.Value).IsRequired();
+            });
         }
     }
+
 }
