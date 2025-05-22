@@ -2,7 +2,7 @@ name: Deploy ClickOnce App
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -42,6 +42,13 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.x # Match your .NET version
+
+    - name: Install dotnet-ef
+      run: dotnet tool install --global dotnet-ef
+
+    - name: Apply EF Core Migrations
+      working-directory: ./Data
+      run: dotnet ef database update --context OnlineAttendanceDbContext --verbose --connection "${{ secrets.PRODUCTION_CONNECTION_STRING }}"
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
