@@ -48,7 +48,7 @@ jobs:
 
     - name: Apply EF Core Migrations
       #working-directory: AccraRoadAttendance\Data
-      run: dotnet ef database update --context OnlineAttendanceDbContext --verbose --connection "${{ secrets.PRODUCTION_CONNECTION_STRING }}"
+      run: dotnet ef database update --context OnlineAttendanceDbContext --verbose --connection "${{ secrets.PRODUCTION_CONNECTION_STRING }}" --project AccraRoadAttendance/AccraRoadAttendance.csproj
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
