@@ -2,7 +2,7 @@ name: Deploy ClickOnce App
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
@@ -47,7 +47,7 @@ jobs:
       run: dotnet tool install --global dotnet-ef
 
     - name: Apply EF Core Migrations
-      working-directory: ./Data
+      working-directory: AccraRoadAttendance\Data
       run: dotnet ef database update --context OnlineAttendanceDbContext --verbose --connection "${{ secrets.PRODUCTION_CONNECTION_STRING }}"
 
     - name: Setup MSBuild
