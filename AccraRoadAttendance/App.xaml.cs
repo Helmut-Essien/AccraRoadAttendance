@@ -130,6 +130,7 @@ private void App_DispatcherUnhandledException(object sender, System.Windows.Thre
 
             var config = _host.Services.GetRequiredService<IConfiguration>();
             MessageBox.Show($"Connection string: {config.GetConnectionString("DefaultConnection")}");
+            MessageBox.Show($"Online connection string: {config.GetConnectionString("OnlineConnection")}");
 
             await InitializeDatabaseAsync();
 
