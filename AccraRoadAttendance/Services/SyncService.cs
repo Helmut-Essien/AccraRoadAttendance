@@ -1,6 +1,7 @@
 ﻿using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,15 +14,19 @@ namespace AccraRoadAttendance.Services
         private readonly AttendanceDbContext _localContext;
         private readonly OnlineAttendanceDbContext _onlineContext;
         private readonly GoogleDriveService _googleDriveService;
+        private readonly ILogger<SyncService> _logger;
         private DateTime _lastSyncTime;
 
-        public SyncService(AttendanceDbContext localContext, OnlineAttendanceDbContext onlineContext, GoogleDriveService googleDriveService)
+        public SyncService(AttendanceDbContext localContext, OnlineAttendanceDbContext onlineContext, GoogleDriveService googleDriveService, ILogger<SyncService> logger)
         {
             _localContext = localContext ?? throw new ArgumentNullException(nameof(localContext));
             _onlineContext = onlineContext ?? throw new ArgumentNullException(nameof(onlineContext));
             _googleDriveService = googleDriveService ?? throw new ArgumentNullException(nameof(googleDriveService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
             _lastSyncTime = LoadLastSyncTime();
             MessageBox.Show($"Initial lastSyncTime: {_lastSyncTime}", "Debug");
+            _logger.LogInformation("Initial lastSyncTime: {LastSyncTime:u}", _lastSyncTime);
         }
 
         public void SyncData()
@@ -51,57 +56,126 @@ namespace AccraRoadAttendance.Services
             MessageBox.Show("Local Changes Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        //private void PushMembers()
+        //{
+        //    var localMembers = _localContext.Members
+        //        .Where(m => !m.SyncStatus || m.LastModified > _lastSyncTime)
+        //        .ToList();
+        //    // Debug: Show number of members to push and _lastSyncTime
+        //    MessageBox.Show($"Members to push: {localMembers.Count}, lastSyncTime: {_lastSyncTime}", "Debug");
+        //    if (localMembers.Any())
+        //    {
+        //        // Debug: Show LastModified of the first member
+        //        MessageBox.Show($"First member LastModified: {localMembers.First().LastModified}", "Debug");
+        //    }
+
+        //    foreach (var member in localMembers)
+        //    {
+        //        try
+        //        {
+        //            var onlineMember = _onlineContext.Members.Find(member.Id);
+        //            if (onlineMember == null || onlineMember.LastModified < member.LastModified)
+        //            {
+        //                // Handle image upload if necessary
+        //                if (!string.IsNullOrEmpty(member.PicturePath) && !member.PicturePath.StartsWith("https://drive.google.com"))
+        //                {
+        //                    member.PicturePath = _googleDriveService.UploadImage(member.PicturePath);
+        //                }
+
+        //                if (onlineMember == null)
+        //                {
+        //                    _onlineContext.Members.Add(member);
+        //                }
+        //                else
+        //                {
+        //                    _onlineContext.Entry(onlineMember).CurrentValues.SetValues(member);
+        //                }
+
+        //                _onlineContext.SaveChanges();
+        //                member.SyncStatus = true;
+
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            // Log error and continue with next member
+        //            Console.WriteLine($"Failed to sync member {member.Id}: {ex.Message}");
+        //            MessageBox.Show(ex.Message, "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //            continue;
+        //        }
+        //    }
+        //    _localContext.SaveChanges();
+        //    MessageBox.Show("Local Members Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+        //}
+
         private void PushMembers()
         {
             var localMembers = _localContext.Members
                 .Where(m => !m.SyncStatus || m.LastModified > _lastSyncTime)
                 .ToList();
-            // Debug: Show number of members to push and _lastSyncTime
-            MessageBox.Show($"Members to push: {localMembers.Count}, lastSyncTime: {_lastSyncTime}", "Debug");
+
+            _logger.LogInformation("Pushing local members: count={Count}, since={LastSyncTime:u}",
+                             localMembers.Count, _lastSyncTime);
+
             if (localMembers.Any())
             {
-                // Debug: Show LastModified of the first member
-                MessageBox.Show($"First member LastModified: {localMembers.First().LastModified}", "Debug");
+                _logger.LogInformation("First member LastModified: {FirstLastModified:u}",
+                                 localMembers.First().LastModified);
             }
 
             foreach (var member in localMembers)
             {
                 try
                 {
+                    _logger.LogInformation("Processing member {MemberId}", member.Id);
+
                     var onlineMember = _onlineContext.Members.Find(member.Id);
-                    if (onlineMember == null || onlineMember.LastModified < member.LastModified)
+                    bool needsSync = onlineMember == null || onlineMember.LastModified < member.LastModified;
+
+                    _logger.LogInformation("Found online? {Exists}, onlineLastModified={OnlineLastModified:u}, needsSync={NeedsSync}",
+                                     onlineMember != null, onlineMember?.LastModified, needsSync);
+
+                    if (needsSync)
                     {
-                        // Handle image upload if necessary
-                        if (!string.IsNullOrEmpty(member.PicturePath) && !member.PicturePath.StartsWith("https://drive.google.com"))
+                        if (!string.IsNullOrEmpty(member.PicturePath)
+                            && !member.PicturePath.StartsWith("https://drive.google.com"))
                         {
+                            _logger.LogInformation("Uploading image for member {MemberId}", member.Id);
                             member.PicturePath = _googleDriveService.UploadImage(member.PicturePath);
+                            _logger.LogInformation("Image uploaded: {PicturePath}", member.PicturePath);
                         }
 
                         if (onlineMember == null)
                         {
+                            _logger.LogInformation("Adding new member {MemberId} to online DB", member.Id);
                             _onlineContext.Members.Add(member);
                         }
                         else
                         {
+                            _logger.LogInformation("Updating online member {MemberId}", member.Id);
                             _onlineContext.Entry(onlineMember).CurrentValues.SetValues(member);
                         }
 
                         _onlineContext.SaveChanges();
+                        _logger.LogInformation("Successfully synced member {MemberId}", member.Id);
                         member.SyncStatus = true;
-
+                    }
+                    else
+                    {
+                        _logger.LogInformation("Skipping sync for member {MemberId}", member.Id);
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Log error and continue with next member
-                    Console.WriteLine($"Failed to sync member {member.Id}: {ex.Message}");
-                    MessageBox.Show(ex.Message, "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _logger.LogInformation(ex, "Failed to sync member {MemberId}", member.Id);
                     continue;
                 }
             }
+
             _localContext.SaveChanges();
-            MessageBox.Show("Local Members Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            _logger.LogInformation("Local members pushed.");
         }
+
 
         private void PushAttendances()
         {
