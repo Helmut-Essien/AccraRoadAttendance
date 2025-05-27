@@ -910,11 +910,26 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     Directory.CreateDirectory(folderPath);
                     string newFilePath = Path.Combine(folderPath, fileName);
 
-                    // Copy the selected image
-                    File.Copy(SelectedPicturePath, newFilePath, true);
+                    try
+                    {
+                        File.Copy(SelectedPicturePath, newFilePath, true);
+                        if (!File.Exists(newFilePath))
+                        {
+                            throw new FileNotFoundException($"Failed to copy image to {newFilePath}");
+                        }
+                        newMember.PicturePath = newFilePath;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to copy image: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        newMember.PicturePath = null; // Don’t set PicturePath if copy fails
+                    }
 
-                    // Update PicturePath
-                    newMember.PicturePath = newFilePath;
+                    //// Copy the selected image
+                    //File.Copy(SelectedPicturePath, newFilePath, true);
+
+                    //// Update PicturePath
+                    //newMember.PicturePath = newFilePath;
                 }
                 else
                 {
