@@ -53,7 +53,7 @@ jobs:
       run: |
         echo "Forcing drop of existing database..."
         dotnet ef database drop \
-          --context OnlineAttendanceDbContext \
+          --context "OnlineAttendanceDbContext" \
           --connection "$CONNECTION_STRING" \
           --force \
           --no-build \
