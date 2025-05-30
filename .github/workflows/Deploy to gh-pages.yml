@@ -46,6 +46,19 @@ jobs:
     - name: Install dotnet-ef
       run: dotnet tool install --global dotnet-ef
 
+# ─────────────── New Step: Drop Database ───────────────
+    - name: Drop existing online database
+      env:
+        CONNECTION_STRING: ${{ secrets.PRODUCTION_CONNECTION_STRING }}
+      run: |
+        echo "Forcing drop of existing database..."
+        dotnet ef database drop \
+          --context OnlineAttendanceDbContext \
+          --connection "$CONNECTION_STRING" \
+          --force \
+          --no-build \
+          --verbose
+          
     - name: Apply EF Core Migrations
       #working-directory: AccraRoadAttendance\Data
       run: dotnet ef database update --context OnlineAttendanceDbContext --verbose --connection "${{ secrets.PRODUCTION_CONNECTION_STRING }}" --project AccraRoadAttendance/AccraRoadAttendance.csproj
