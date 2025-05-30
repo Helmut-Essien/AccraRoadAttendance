@@ -13,7 +13,7 @@ namespace AccraRoadAttendance.Data
     // Add this class to your Data folder
     public class OnlineAttendanceDbContext : IdentityDbContext<User>
     {
-        public new DbSet<Member> Members { get; set; }
+        public  DbSet<Member> Members { get; set; }
         public new DbSet<User> Users { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<ChurchAttendanceSummary> ChurchAttendanceSummaries { get; set; }
@@ -78,26 +78,24 @@ namespace AccraRoadAttendance.Data
             // Configure Attendance entity
             builder.Entity<Attendance>(entity =>
             {
+                entity.Property(a => a.Id)
+                      .ValueGeneratedOnAdd();
+
+                entity.HasIndex(a => new { a.MemberId, a.ServiceDate, a.ServiceType })
+                      .IsUnique()
+                      .HasDatabaseName("IX_Attendances_MemberId_ServiceDate_ServiceType");
+
                 entity.HasIndex(a => a.ServiceDate)
-                    .HasDatabaseName("IX_Attendance_ServiceDate");
+                      .HasDatabaseName("IX_Attendance_ServiceDate");
 
                 entity.HasIndex(a => new { a.ServiceDate, a.ServiceType })
-                    .HasDatabaseName("IX_ServiceDate_ServiceType");
+                      .HasDatabaseName("IX_ServiceDate_ServiceType");
 
                 entity.Property(a => a.ServiceType)
-                    .HasConversion<string>();
+                      .HasConversion<string>();
 
                 entity.Property(a => a.Status)
-                    .HasConversion<string>();
-
-                //entity.Property(m => m.LastModified)
-                //     .HasColumnType("datetime")
-                //     .IsRequired()
-                //     .HasDefaultValueSql("GETUTCDATE()");
-
-                //entity.Property(m => m.SyncStatus)
-                //      .IsRequired()
-                //      .HasDefaultValue(false);
+                      .HasConversion<string>();
             });
 
             // Configure ChurchAttendanceSummary entity

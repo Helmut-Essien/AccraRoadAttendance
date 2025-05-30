@@ -142,7 +142,15 @@ namespace AccraRoadAttendance.Views.Pages.Members
             SelectedPicturePath = member.PicturePath;
             SpouseName = member.SpouseName;
             SpouseContact = member.SpouseContact;
-            ImagePreview.Source = string.IsNullOrEmpty(SelectedPicturePath) ? null : new BitmapImage(new Uri(SelectedPicturePath));
+            //ImagePreview.Source = string.IsNullOrEmpty(SelectedPicturePath) ? null : new BitmapImage(new Uri(SelectedPicturePath));
+            if (!string.IsNullOrEmpty(SelectedPicturePath) && File.Exists(SelectedPicturePath))
+            {
+                ImagePreview.Source = new BitmapImage(new Uri(SelectedPicturePath));
+            }
+            else
+            {
+                ImagePreview.Source = null;
+            }
             _pictureChanged = false;
 
             // Notify UI of all property changes

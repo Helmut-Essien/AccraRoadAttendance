@@ -1,5 +1,6 @@
 ﻿using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -172,7 +173,7 @@ namespace AccraRoadAttendance.Services
                 }
             }
 
-            _localContext.SaveChanges();
+            _onlineContext.SaveChanges();
             _logger.LogInformation("Local members pushed.");
         }
 
@@ -180,6 +181,7 @@ namespace AccraRoadAttendance.Services
         private void PushAttendances()
         {
             var localAttendances = _localContext.Attendances
+                //.Include(a => a.Member)
                 .Where(a => !a.AttendanceSyncStatus || a.AttendanceLastModified > _lastSyncTime)
                 .ToList();
 
@@ -192,11 +194,36 @@ namespace AccraRoadAttendance.Services
                     {
                         if (onlineAttendance == null)
                         {
-                            _onlineContext.Attendances.Add(attendance);
+                            _logger.LogInformation("Adding new attendance {AttendanceId} to online DB", attendance.Id);
+                            var newAttendance = new Attendance
+                            {
+                                MemberId = attendance.MemberId,
+                                Member = attendance.Member,
+                                ServiceDate = attendance.ServiceDate,
+                                ServiceType = attendance.ServiceType,
+                                Status = attendance.Status,
+                                Notes = attendance.Notes,
+                                RecordedAt = attendance.RecordedAt,
+                                AttendanceLastModified = attendance.AttendanceLastModified,
+                                AttendanceSyncStatus = attendance.AttendanceSyncStatus
+                                // Add other properties as needed
+                            };
+                            _onlineContext.Attendances.Add(newAttendance);
+                            //_onlineContext.Attendances.Add(attendance);
                         }
                         else
                         {
-                            _onlineContext.Entry(onlineAttendance).CurrentValues.SetValues(attendance);
+                            _onlineContext.Entry(onlineAttendance).CurrentValues.SetValues(new
+                            {
+                                attendance.AttendanceLastModified,
+                                attendance.AttendanceSyncStatus,
+                                attendance.MemberId,
+                                attendance.Notes,
+                                attendance.RecordedAt,
+                                attendance.ServiceDate,
+                                attendance.ServiceType,
+                                attendance.Status
+                            });
                         }
 
                         _onlineContext.SaveChanges();
@@ -209,7 +236,7 @@ namespace AccraRoadAttendance.Services
                     continue;
                 }
             }
-            _localContext.SaveChanges();
+            _onlineContext.SaveChanges();
             MessageBox.Show("Local Attendances Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -246,7 +273,7 @@ namespace AccraRoadAttendance.Services
                     continue;
                 }
             }
-            _localContext.SaveChanges();
+            _onlineContext.SaveChanges();
             MessageBox.Show("Local Summaries Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -281,21 +308,26 @@ namespace AccraRoadAttendance.Services
                     var localMember = _localContext.Members.Find(onlineMember.Id);
                     if (localMember == null || localMember.LastModified < onlineMember.LastModified)
                     {
+                        _logger.LogInformation("Before upload, PicturePath: {PicturePath}", localMember.PicturePath);
                         // Handle image download if necessary
                         if (!string.IsNullOrEmpty(onlineMember.PicturePath) && onlineMember.PicturePath.StartsWith("https://drive.google.com"))
                         {
                             onlineMember.PicturePath = _googleDriveService.DownloadImage(onlineMember.PicturePath);
+                            _logger.LogInformation("After download, PicturePath: {PicturePath}", onlineMember.PicturePath);
                         }
 
                         if (localMember == null)
                         {
                             _localContext.Members.Add(onlineMember);
+                            _logger.LogInformation("After download, PicturePath: {PicturePath}", onlineMember.PicturePath);
                         }
                         else
                         {
                             _localContext.Entry(localMember).CurrentValues.SetValues(onlineMember);
+                            _logger.LogInformation("After download, PicturePath: {PicturePath}", onlineMember.PicturePath);
                         }
 
+                        _logger.LogInformation("After download, PicturePath: {PicturePath}", onlineMember.PicturePath);
                         _localContext.SaveChanges();
                     }
                 }
