@@ -192,8 +192,9 @@ namespace AccraRoadAttendance.Services
                     _ => ".jpg" // Default to .jpg if unknown
                 };
 
-                var localPath = Path.Combine("ProfilePictures", $"{fileId}{extension}");
-                Directory.CreateDirectory("ProfilePictures");
+                //var localPath = Path.Combine("ProfilePictures", $"{fileId}{extension}");
+                var localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProfilePictures", $"{fileId}{extension}");
+                Directory.CreateDirectory(Path.GetDirectoryName(localPath));
 
                 // Check if file already exists locally
                 if (File.Exists(localPath))

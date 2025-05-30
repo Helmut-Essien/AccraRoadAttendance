@@ -4,16 +4,19 @@ using AccraRoadAttendance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AccraRoadAttendance.Migrations
+namespace AccraRoadAttendance.Migrations.OnlineAttendanceDb
 {
-    [DbContext(typeof(AttendanceDbContext))]
-    partial class AttendanceDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(OnlineAttendanceDbContext))]
+    [Migration("20250528074912_AttendanceUnique")]
+    partial class AttendanceUnique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,7 +73,7 @@ namespace AccraRoadAttendance.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Attendances_MemberId_ServiceDate_ServiceType");
 
-                    b.ToTable("Attendances", (string)null);
+                    b.ToTable("Attendances");
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.ChurchAttendanceSummary", b =>
@@ -120,7 +123,7 @@ namespace AccraRoadAttendance.Migrations
                     b.HasIndex("SummaryDate")
                         .HasDatabaseName("IX_Summary_Date");
 
-                    b.ToTable("ChurchAttendanceSummaries", (string)null);
+                    b.ToTable("ChurchAttendanceSummaries");
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.Member", b =>
@@ -272,7 +275,7 @@ namespace AccraRoadAttendance.Migrations
                         .IsUnique()
                         .HasFilter("[PhoneNumber] IS NOT NULL");
 
-                    b.ToTable("Members", (string)null);
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.SyncMetadata", b =>
@@ -286,7 +289,7 @@ namespace AccraRoadAttendance.Migrations
 
                     b.HasKey("Key");
 
-                    b.ToTable("SyncMetadata", (string)null);
+                    b.ToTable("SyncMetadata");
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.User", b =>

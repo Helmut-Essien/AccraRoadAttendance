@@ -142,7 +142,15 @@ namespace AccraRoadAttendance.Views.Pages.Members
             SelectedPicturePath = member.PicturePath;
             SpouseName = member.SpouseName;
             SpouseContact = member.SpouseContact;
-            ImagePreview.Source = string.IsNullOrEmpty(SelectedPicturePath) ? null : new BitmapImage(new Uri(SelectedPicturePath));
+            //ImagePreview.Source = string.IsNullOrEmpty(SelectedPicturePath) ? null : new BitmapImage(new Uri(SelectedPicturePath));
+            if (!string.IsNullOrEmpty(SelectedPicturePath) && File.Exists(SelectedPicturePath))
+            {
+                ImagePreview.Source = new BitmapImage(new Uri(SelectedPicturePath));
+            }
+            else
+            {
+                ImagePreview.Source = null;
+            }
             _pictureChanged = false;
 
             // Notify UI of all property changes
@@ -882,7 +890,8 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 memberToUpdate.HasFamilyMemberInChurch = HasFamilyMemberInChurch;
                 memberToUpdate.FamilyMemberName = HasFamilyMemberInChurch ? FamilyMemberName : null;
                 memberToUpdate.FamilyMemberContact = HasFamilyMemberInChurch ? FamilyMemberContact : null;
-               
+                memberToUpdate.LastModified = DateTime.UtcNow;
+
                 if (maritalStatus.Value != 0)
                 {
                     memberToUpdate.SpouseName = null;

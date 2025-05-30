@@ -12,6 +12,7 @@ namespace AccraRoadAttendance.Models
     public class Attendance
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; } 
 
         [ForeignKey("Member")]

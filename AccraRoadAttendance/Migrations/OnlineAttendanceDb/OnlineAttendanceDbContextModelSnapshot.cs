@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AccraRoadAttendance.Migrations
+namespace AccraRoadAttendance.Migrations.OnlineAttendanceDb
 {
-    [DbContext(typeof(AttendanceDbContext))]
-    partial class AttendanceDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(OnlineAttendanceDbContext))]
+    partial class OnlineAttendanceDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

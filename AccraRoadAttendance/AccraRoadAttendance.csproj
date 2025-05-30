@@ -104,4 +104,11 @@
     <EmbeddedResource Include="Resources\service_key.enc" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Content Include="ProfilePictures\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+
 </Project>
