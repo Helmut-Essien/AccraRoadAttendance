@@ -164,8 +164,30 @@ namespace AccraRoadAttendance.Views
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                MessageBox.Show(ex.Message, "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                //Console.WriteLine(ex.Message);
+                //MessageBox.Show(ex.Message, "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                // Build a detailed error message including inner exceptions
+                string errorMessage = ex.Message;
+                Exception currentException = ex;
+                int depth = 1;
+
+                // Traverse all inner exceptions
+                while (currentException.InnerException != null)
+                {
+                    currentException = currentException.InnerException;
+                    errorMessage += $"\nInner Exception {depth}: {currentException.Message}";
+                    depth++;
+                }
+
+                // Optionally include the stack trace for full context
+                errorMessage += $"\nStack Trace: {ex.StackTrace}";
+
+                // Log to console
+                Console.WriteLine("Exception Details:");
+                Console.WriteLine(errorMessage);
+
+                // Show in MessageBox
+                MessageBox.Show(errorMessage, "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
