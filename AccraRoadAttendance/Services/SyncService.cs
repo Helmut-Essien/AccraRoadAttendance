@@ -45,7 +45,7 @@ namespace AccraRoadAttendance.Services
                 // Log the exception (e.g., using ILogger)
                 _logger.LogError(ex, "SyncData failed: {Message}", ex.Message);
                 //throw new InvalidOperationException("Synchronization failed.", ex);
-                throw new InvalidOperationException( ex.Message);
+                throw new InvalidOperationException("Synchronization failed.", ex); // Pass 'ex' as the inner exception
             }
         }
 
