@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccraRoadAttendance.Migrations
 {
     [DbContext(typeof(AttendanceDbContext))]
-    [Migration("20250522072844_AddSyncMetadata")]
-    partial class AddSyncMetadata
+    [Migration("20250605075932_InitialGuid")]
+    partial class InitialGuid
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,11 @@ namespace AccraRoadAttendance.Migrations
 
             modelBuilder.Entity("AccraRoadAttendance.Models.Attendance", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<DateTime>("AttendanceLastModified")
                         .HasColumnType("datetime");
@@ -39,9 +39,9 @@ namespace AccraRoadAttendance.Migrations
                     b.Property<bool>("AttendanceSyncStatus")
                         .HasColumnType("bit");
 
-                    b.Property<string>("MemberId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("MemberId");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
@@ -63,13 +63,15 @@ namespace AccraRoadAttendance.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MemberId");
-
                     b.HasIndex("ServiceDate")
                         .HasDatabaseName("IX_Attendance_ServiceDate");
 
                     b.HasIndex("ServiceDate", "ServiceType")
                         .HasDatabaseName("IX_ServiceDate_ServiceType");
+
+                    b.HasIndex("MemberId", "ServiceDate", "ServiceType")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Attendances_MemberId_ServiceDate_ServiceType");
 
                     b.ToTable("Attendances");
                 });
@@ -126,8 +128,11 @@ namespace AccraRoadAttendance.Migrations
 
             modelBuilder.Entity("AccraRoadAttendance.Models.Member", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("Address")
                         .HasMaxLength(200)
@@ -315,9 +320,8 @@ namespace AccraRoadAttendance.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("MemberId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)

@@ -7,7 +7,10 @@ namespace AccraRoadAttendance.Models
 {
     public class Member 
     {
-        public string? Id { get; set; } 
+        // 1) Declare the new GUID primary key:
+        [Key]
+        [Column("Id", TypeName = "uniqueidentifier")]
+        public Guid Id { get; set; }
 
         [MaxLength(50)]
         public required string FirstName { get; set; }

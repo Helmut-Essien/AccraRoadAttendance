@@ -938,8 +938,8 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 }
 
                 // Save to database
-                if (string.IsNullOrWhiteSpace(newMember.Id))
-                    newMember.Id = Guid.NewGuid().ToString();
+                if (newMember.Id == Guid.Empty)
+                    newMember.Id = Guid.NewGuid();
                 _context.Members.Add(newMember);
                 await _context.SaveChangesAsync();
 

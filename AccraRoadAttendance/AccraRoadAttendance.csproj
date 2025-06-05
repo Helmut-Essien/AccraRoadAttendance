@@ -90,10 +90,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
-  <ItemGroup>
 	  <Content Include="Properties\launchSettings.json">
 		  <ExcludeFromClickOnce>true</ExcludeFromClickOnce>
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

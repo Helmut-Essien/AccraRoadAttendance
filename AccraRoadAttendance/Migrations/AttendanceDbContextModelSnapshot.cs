@@ -24,11 +24,11 @@ namespace AccraRoadAttendance.Migrations
 
             modelBuilder.Entity("AccraRoadAttendance.Models.Attendance", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<DateTime>("AttendanceLastModified")
                         .HasColumnType("datetime");
@@ -36,9 +36,9 @@ namespace AccraRoadAttendance.Migrations
                     b.Property<bool>("AttendanceSyncStatus")
                         .HasColumnType("bit");
 
-                    b.Property<string>("MemberId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("MemberId");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
@@ -70,7 +70,7 @@ namespace AccraRoadAttendance.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Attendances_MemberId_ServiceDate_ServiceType");
 
-                    b.ToTable("Attendances", (string)null);
+                    b.ToTable("Attendances");
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.ChurchAttendanceSummary", b =>
@@ -120,13 +120,16 @@ namespace AccraRoadAttendance.Migrations
                     b.HasIndex("SummaryDate")
                         .HasDatabaseName("IX_Summary_Date");
 
-                    b.ToTable("ChurchAttendanceSummaries", (string)null);
+                    b.ToTable("ChurchAttendanceSummaries");
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.Member", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("Address")
                         .HasMaxLength(200)
@@ -272,7 +275,7 @@ namespace AccraRoadAttendance.Migrations
                         .IsUnique()
                         .HasFilter("[PhoneNumber] IS NOT NULL");
 
-                    b.ToTable("Members", (string)null);
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.SyncMetadata", b =>
@@ -286,7 +289,7 @@ namespace AccraRoadAttendance.Migrations
 
                     b.HasKey("Key");
 
-                    b.ToTable("SyncMetadata", (string)null);
+                    b.ToTable("SyncMetadata");
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.User", b =>
@@ -314,9 +317,8 @@ namespace AccraRoadAttendance.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("MemberId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)

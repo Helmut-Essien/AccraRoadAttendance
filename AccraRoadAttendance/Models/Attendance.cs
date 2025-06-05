@@ -11,12 +11,14 @@ namespace AccraRoadAttendance.Models
 {
     public class Attendance
     {
+        // 1) New GUID primary key
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; } 
+        [Column("Id", TypeName = "uniqueidentifier")]
+        public Guid Id { get; set; }
 
         [ForeignKey("Member")]
-        public required string MemberId { get; set; }
+        [Column("MemberId")]
+        public required Guid MemberId { get; set; }
         public required Member Member { get; set; }
 
         [Required]
