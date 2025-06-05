@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AccraRoadAttendance.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialGuid : Migration
+    public partial class initialULID : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,7 +51,7 @@ namespace AccraRoadAttendance.Migrations
                 name: "Members",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     OtherNames = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -132,7 +132,7 @@ namespace AccraRoadAttendance.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MemberId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -163,8 +163,8 @@ namespace AccraRoadAttendance.Migrations
                 name: "Attendances",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    MemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false, defaultValueSql: "NEWID()"),
+                    MemberId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ServiceDate = table.Column<DateTime>(type: "date", nullable: false),
                     ServiceType = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     RecordedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -330,7 +330,8 @@ namespace AccraRoadAttendance.Migrations
                 name: "IX_Attendances_MemberId_ServiceDate_ServiceType",
                 table: "Attendances",
                 columns: new[] { "MemberId", "ServiceDate", "ServiceType" },
-                unique: true);
+                unique: true,
+                filter: "[MemberId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceDate_ServiceType",

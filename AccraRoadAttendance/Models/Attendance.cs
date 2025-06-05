@@ -6,19 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using NUlid;
 
 namespace AccraRoadAttendance.Models
 {
     public class Attendance
     {
-        // 1) New GUID primary key
         [Key]
-        [Column("Id", TypeName = "uniqueidentifier")]
-        public Guid Id { get; set; }
+        public string Id { get; set; } = Ulid.NewUlid().ToString();
 
         [ForeignKey("Member")]
         [Column("MemberId")]
-        public required Guid MemberId { get; set; }
+        public required string? MemberId { get; set; }
         public required Member Member { get; set; }
 
         [Required]

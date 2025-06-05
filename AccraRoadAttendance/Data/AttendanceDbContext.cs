@@ -48,8 +48,7 @@ namespace AccraRoadAttendance.Data
             {
                 // Generate a new GUID on insert if you don’t supply one:
                 entity.Property(m => m.Id)
-                      .HasDefaultValueSql("NEWID()")
-                      .ValueGeneratedOnAdd();
+                .ValueGeneratedOnAdd();
 
                 entity.HasIndex(m => m.Email).IsUnique();
                 entity.HasIndex(m => m.PhoneNumber).IsUnique();

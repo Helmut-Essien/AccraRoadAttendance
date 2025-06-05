@@ -14,6 +14,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Member = AccraRoadAttendance.Models.Member;
+using NUlid;
 
 namespace AccraRoadAttendance.Views.Pages.Members
 {
@@ -938,8 +939,8 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 }
 
                 // Save to database
-                if (newMember.Id == Guid.Empty)
-                    newMember.Id = Guid.NewGuid();
+                if (string.IsNullOrWhiteSpace(newMember.Id))
+                    newMember.Id = Ulid.NewUlid().ToString();
                 _context.Members.Add(newMember);
                 await _context.SaveChangesAsync();
 

@@ -5,7 +5,7 @@ namespace AccraRoadAttendance.Models
 {
     public class User : IdentityUser
     {
-        public Guid MemberId { get; set; }
+        public string? MemberId { get; set; }
         public Member? Member { get; set; }
 
        
