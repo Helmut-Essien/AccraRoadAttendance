@@ -22,6 +22,8 @@ namespace AccraRoadAttendance.Models
         public int TotalMembers { get; set; }
         public int Visitors { get; set; }
         public int Children { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
         public decimal OfferingAmount { get; set; }
 
         [MaxLength(500)]

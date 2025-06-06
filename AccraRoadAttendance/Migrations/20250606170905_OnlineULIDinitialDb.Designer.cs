@@ -11,9 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AccraRoadAttendance.Migrations
 {
-    [DbContext(typeof(AttendanceDbContext))]
-    [Migration("20250605154004_initialULID")]
-    partial class initialULID
+    [DbContext(typeof(OnlineAttendanceDbContext))]
+    [Migration("20250606170905_OnlineULIDinitialDb")]
+    partial class OnlineULIDinitialDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,8 +29,7 @@ namespace AccraRoadAttendance.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)")
-                        .HasDefaultValueSql("NEWID()");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("AttendanceLastModified")
                         .HasColumnType("datetime");

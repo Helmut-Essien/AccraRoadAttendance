@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AccraRoadAttendance.Migrations
+namespace AccraRoadAttendance.Migrations.AttendanceDb
 {
     /// <inheritdoc />
-    public partial class initialULID : Migration
+    public partial class ULIDinitialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

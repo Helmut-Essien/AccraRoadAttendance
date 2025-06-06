@@ -54,6 +54,11 @@ namespace AccraRoadAttendance.Data
             // Configure Member entity
             builder.Entity<Member>(entity =>
             {
+
+                // Generate a new GUID on insert if you don’t supply one:
+                entity.Property(m => m.Id)
+                .ValueGeneratedOnAdd();
+
                 entity.HasIndex(m => m.Email).IsUnique();
                 entity.HasIndex(m => m.PhoneNumber).IsUnique();
 
@@ -65,14 +70,7 @@ namespace AccraRoadAttendance.Data
                 entity.Property(m => m.Sex)
                     .HasConversion<string>();
 
-                //entity.Property(m => m.LastModified)
-                //     .HasColumnType("datetime")
-                //     .IsRequired()
-                //     .HasDefaultValueSql("GETUTCDATE()");
 
-                //entity.Property(m => m.SyncStatus)
-                //      .IsRequired()
-                //      .HasDefaultValue(false);
             });
 
             // Configure Attendance entity
