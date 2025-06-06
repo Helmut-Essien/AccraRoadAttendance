@@ -11,9 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AccraRoadAttendance.Migrations
 {
-    [DbContext(typeof(AttendanceDbContext))]
-    [Migration("20250522072844_AddSyncMetadata")]
-    partial class AddSyncMetadata
+    [DbContext(typeof(OnlineAttendanceDbContext))]
+    [Migration("20250606170905_OnlineULIDinitialDb")]
+    partial class OnlineULIDinitialDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,9 @@ namespace AccraRoadAttendance.Migrations
 
             modelBuilder.Entity("AccraRoadAttendance.Models.Attendance", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("AttendanceLastModified")
                         .HasColumnType("datetime");
@@ -40,8 +38,8 @@ namespace AccraRoadAttendance.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("MemberId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("MemberId");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
@@ -63,13 +61,16 @@ namespace AccraRoadAttendance.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MemberId");
-
                     b.HasIndex("ServiceDate")
                         .HasDatabaseName("IX_Attendance_ServiceDate");
 
                     b.HasIndex("ServiceDate", "ServiceType")
                         .HasDatabaseName("IX_ServiceDate_ServiceType");
+
+                    b.HasIndex("MemberId", "ServiceDate", "ServiceType")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Attendances_MemberId_ServiceDate_ServiceType")
+                        .HasFilter("[MemberId] IS NOT NULL");
 
                     b.ToTable("Attendances");
                 });
@@ -127,6 +128,7 @@ namespace AccraRoadAttendance.Migrations
             modelBuilder.Entity("AccraRoadAttendance.Models.Member", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
@@ -504,8 +506,7 @@ namespace AccraRoadAttendance.Migrations
                     b.HasOne("AccraRoadAttendance.Models.Member", "Member")
                         .WithMany("Attendances")
                         .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Member");
                 });

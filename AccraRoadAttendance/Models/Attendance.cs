@@ -6,17 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using NUlid;
 
 namespace AccraRoadAttendance.Models
 {
     public class Attendance
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; } 
+        public string Id { get; set; } = Ulid.NewUlid().ToString();
 
         [ForeignKey("Member")]
-        public required string MemberId { get; set; }
+        [Column("MemberId")]
+        public required string? MemberId { get; set; }
         public required Member Member { get; set; }
 
         [Required]

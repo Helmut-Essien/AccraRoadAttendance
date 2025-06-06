@@ -1,5 +1,6 @@
 ﻿// AccraRoadAttendance.Models.Member.cs
 using Microsoft.AspNetCore.Identity;
+using NUlid;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,7 +8,9 @@ namespace AccraRoadAttendance.Models
 {
     public class Member 
     {
-        public string? Id { get; set; } 
+        // 1) Declare the new GUID primary key:
+        [Key]
+        public string Id { get; set; } = Ulid.NewUlid().ToString();
 
         [MaxLength(50)]
         public required string FirstName { get; set; }

@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AccraRoadAttendance.Migrations.OnlineAttendanceDb
+namespace AccraRoadAttendance.Migrations
 {
     /// <inheritdoc />
-    public partial class AttendanceUnique : Migration
+    public partial class OnlineULIDinitialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -163,9 +163,8 @@ namespace AccraRoadAttendance.Migrations.OnlineAttendanceDb
                 name: "Attendances",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MemberId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MemberId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ServiceDate = table.Column<DateTime>(type: "date", nullable: false),
                     ServiceType = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     RecordedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -331,7 +330,8 @@ namespace AccraRoadAttendance.Migrations.OnlineAttendanceDb
                 name: "IX_Attendances_MemberId_ServiceDate_ServiceType",
                 table: "Attendances",
                 columns: new[] { "MemberId", "ServiceDate", "ServiceType" },
-                unique: true);
+                unique: true,
+                filter: "[MemberId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceDate_ServiceType",

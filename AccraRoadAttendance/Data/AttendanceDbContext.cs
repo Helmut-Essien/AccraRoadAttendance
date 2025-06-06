@@ -18,8 +18,6 @@ namespace AccraRoadAttendance.Data
         {
         }
 
-
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -48,6 +46,10 @@ namespace AccraRoadAttendance.Data
             // Configure Member entity
             builder.Entity<Member>(entity =>
             {
+                // Generate a new GUID on insert if you don’t supply one:
+                entity.Property(m => m.Id)
+                .ValueGeneratedOnAdd();
+
                 entity.HasIndex(m => m.Email).IsUnique();
                 entity.HasIndex(m => m.PhoneNumber).IsUnique();
 
@@ -58,22 +60,15 @@ namespace AccraRoadAttendance.Data
 
                 entity.Property(m => m.Sex)
                     .HasConversion<string>();
-
-                //entity.Property(m => m.LastModified)
-                //     .HasColumnType("datetime")
-                //     .IsRequired()
-                //     .HasDefaultValueSql("GETUTCDATE()");
-
-                //entity.Property(m => m.SyncStatus)
-                //      .IsRequired()
-                //      .HasDefaultValue(false);
             });
 
             
             // Configure Attendance entity
             builder.Entity<Attendance>(entity =>
             {
+                // Configure Attendance.Id to auto generate NEWID() on add
                 entity.Property(a => a.Id)
+                      .HasDefaultValueSql("NEWID()")
                       .ValueGeneratedOnAdd();
 
                 entity.HasIndex(a => new { a.MemberId, a.ServiceDate, a.ServiceType })
@@ -106,15 +101,6 @@ namespace AccraRoadAttendance.Data
 
                 entity.HasIndex(c => c.ServiceType)
                     .HasDatabaseName("IX_Summary_ServiceType");
-
-                //entity.Property(m => m.LastModified)
-                //     .HasColumnType("datetime")
-                //     .IsRequired()
-                //     .HasDefaultValueSql("GETUTCDATE()");
-
-                //entity.Property(m => m.SyncStatus)
-                //      .IsRequired()
-                //      .HasDefaultValue(false);
             });
 
             //Configure SyncMetadata entity

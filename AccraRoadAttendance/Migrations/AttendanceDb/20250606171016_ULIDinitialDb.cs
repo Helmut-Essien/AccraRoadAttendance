@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AccraRoadAttendance.Migrations
+namespace AccraRoadAttendance.Migrations.AttendanceDb
 {
     /// <inheritdoc />
-    public partial class initialCreate : Migration
+    public partial class ULIDinitialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -95,6 +95,18 @@ namespace AccraRoadAttendance.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SyncMetadata",
+                columns: table => new
+                {
+                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SyncMetadata", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -151,9 +163,8 @@ namespace AccraRoadAttendance.Migrations
                 name: "Attendances",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MemberId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false, defaultValueSql: "NEWID()"),
+                    MemberId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ServiceDate = table.Column<DateTime>(type: "date", nullable: false),
                     ServiceType = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     RecordedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -316,9 +327,11 @@ namespace AccraRoadAttendance.Migrations
                 column: "ServiceDate");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Attendances_MemberId",
+                name: "IX_Attendances_MemberId_ServiceDate_ServiceType",
                 table: "Attendances",
-                column: "MemberId");
+                columns: new[] { "MemberId", "ServiceDate", "ServiceType" },
+                unique: true,
+                filter: "[MemberId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceDate_ServiceType",
@@ -373,6 +386,9 @@ namespace AccraRoadAttendance.Migrations
 
             migrationBuilder.DropTable(
                 name: "ChurchAttendanceSummaries");
+
+            migrationBuilder.DropTable(
+                name: "SyncMetadata");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

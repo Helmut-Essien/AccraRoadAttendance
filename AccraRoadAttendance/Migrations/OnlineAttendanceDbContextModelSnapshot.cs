@@ -4,19 +4,16 @@ using AccraRoadAttendance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace AccraRoadAttendance.Migrations
 {
-    [DbContext(typeof(AttendanceDbContext))]
-    [Migration("20250424070853_initialCreate")]
-    partial class initialCreate
+    [DbContext(typeof(OnlineAttendanceDbContext))]
+    partial class OnlineAttendanceDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,11 +24,9 @@ namespace AccraRoadAttendance.Migrations
 
             modelBuilder.Entity("AccraRoadAttendance.Models.Attendance", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("AttendanceLastModified")
                         .HasColumnType("datetime");
@@ -40,8 +35,8 @@ namespace AccraRoadAttendance.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("MemberId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("MemberId");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
@@ -63,13 +58,16 @@ namespace AccraRoadAttendance.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MemberId");
-
                     b.HasIndex("ServiceDate")
                         .HasDatabaseName("IX_Attendance_ServiceDate");
 
                     b.HasIndex("ServiceDate", "ServiceType")
                         .HasDatabaseName("IX_ServiceDate_ServiceType");
+
+                    b.HasIndex("MemberId", "ServiceDate", "ServiceType")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Attendances_MemberId_ServiceDate_ServiceType")
+                        .HasFilter("[MemberId] IS NOT NULL");
 
                     b.ToTable("Attendances");
                 });
@@ -127,6 +125,7 @@ namespace AccraRoadAttendance.Migrations
             modelBuilder.Entity("AccraRoadAttendance.Models.Member", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
@@ -274,6 +273,20 @@ namespace AccraRoadAttendance.Migrations
                         .HasFilter("[PhoneNumber] IS NOT NULL");
 
                     b.ToTable("Members");
+                });
+
+            modelBuilder.Entity("AccraRoadAttendance.Models.SyncMetadata", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("SyncMetadata");
                 });
 
             modelBuilder.Entity("AccraRoadAttendance.Models.User", b =>
@@ -490,8 +503,7 @@ namespace AccraRoadAttendance.Migrations
                     b.HasOne("AccraRoadAttendance.Models.Member", "Member")
                         .WithMany("Attendances")
                         .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Member");
                 });
