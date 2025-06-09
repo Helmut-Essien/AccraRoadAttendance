@@ -35,6 +35,7 @@ namespace AccraRoadAttendance.Services
         {
             try
             {
+                 _logger.LogInformation("Starting synchronization");
                 PushLocalChanges();
                 PullOnlineChanges();
                 SaveLastSyncTime(DateTime.UtcNow);
@@ -146,7 +147,48 @@ namespace AccraRoadAttendance.Services
                         continue;
                     }
 
-                    
+                    // Create a new Member object for the online context with all properties
+                    var onlineMemberToSync = new Member
+                    {
+                        Id = member.Id,
+                        FirstName = member.FirstName,
+                        LastName = member.LastName,
+                        OtherNames = member.OtherNames,
+                        PhoneNumber = member.PhoneNumber,
+                        Email = member.Email,
+                        Sex = member.Sex,
+                        PicturePath = member.PicturePath, // Initially set to local path
+                        MembershipStartDate = member.MembershipStartDate,
+                        IsActive = member.IsActive,
+                        DateOfBirth = member.DateOfBirth,
+                        Nationality = member.Nationality,
+                        educationalLevel = member.educationalLevel,
+                        Address = member.Address,
+                        Location = member.Location,
+                        HasFamilyMemberInChurch = member.HasFamilyMemberInChurch,
+                        maritalStatus = member.maritalStatus,
+                        occupationType = member.occupationType,
+                        IsBaptized = member.IsBaptized,
+                        PlaceOfBaptism = member.PlaceOfBaptism,
+                        BaptismDate = member.BaptismDate,
+                        Hometown = member.Hometown,
+                        NextOfKinName = member.NextOfKinName,
+                        NextOfKinContact = member.NextOfKinContact,
+                        MotherName = member.MotherName,
+                        MotherContact = member.MotherContact,
+                        FatherName = member.FatherName,
+                        FatherContact = member.FatherContact,
+                        FamilyMemberName = member.FamilyMemberName,
+                        FamilyMemberContact = member.FamilyMemberContact,
+                        MemberRole = member.MemberRole,
+                        Skills = member.Skills,
+                        LastModified = member.LastModified,
+                        SyncStatus = member.SyncStatus,
+                        SpouseName = member.SpouseName,
+                        SpouseContact = member.SpouseContact,
+                        OccupationDescription = member.OccupationDescription
+                    };
+
 
                     if (needsSync)
                     {
@@ -160,31 +202,32 @@ namespace AccraRoadAttendance.Services
                         }
 
 
-                        if (!string.IsNullOrEmpty(member.PicturePath)
-                            && !member.PicturePath.StartsWith("https://drive.google.com"))
+                        if (!string.IsNullOrEmpty(onlineMemberToSync.PicturePath)
+                            && !onlineMemberToSync.PicturePath.StartsWith("https://drive.google.com"))
                         {
                             _logger.LogInformation("Uploading image for member {MemberId}", member.Id);
-                            member.PicturePath = _googleDriveService.UploadImage(member.PicturePath);
+                            onlineMemberToSync.PicturePath = _googleDriveService.UploadImage(member.PicturePath);
                             _logger.LogInformation("Image uploaded: {PicturePath}", member.PicturePath);
                         }
 
                         if (onlineMember == null)
                         {
                             _logger.LogInformation("Adding new member {MemberId} to online DB", member.Id);
-                            _onlineContext.Members.Add(member);
+                            _onlineContext.Members.Add(onlineMemberToSync);
                         }
                         else
                         {
                             _logger.LogInformation("Updating online member {MemberId}", member.Id);
                             //_onlineContext.Entry(onlineMember).CurrentValues.SetValues(member);
-                            _onlineContext.Members.Attach(member);
-                            _onlineContext.Entry(member).State = EntityState.Modified;
+                            _onlineContext.Members.Attach(onlineMemberToSync);
+                            _onlineContext.Entry(onlineMemberToSync).State = EntityState.Modified;
                         }
 
                         _onlineContext.SaveChanges();
 
                         _logger.LogInformation("Successfully synced member {MemberId}", member.Id);
                         member.SyncStatus = true;
+                        _localContext.SaveChanges();
                     }
                     else
                     {
@@ -198,7 +241,7 @@ namespace AccraRoadAttendance.Services
                 }
             }
 
-            _onlineContext.SaveChanges();
+            
             _logger.LogInformation("Local members pushed.");
         }
 
@@ -232,21 +275,21 @@ namespace AccraRoadAttendance.Services
                         if (onlineAttendance == null)
                         {
                             _logger.LogInformation("Adding new attendance {AttendanceId} to online DB", attendance.Id);
-                            var newAttendance = new Attendance
-                            {
-                                MemberId = attendance.MemberId,
-                                Member = attendance.Member,
-                                ServiceDate = attendance.ServiceDate,
-                                ServiceType = attendance.ServiceType,
-                                Status = attendance.Status,
-                                Notes = attendance.Notes,
-                                RecordedAt = attendance.RecordedAt,
-                                AttendanceLastModified = attendance.AttendanceLastModified,
-                                AttendanceSyncStatus = attendance.AttendanceSyncStatus
-                                // Add other properties as needed
-                            };
-                            _onlineContext.Attendances.Add(newAttendance);
-                            //_onlineContext.Attendances.Add(attendance);
+                            //var newAttendance = new Attendance
+                            //{
+                            //    MemberId = attendance.MemberId,
+                            //    Member = attendance.Member,
+                            //    ServiceDate = attendance.ServiceDate,
+                            //    ServiceType = attendance.ServiceType,
+                            //    Status = attendance.Status,
+                            //    Notes = attendance.Notes,
+                            //    RecordedAt = attendance.RecordedAt,
+                            //    AttendanceLastModified = attendance.AttendanceLastModified,
+                            //    AttendanceSyncStatus = attendance.AttendanceSyncStatus
+                            //    // Add other properties as needed
+                            //};
+                            //_onlineContext.Attendances.Add(newAttendance);
+                            _onlineContext.Attendances.Add(attendance);
                         }
                         else
                         {
