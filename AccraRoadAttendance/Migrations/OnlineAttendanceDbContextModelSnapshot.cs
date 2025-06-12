@@ -315,7 +315,6 @@ namespace AccraRoadAttendance.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("MemberId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NormalizedEmail")
@@ -352,7 +351,8 @@ namespace AccraRoadAttendance.Migrations
                         .HasFilter("[Email] IS NOT NULL");
 
                     b.HasIndex("MemberId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[MemberId] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -512,9 +512,7 @@ namespace AccraRoadAttendance.Migrations
                 {
                     b.HasOne("AccraRoadAttendance.Models.Member", "Member")
                         .WithOne("User")
-                        .HasForeignKey("AccraRoadAttendance.Models.User", "MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccraRoadAttendance.Models.User", "MemberId");
 
                     b.Navigation("Member");
                 });

@@ -43,18 +43,18 @@ namespace AccraRoadAttendance.Views
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            //if (!_currentUserService.IsLoggedIn)
-            //{
-            //    var login = _serviceProvider.GetRequiredService<Login>();
-            //    login.Show();
-            //    Close();
-            //}
-            //else
-            //{
-            //    _navigationService.NavigateTo<Dashboard>();
-            //}
+            if (!_currentUserService.IsLoggedIn)
+            {
+                var login = _serviceProvider.GetRequiredService<Login>();
+                login.Show();
+                Close();
+            }
+            else
+            {
+                _navigationService.NavigateTo<Dashboard>();
+            }
 
-            _navigationService.NavigateTo<Dashboard>();
+            //_navigationService.NavigateTo<Dashboard>();
         }
 
         private async void Navigate(object sender, RoutedEventArgs e)
