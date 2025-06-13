@@ -165,6 +165,7 @@ namespace AccraRoadAttendance.Views
             }
             catch (Exception ex)
             {
+
                 //Console.WriteLine(ex.Message);
                 //MessageBox.Show(ex.Message, "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 // Build a detailed error message including inner exceptions
