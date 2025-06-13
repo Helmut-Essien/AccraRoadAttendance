@@ -15,6 +15,7 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace AccraRoadAttendance.Views
 {
@@ -189,6 +190,11 @@ namespace AccraRoadAttendance.Views
                 // Show in MessageBox
                 MessageBox.Show(errorMessage, "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            DragMove();
         }
     }
 }
