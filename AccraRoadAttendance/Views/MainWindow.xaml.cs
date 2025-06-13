@@ -15,6 +15,7 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace AccraRoadAttendance.Views
 {
@@ -43,18 +44,18 @@ namespace AccraRoadAttendance.Views
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            //if (!_currentUserService.IsLoggedIn)
-            //{
-            //    var login = _serviceProvider.GetRequiredService<Login>();
-            //    login.Show();
-            //    Close();
-            //}
-            //else
-            //{
-            //    _navigationService.NavigateTo<Dashboard>();
-            //}
+            if (!_currentUserService.IsLoggedIn)
+            {
+                var login = _serviceProvider.GetRequiredService<Login>();
+                login.Show();
+                Close();
+            }
+            else
+            {
+                _navigationService.NavigateTo<Dashboard>();
+            }
 
-            _navigationService.NavigateTo<Dashboard>();
+            //_navigationService.NavigateTo<Dashboard>();
         }
 
         private async void Navigate(object sender, RoutedEventArgs e)
@@ -164,6 +165,7 @@ namespace AccraRoadAttendance.Views
             }
             catch (Exception ex)
             {
+
                 //Console.WriteLine(ex.Message);
                 //MessageBox.Show(ex.Message, "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 // Build a detailed error message including inner exceptions
@@ -189,6 +191,11 @@ namespace AccraRoadAttendance.Views
                 // Show in MessageBox
                 MessageBox.Show(errorMessage, "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            DragMove();
         }
     }
 }

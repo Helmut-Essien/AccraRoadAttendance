@@ -47,7 +47,7 @@ namespace AccraRoadAttendance.Data
                 entity.HasOne(u => u.Member)
                       .WithOne(m => m.User)
                       .HasForeignKey<User>(u => u.MemberId)
-                      .IsRequired();
+                      .IsRequired(false);
                 entity.HasIndex(u => u.Email).IsUnique();
             });
 

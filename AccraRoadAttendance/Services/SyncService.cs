@@ -312,6 +312,7 @@ namespace AccraRoadAttendance.Services
                         _onlineContext.SaveChanges();
                         _logger.LogInformation("Attendance {AttendanceId} successfully pushed online.", attendance.Id);
                         attendance.AttendanceSyncStatus = true;
+                        _localContext.SaveChanges();
                     }
                 }
                 catch (Exception ex)
@@ -320,7 +321,7 @@ namespace AccraRoadAttendance.Services
                     continue;
                 }
             }
-            _onlineContext.SaveChanges();
+            
             MessageBox.Show("Local Attendances Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -372,6 +373,7 @@ namespace AccraRoadAttendance.Services
 
                         _onlineContext.SaveChanges();
                         summary.SummarySyncStatus = true;
+                        _localContext.SaveChanges();
                     }
                 }
                 catch (Exception ex)
@@ -380,7 +382,7 @@ namespace AccraRoadAttendance.Services
                     continue;
                 }
             }
-            _onlineContext.SaveChanges();
+            
             MessageBox.Show("Local Summaries Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 

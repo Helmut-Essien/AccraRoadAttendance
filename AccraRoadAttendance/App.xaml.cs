@@ -113,7 +113,7 @@ namespace AccraRoadAttendance
         }
 }
 
-private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             MessageBox.Show($"An unhandled exception occurred: {e.Exception.Message}\n{e.Exception.StackTrace}",
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -141,37 +141,144 @@ private void App_DispatcherUnhandledException(object sender, System.Windows.Thre
             //var loginWindow = _host.Services.GetRequiredService<Login>();
             //loginWindow.Show();
 
-            // Show MainWindow
-            var mainWindow = services.GetRequiredService<MainWindow>();
-            mainWindow.Closed += (s, args) => scope.Dispose();
-            mainWindow.Show();
-        //    var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-        //    mainWindow.Show();
+            var loginWindow = services.GetRequiredService<Login>();
+            loginWindow.Show();
+
+            //// Show MainWindow
+            //var mainWindow = services.GetRequiredService<MainWindow>();
+            //mainWindow.Closed += (s, args) => scope.Dispose();
+            //mainWindow.Show();
+
+
+            //    var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            //    mainWindow.Show();
         }
 
+
+        //private async Task InitializeDatabaseAsync()
+        //{
+        //    using var scope = _host.Services.CreateScope();
+        //    var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
+        //    try
+        //    {
+
+        //        // If it doesn't exist, create it and apply migrations
+        //        await context.Database.MigrateAsync();
+
+
+        //        // Seed roles
+        //        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        //        await CreateRoleIfNotExists(roleManager, "Admin");
+        //        await CreateRoleIfNotExists(roleManager, "User");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Database initialization failed: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //        throw;
+        //    }
+        //}
 
         private async Task InitializeDatabaseAsync()
         {
             using var scope = _host.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+            //// 1. Apply migrations
+            //await context.Database.MigrateAsync();
+
+            //// 2. Ensure roles exist
+            //await CreateRoleIfNotExists(roleManager, "Admin");
+            //await CreateRoleIfNotExists(roleManager, "User");
+
+            //// 3. Seed Admin user
+            //const string adminEmail = "admin@example.com";
+            //const string adminPassword = "Admin@123";
+
+            //if (await userManager.FindByEmailAsync(adminEmail) is null)
+            //{
+            //    var adminUser = new User
+            //    {
+            //        UserName = adminEmail,
+            //        Email = adminEmail,
+            //        EmailConfirmed = true,
+            //        // Notice: MemberId left null so no Member record is created
+            //    };
+
+            //    var createResult = await userManager.CreateAsync(adminUser, adminPassword);
+            //    if (createResult.Succeeded)
+            //    {
+            //        await userManager.AddToRoleAsync(adminUser, "Admin");
+            //    }
+            //    else
+            //    {
+            //        // Handle errors (e.g. log them)
+            //        var errors = string.Join("; ", createResult.Errors.Select(e => e.Description));
+            //        throw new Exception($"Failed to create admin user: {errors}");
+            //    }
             try
             {
-
-                // If it doesn't exist, create it and apply migrations
+                // 1. Apply migrations
                 await context.Database.MigrateAsync();
 
-
-                // Seed roles
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                // 2. Ensure roles exist
                 await CreateRoleIfNotExists(roleManager, "Admin");
                 await CreateRoleIfNotExists(roleManager, "User");
+
+                // 3. Seed Admin user
+                const string adminEmail = "admin@example.com";
+                const string adminPassword = "Admin@123";
+
+                if (await userManager.FindByEmailAsync(adminEmail) is null)
+                {
+                    var adminUser = new User
+                    {
+                        UserName = adminEmail,
+                        Email = adminEmail,
+                        EmailConfirmed = true,
+                        // Notice: MemberId left null so no Member record is created
+                    };
+
+                    var createResult = await userManager.CreateAsync(adminUser, adminPassword);
+                    if (createResult.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(adminUser, "Admin");
+                    }
+                    else
+                    {
+                        var errors = string.Join("; ", createResult.Errors.Select(e => e.Description));
+                        throw new Exception($"Failed to create admin user: {errors}");
+                    }
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Database initialization failed: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+                var connectionString = config.GetConnectionString("DefaultConnection");
+                string dbInfo = "Database location: Unable to determine.";
+                try
+                {
+                    var builder = new SqlConnectionStringBuilder(connectionString);
+                    if (!string.IsNullOrEmpty(builder.AttachDBFilename))
+                    {
+                        dbInfo = $"Database file: {builder.AttachDBFilename}";
+                    }
+                    else
+                    {
+                        dbInfo = "Not a local database file.";
+                    }
+                }
+                catch
+                {
+                    // If parsing fails, retain the default message
+                }
+                MessageBox.Show($"Database initialization failed: {ex.Message}\n\n{dbInfo}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
             }
         }
+        
+
 
         private async Task CreateRoleIfNotExists(RoleManager<IdentityRole> roleManager, string roleName)
         {
