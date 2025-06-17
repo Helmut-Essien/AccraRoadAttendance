@@ -192,10 +192,32 @@ namespace AccraRoadAttendance.Views
                 MessageBox.Show(errorMessage, "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        //protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        //{
+        //    base.OnMouseLeftButtonDown(e);
+        //    DragMove();
+        //}
+        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            base.OnMouseLeftButtonDown(e);
-            DragMove();
+            if (e.ClickCount == 2)
+            {
+                // Toggle between Normal and Maximized
+                this.WindowState = this.WindowState == WindowState.Maximized
+                    ? WindowState.Normal
+                    : WindowState.Maximized;
+                e.Handled = true;
+            }
+            else
+            {
+                this.DragMove();
+            }
         }
+
+        private void TitleText_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+
     }
 }

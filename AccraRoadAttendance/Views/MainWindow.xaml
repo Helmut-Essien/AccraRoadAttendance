@@ -18,7 +18,7 @@
     mc:Ignorable="d">
     <WindowChrome.WindowChrome>
         <shell:WindowChrome
-            CaptionHeight="0"
+            CaptionHeight="60"
             CornerRadius="15"
             GlassFrameThickness="0"
             ResizeBorderThickness="5"
@@ -248,16 +248,24 @@
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0">
-                        <Grid Margin="270,0,10,0" VerticalAlignment="Top">
+                        <Grid Margin="0,0,10,0" VerticalAlignment="Top">
                             <!--  Header  -->
-                            <DockPanel Height="60" LastChildFill="True">
+                            <DockPanel
+                                Height="60"
+                                LastChildFill="True"
+                                MouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
+                                >
                                 <TextBlock
                                     Margin="10,0,0,0"
+                                    HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    DockPanel.Dock="Left"
+                                    DockPanel.Dock="Bottom"
                                     FontSize="24"
                                     FontWeight="Bold"
-                                    Text="Attendance Management System" />
+                                    MouseRightButtonDown="TitleText_MouseRightButtonDown"
+                                    Text="Attendance Management System"
+                                    ToolTip="Double-click to maximize/restore. Right-click to minimize."
+                                    WindowChrome.IsHitTestVisibleInChrome="True" />
                                 <materialDesign:PopupBox
                                     Height="25"
                                     HorizontalAlignment="Right"
