@@ -2,32 +2,32 @@
     x:Class="AccraRoadAttendance.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
     xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
     Title="Main Window"
     MinWidth="800"
     MinHeight="600"
-    AllowsTransparency="False"
-    Background="Transparent"
-    WindowStartupLocation="CenterScreen"
+    AllowsTransparency="True"
+    Background="#01FFFFFF"
     ResizeMode="CanResizeWithGrip"
+    WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
     <WindowChrome.WindowChrome>
         <shell:WindowChrome
-        CaptionHeight="0"
-        CornerRadius="15"
-        ResizeBorderThickness="5"
-        GlassFrameThickness="0"
-        UseAeroCaptionButtons="False" />
+            CaptionHeight="60"
+            CornerRadius="15"
+            GlassFrameThickness="0"
+            ResizeBorderThickness="5"
+            UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
     <Grid>
         <!--  Main Card  -->
         <materialDesign:Card
-            Margin="20"
+            Margin="5"
             materialDesign:ElevationAssist.Elevation="Dp4"
             Background="{DynamicResource MaterialDesignPaper}"
             UniformCornerRadius="15">
@@ -248,16 +248,24 @@
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0">
-                        <Grid Margin="270,0,10,0" VerticalAlignment="Top">
+                        <Grid Margin="0,0,10,0" VerticalAlignment="Top">
                             <!--  Header  -->
-                            <DockPanel Height="60" LastChildFill="True">
+                            <DockPanel
+                                Height="60"
+                                LastChildFill="True"
+                                MouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
+                                >
                                 <TextBlock
                                     Margin="10,0,0,0"
+                                    HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    DockPanel.Dock="Left"
+                                    DockPanel.Dock="Bottom"
                                     FontSize="24"
                                     FontWeight="Bold"
-                                    Text="Attendance Management System" />
+                                    MouseRightButtonDown="TitleText_MouseRightButtonDown"
+                                    Text="Attendance Management System"
+                                    ToolTip="Double-click to maximize/restore. Right-click to minimize."
+                                    WindowChrome.IsHitTestVisibleInChrome="True" />
                                 <materialDesign:PopupBox
                                     Height="25"
                                     HorizontalAlignment="Right"
