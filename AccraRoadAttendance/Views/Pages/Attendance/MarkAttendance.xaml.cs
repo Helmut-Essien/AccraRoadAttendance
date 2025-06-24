@@ -10,6 +10,8 @@ using AccraRoadAttendance.Views.Pages.Members;
 using System.ComponentModel;
 using static AccraRoadAttendance.Models.Member;
 using System.ComponentModel.DataAnnotations;
+using System.Windows.Media;
+using System.Reflection.Metadata;
 
 namespace AccraRoadAttendance.Views.Pages.Attendance
 {
@@ -20,7 +22,7 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
         private List<Member> allMembers;
         private List<Member> displayedMembers;
         private int currentPage = 1;
-        private const int pageSize = 7;
+        private int pageSize = 7;
 
         public MarkAttendance(AttendanceDbContext context)
         {
@@ -41,8 +43,13 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
             ServiceTypeComboBox.DisplayMemberPath = "DisplayName";
             ServiceTypeComboBox.SelectedValuePath = "Value";
 
-            
-            LoadMembers();
+            // Subscribe to DataGrid events
+            AttendanceDataGrid.Loaded += DataGrid_Loaded;
+            AttendanceDataGrid.SizeChanged += DataGrid_SizeChanged;
+
+            // Subscribe to UserControl Loaded event
+            this.Loaded += MarkAttendance_Loaded;
+            //LoadMembers();
         }
 
         private static string GetEnumDisplayName(Enum value)
@@ -116,8 +123,159 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
                 OnPropertyChanged(nameof(CurrentPage));
             }
         }
+
+        // Helper method to find the ScrollViewer in the DataGrid
+        private ScrollViewer GetScrollViewer(DependencyObject depObj)
+        {
+            if (depObj is ScrollViewer scrollViewer)
+                return scrollViewer;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                var child = VisualTreeHelper.GetChild(depObj, i);
+                var result = GetScrollViewer(child);
+                if (result != null)
+                    return result;
+            }
+            return null;
+        }
+
+        // Calculate the pageSize based on DataGrid's available space
+        //private void CalculatePageSize()
+        //{
+        //    var scrollViewer = GetScrollViewer(AttendanceDataGrid);
+        //    if (scrollViewer != null)
+        //    {
+        //        double viewportHeight = scrollViewer.ViewportHeight;
+        //        //double viewportHeight = scrollViewer.ActualHeight; // pixel height
+
+        //        double rowHeight = 0;
+
+        //        // Try to get the height of a rendered row
+        //        if (AttendanceDataGrid.Items.Count > 0)
+        //        {
+        //            var firstItem = AttendanceDataGrid.Items[0];
+        //            var row = (DataGridRow)AttendanceDataGrid.ItemContainerGenerator.ContainerFromItem(firstItem);
+        //            if (row != null)
+        //            {
+        //                rowHeight = row.ActualHeight;
+        //            }
+        //        }
+
+        //        // Fallback to a default row height if no row is available
+        //        if (rowHeight == 0)
+        //        {
+        //            rowHeight = 30; // Reasonable default based on typical DataGrid row height
+        //        }
+
+        //        if (rowHeight > 0)
+        //        {
+        //            int newPageSize = (int)(viewportHeight / rowHeight);
+        //            pageSize = Math.Max(1, newPageSize); // Ensure at least 1 row
+        //        }
+        //        else
+        //        {
+        //            pageSize = 1; // Minimum fallback
+        //        }
+        //    }
+        //}
+
+        private void CalculatePageSize()
+        {
+            var scrollViewer = GetScrollViewer(AttendanceDataGrid);
+            if (scrollViewer != null)
+            {
+                double viewportHeight = scrollViewer.ActualHeight;
+                double rowHeight = 0;
+
+                if (AttendanceDataGrid.Items.Count > 0)
+                {
+                    var firstItem = AttendanceDataGrid.Items[0];
+                    var row = (DataGridRow)AttendanceDataGrid.ItemContainerGenerator.ContainerFromItem(firstItem);
+                    if (row != null)
+                    {
+                        rowHeight = row.ActualHeight;
+                    }
+                }
+
+                if (rowHeight == 0)
+                {
+                    rowHeight = 30; // Default row height
+                }
+
+                if (viewportHeight > 0 && rowHeight > 0)
+                {
+                    int newPageSize = (int)(viewportHeight / rowHeight);
+                    pageSize = Math.Max(1, newPageSize);
+                }
+                else
+                {
+                    pageSize = 1; // Reasonable default instead of 1
+                }
+            }
+            else
+            {
+                pageSize = 1; // Default if ScrollViewer not found
+            }
+        }
+
+
+        // Adjust CurrentPage to stay valid after pageSize changes
+        private void AdjustCurrentPage()
+        {
+            if (allMembers == null) return;
+
+            //// Handle null allMembers
+            //if (allMembers == null)
+            //{
+            //    CurrentPage = 1;
+            //    return;
+            //}
+
+            int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
+            if (totalPages == 0)
+            {
+                CurrentPage = 1; // No pages available
+            }
+            else
+            {
+                CurrentPage = Math.Max(1, Math.Min(CurrentPage, totalPages)); // Keep within bounds
+            }
+        }
+
+        private void DataGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            CalculatePageSize();
+            if (allMembers != null)
+            {
+                AdjustCurrentPage();
+                RefreshDataGrid();
+                UpdatePagination();
+            }
+        }
+
+        private void DataGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            CalculatePageSize();
+            if (allMembers != null)
+            {
+                AdjustCurrentPage();
+                RefreshDataGrid();
+                UpdatePagination();
+            }
+        }
+        private async void MarkAttendance_Loaded(object sender, RoutedEventArgs e)
+        {
+            await LoadMembersAsync();
+            RefreshDataGrid();
+            UpdatePagination();
+        }
+
+
         private void RefreshDataGrid()
         {
+            if (allMembers == null) return;
+
             displayedMembers = allMembers
                 .Skip((CurrentPage - 1) * pageSize)
                 .Take(pageSize)
@@ -134,6 +292,8 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
 
         private void UpdatePagination()
         {
+            if (allMembers == null) return;
+
             int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
             IsPaginationVisible = totalPages > 1;
 
@@ -263,7 +423,7 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
         //    }
         //}
 
-        private async void LoadMembers()
+        private async Task LoadMembersAsync()
         {
             try
             {
@@ -279,8 +439,8 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
                     Notes = string.Empty
                 }).ToList();
                 CurrentPage = 1;
-                RefreshDataGrid();
-                UpdatePagination();
+                //RefreshDataGrid();
+                //UpdatePagination();
             }
             catch (Exception ex)
             {

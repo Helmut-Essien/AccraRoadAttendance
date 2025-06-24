@@ -735,8 +735,8 @@ namespace AccraRoadAttendance.Views.Pages.Members
         }
 
         // 22. Profile Picture Path
-        private string _selectedPicturePath;
-        public string SelectedPicturePath
+        private string? _selectedPicturePath;
+        public string? SelectedPicturePath
         {
             get => _selectedPicturePath;
             set
@@ -872,7 +872,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     OtherNames = OtherNames,
                     Sex = Gender.Value,
                     PhoneNumber = PhoneNumber,
-                    Email = Email,
+                    Email = string.IsNullOrWhiteSpace(Email) ? null : Email, // Set to NULL if empty or whitespace
 
                     // New fields
                     DateOfBirth = DateOfBirth,
@@ -997,7 +997,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
             Gender = null;
             PhoneNumber = string.Empty;
             Email = string.Empty;
-            SelectedPicturePath = string.Empty;
+            SelectedPicturePath = null;
             ImagePreview.Source = null;
             // Clear new fields
             DateOfBirth = null;
