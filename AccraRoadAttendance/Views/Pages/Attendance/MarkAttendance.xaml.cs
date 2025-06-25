@@ -12,6 +12,7 @@ using static AccraRoadAttendance.Models.Member;
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Media;
 using System.Reflection.Metadata;
+using System.Windows.Threading;
 
 namespace AccraRoadAttendance.Views.Pages.Attendance
 {
@@ -266,9 +267,25 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
         }
         private async void MarkAttendance_Loaded(object sender, RoutedEventArgs e)
         {
-            await LoadMembersAsync();
-            RefreshDataGrid();
-            UpdatePagination();
+            //await LoadMembersAsync();
+            //CalculatePageSize();
+            //if (allMembers != null)
+            //{
+            //    AdjustCurrentPage();
+            //    RefreshDataGrid();
+            //    UpdatePagination();
+            //}
+            await LoadMembersAsync(); // Load the members asynchronously
+            RefreshDataGrid(); // Set the initial ItemsSource to trigger rendering
+
+            // Schedule pagination calculation after UI rendering
+            _ = Dispatcher.InvokeAsync(() =>
+            {
+                CalculatePageSize();    // Calculate page size based on rendered dimensions
+                AdjustCurrentPage();    // Adjust the current page if necessary
+                RefreshDataGrid();      // Refresh the DataGrid with the correct page
+                UpdatePagination();     // Update pagination controls
+            }, DispatcherPriority.Render);
         }
 
 
