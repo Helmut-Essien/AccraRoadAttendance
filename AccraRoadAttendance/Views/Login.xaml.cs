@@ -38,10 +38,38 @@ namespace AccraRoadAttendance.Views
             _serviceProvider = serviceProvider;
         }
 
+        private void TogglePasswordVisibility_Checked(object sender, RoutedEventArgs e)
+        {
+            // Copy password from PasswordBox to TextBox
+            txtPasswordVisible.Text = txtPassword.Password;
+            // Hide PasswordBox, show TextBox
+            txtPassword.Visibility = Visibility.Collapsed;
+            txtPasswordVisible.Visibility = Visibility.Visible;
+            // Change icon to "EyeOff"
+            (togglePasswordVisibility.Content as PackIcon).Kind = PackIconKind.EyeOff;
+            // Set focus to TextBox
+            txtPasswordVisible.Focus();
+        }
+
+        private void TogglePasswordVisibility_Unchecked(object sender, RoutedEventArgs e)
+        {
+            // Copy text from TextBox to PasswordBox
+            txtPassword.Password = txtPasswordVisible.Text;
+            // Hide TextBox, show PasswordBox
+            txtPasswordVisible.Visibility = Visibility.Collapsed;
+            txtPassword.Visibility = Visibility.Visible;
+            // Change icon to "Eye"
+            (togglePasswordVisibility.Content as PackIcon).Kind = PackIconKind.Eye;
+            // Set focus to PasswordBox
+            txtPassword.Focus();
+        }
+
         private async void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
             string email = txtUsername.Text;
-            string password = txtPassword.Password;
+            //string password = txtPassword.Password;
+            // Use the password from the visible control
+            string password = txtPassword.Visibility == Visibility.Visible ? txtPassword.Password : txtPasswordVisible.Text;
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
@@ -95,5 +123,30 @@ namespace AccraRoadAttendance.Views
             base.OnMouseLeftButtonDown(e);
             DragMove();
         }
+
+        private void TxtPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                // Prevent the "ding" sound
+                e.Handled = true;
+
+                // Reuse your existing LoginBtn_Click logic
+                LoginBtn_Click(this, new RoutedEventArgs());
+            }
+        }
+
+        private void TxtPasswordVisible_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                // Prevent the "ding" sound
+                e.Handled = true;
+
+                // Trigger the login process
+                LoginBtn_Click(this, new RoutedEventArgs());
+            }
+        }
+
     }
 }
