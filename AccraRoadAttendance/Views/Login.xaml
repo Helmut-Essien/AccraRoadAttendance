@@ -91,6 +91,7 @@
                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}" />
                     <TextBox
                         x:Name="txtPasswordVisible"
+                        KeyDown="TxtPasswordVisible_KeyDown"
                         materialDesign:HintAssist.Hint="Enter Password"
                         BorderBrush="{DynamicResource MaterialDesignDivider}"
                         BorderThickness="2"

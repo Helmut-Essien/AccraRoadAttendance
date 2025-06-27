@@ -67,7 +67,9 @@ namespace AccraRoadAttendance.Views
         private async void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
             string email = txtUsername.Text;
-            string password = txtPassword.Password;
+            //string password = txtPassword.Password;
+            // Use the password from the visible control
+            string password = txtPassword.Visibility == Visibility.Visible ? txtPassword.Password : txtPasswordVisible.Text;
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
@@ -122,7 +124,7 @@ namespace AccraRoadAttendance.Views
             DragMove();
         }
 
-        private async void TxtPassword_KeyDown(object sender, KeyEventArgs e)
+        private void TxtPassword_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
@@ -130,6 +132,18 @@ namespace AccraRoadAttendance.Views
                 e.Handled = true;
 
                 // Reuse your existing LoginBtn_Click logic
+                LoginBtn_Click(this, new RoutedEventArgs());
+            }
+        }
+
+        private void TxtPasswordVisible_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                // Prevent the "ding" sound
+                e.Handled = true;
+
+                // Trigger the login process
                 LoginBtn_Click(this, new RoutedEventArgs());
             }
         }
