@@ -219,6 +219,9 @@ namespace AccraRoadAttendance
             //    }
             try
             {
+                // 1. Drop existing database
+                await context.Database.EnsureDeletedAsync();
+
                 // 1. Apply migrations
                 await context.Database.MigrateAsync();
 
