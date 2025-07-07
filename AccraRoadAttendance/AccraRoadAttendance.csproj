@@ -26,6 +26,7 @@
     <None Remove="AppImages\CLogoc.png" />
     <None Remove="AppImages\CLogoCropped.png" />
     <None Remove="AppImages\CLogocw.png" />
+    <None Remove="AppImages\Helmut Logo.PNG" />
     <None Remove="AppImages\Logo.png" />
     <None Remove="AppImages\Picture1.png" />
     <None Remove="appsettings.Development.json" />
@@ -105,6 +106,12 @@
 		<Content Include="ProfilePictures\*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <SplashScreen Include="AppImages\Helmut Logo.PNG">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </SplashScreen>
 	</ItemGroup>
 
 
