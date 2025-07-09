@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Navigation;
+using System.Windows.Threading;
 using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Services;
@@ -29,89 +30,101 @@ namespace AccraRoadAttendance
     /// </summary>
     public partial class App : Application
     {
-        private readonly IHost _host;
+        private LogoSplashWindow _logoSplash;
+        
+
+        private  IHost _host;
 
         public App()
         {
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
-            try
-            {
-
-                _host = Host.CreateDefaultBuilder()
-       .ConfigureAppConfiguration((context, config) =>
-       {
-           config.SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appsettings.json"/*, optional: true*/)
-               .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true)
-               .AddEnvironmentVariables();
-       })
-           .ConfigureServices((context, services) =>
-            {
-                // Local DB Context
-                // Get connection string from configuration
-                var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
-                services.AddDbContext<AttendanceDbContext>(options =>
-                    options.UseSqlServer(connectionString));
-
-                //// Online DB Context
-                //var connectionString1 = context.Configuration.GetConnectionString("OnlineConnection");
-                //services.AddDbContext<AttendanceDbContext>(options =>
-                //    options.UseSqlServer(connectionString1), ServiceLifetime.Transient);
-
-                // Online DB Context (for syncing only)
-                var onlineConnection = context.Configuration.GetConnectionString("OnlineConnection");
-                services.AddDbContext<OnlineAttendanceDbContext>(options =>
-                    options.UseSqlServer(onlineConnection));
-
-
-                // Configure Identity
-                //services.AddIdentityCore<User>()
-                //    .AddEntityFrameworkStores<AttendanceDbContext>();
-
-                // Configure Identity
-                services.AddIdentityCore<User>(options =>
-                    {
-                        options.User.RequireUniqueEmail = true;
-                    })
-                    .AddRoles<IdentityRole>()
-                    .AddEntityFrameworkStores<AttendanceDbContext>();
-                    
-
-                    // Add role management services
-                    services.AddScoped<RoleManager<IdentityRole>>();
-                    services.AddScoped<UserManager<User>>();
-                    services.AddScoped<CurrentUserService>();
-                    services.AddScoped<GoogleDriveService>();
-                    services.AddScoped<SyncService>();
-
-
-
-
-                // Register windows and pages with correct lifetimes
-                services.AddTransient<MainWindow>();
-                    services.AddTransient<SplashScreen>();
-                    services.AddTransient<Login>();
-                    services.AddTransient<AddMembers>();
-                    services.AddTransient<EditMembers>();
-                    services.AddTransient<Members>();
-                    services.AddTransient<MarkAttendance>();
-                    services.AddTransient<ReportsPage>();
-                    services.AddTransient<MemberDetails>();
-                    services.AddTransient<Dashboard>();
-                    services.AddTransient<UsersManagement>();
-                    
-
-                    // Add navigation service
-                    services.AddSingleton<INavigationService, Services.NavigationService>();
-                })
-                .Build();
+            // 1) Show splash as early as possible
+            _logoSplash = new Views.LogoSplashWindow();
+            _logoSplash.Show();
         }
-        catch (Exception ex)
+        //    try
+        //    {
+
+                
+        //}
+        //catch (Exception ex)
+        //{
+        //    MessageBox.Show($"Error building host: {ex.Message}", "Configuration Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    throw;
+        //}
+
+            private void BuildHost()
         {
-            MessageBox.Show($"Error building host: {ex.Message}", "Configuration Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            throw;
+            _host = Host.CreateDefaultBuilder()
+.ConfigureAppConfiguration((context, config) =>
+{
+config.SetBasePath(Directory.GetCurrentDirectory())
+.AddJsonFile("appsettings.json"/*, optional: true*/)
+.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true)
+.AddEnvironmentVariables();
+})
+.ConfigureServices((context, services) =>
+{
+    // Local DB Context
+    // Get connection string from configuration
+var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
+services.AddDbContext<AttendanceDbContext>(options =>
+            options.UseSqlServer(connectionString));
+
+    //// Online DB Context
+    //var connectionString1 = context.Configuration.GetConnectionString("OnlineConnection");
+    //services.AddDbContext<AttendanceDbContext>(options =>
+    //    options.UseSqlServer(connectionString1), ServiceLifetime.Transient);
+
+    // Online DB Context (for syncing only)
+var onlineConnection = context.Configuration.GetConnectionString("OnlineConnection");
+services.AddDbContext<OnlineAttendanceDbContext>(options =>
+            options.UseSqlServer(onlineConnection));
+
+
+    // Configure Identity
+    //services.AddIdentityCore<User>()
+    //    .AddEntityFrameworkStores<AttendanceDbContext>();
+
+    // Configure Identity
+services.AddIdentityCore<User>(options =>
+{
+   options.User.RequireUniqueEmail = true;
+})
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<AttendanceDbContext>();
+
+
+    // Add role management services
+services.AddScoped<RoleManager<IdentityRole>>();
+services.AddScoped<UserManager<User>>();
+services.AddScoped<CurrentUserService>();
+services.AddScoped<GoogleDriveService>();
+services.AddScoped<SyncService>();
+
+
+
+
+    // Register windows and pages with correct lifetimes
+services.AddTransient<MainWindow>();
+services.AddTransient<SplashScreen>();
+services.AddTransient<Login>();
+services.AddTransient<AddMembers>();
+services.AddTransient<EditMembers>();
+services.AddTransient<Members>();
+services.AddTransient<MarkAttendance>();
+services.AddTransient<ReportsPage>();
+services.AddTransient<MemberDetails>();
+services.AddTransient<Dashboard>();
+services.AddTransient<UsersManagement>();
+
+
+    // Add navigation service
+services.AddSingleton<INavigationService, Services.NavigationService>();
+})
+.Build();
         }
-}
+
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
@@ -124,6 +137,18 @@ namespace AccraRoadAttendance
         {
             base.OnStartup(e);
 
+            this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+            // 2) Let WPF render the splash
+            await Dispatcher.Yield(DispatcherPriority.Background);
+
+            // 3) Run heavy startup work in background
+            await Task.Run(async () =>
+            {
+                BuildHost();
+                await InitializeDatabaseAsync();
+            });
+
             // Temporary debug code
             var env = _host.Services.GetRequiredService<IHostEnvironment>();
             MessageBox.Show($"Current environment: {env.EnvironmentName}");
@@ -132,7 +157,7 @@ namespace AccraRoadAttendance
             MessageBox.Show($"Connection string: {config.GetConnectionString("DefaultConnection")}");
             MessageBox.Show($"Online connection string: {config.GetConnectionString("OnlineConnection")}");
 
-            await InitializeDatabaseAsync();
+            //await InitializeDatabaseAsync();
 
             // Create a DI scope for all scoped services
             var scope = _host.Services.CreateScope();
@@ -140,10 +165,21 @@ namespace AccraRoadAttendance
 
             //var loginWindow = _host.Services.GetRequiredService<Login>();
             //loginWindow.Show();
+            
 
             var loginWindow = services.GetRequiredService<Login>();
+            Application.Current.MainWindow = loginWindow;
+            
+
+            // Fade out LogoSplash
+            if (_logoSplash != null)
+            {
+                await _logoSplash.FadeOutAndCloseAsync();
+            }
+
             loginWindow.Show();
 
+            this.ShutdownMode = ShutdownMode.OnLastWindowClose;
             //// Show MainWindow
             //var mainWindow = services.GetRequiredService<MainWindow>();
             //mainWindow.Closed += (s, args) => scope.Dispose();
@@ -221,7 +257,8 @@ namespace AccraRoadAttendance
             {
                 // 1. Drop existing database
                 await context.Database.EnsureDeletedAsync();
-
+                // Add 1s delay to allow file release
+                System.Threading.Thread.Sleep(1000);
                 // 1. Apply migrations
                 await context.Database.MigrateAsync();
 
