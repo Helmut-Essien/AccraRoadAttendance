@@ -109,9 +109,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <SplashScreen Include="AppImages\Helmut Logo.PNG">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </SplashScreen>
+	  <Resource Include="AppImages\Helmut Logo.PNG">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
 	</ItemGroup>
 
 
