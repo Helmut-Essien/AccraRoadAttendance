@@ -56,78 +56,83 @@ namespace AccraRoadAttendance
             private void BuildHost()
         {
             _host = Host.CreateDefaultBuilder()
-.ConfigureAppConfiguration((context, config) =>
-{
-config.SetBasePath(Directory.GetCurrentDirectory())
-.AddJsonFile("appsettings.json"/*, optional: true*/)
-.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true)
-.AddEnvironmentVariables();
-})
-.ConfigureServices((context, services) =>
-{
-    // Local DB Context
-    // Get connection string from configuration
-var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
-services.AddDbContext<AttendanceDbContext>(options =>
-            options.UseSqlServer(connectionString));
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                config.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json"/*, optional: true*/)
+                .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+            })
+                .ConfigureServices((context, services) =>
+                {
+                    // Local DB Context
+                    // Get connection string from configuration
+                    var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
+                    services.AddDbContext<AttendanceDbContext>(options =>
+                    options.UseSqlServer(connectionString));
 
-    //// Online DB Context
-    //var connectionString1 = context.Configuration.GetConnectionString("OnlineConnection");
-    //services.AddDbContext<AttendanceDbContext>(options =>
-    //    options.UseSqlServer(connectionString1), ServiceLifetime.Transient);
+                    //// Online DB Context
+                    //var connectionString1 = context.Configuration.GetConnectionString("OnlineConnection");
+                    //services.AddDbContext<AttendanceDbContext>(options =>
+                    //    options.UseSqlServer(connectionString1), ServiceLifetime.Transient);
 
-    // Online DB Context (for syncing only)
-var onlineConnection = context.Configuration.GetConnectionString("OnlineConnection");
-services.AddDbContext<OnlineAttendanceDbContext>(options =>
-            options.UseSqlServer(onlineConnection));
-
-
-    // Configure Identity
-    //services.AddIdentityCore<User>()
-    //    .AddEntityFrameworkStores<AttendanceDbContext>();
-
-    // Configure Identity
-services.AddIdentityCore<User>(options =>
-{
-   options.User.RequireUniqueEmail = true;
-})
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<AttendanceDbContext>();
+                    // Online DB Context (for syncing only)
+                    var onlineConnection = context.Configuration.GetConnectionString("OnlineConnection");
+                    services.AddDbContext<OnlineAttendanceDbContext>(options =>
+                    options.UseSqlServer(onlineConnection));
 
 
-    // Add role management services
-services.AddScoped<RoleManager<IdentityRole>>();
-services.AddScoped<UserManager<User>>();
-services.AddScoped<CurrentUserService>();
-services.AddScoped<GoogleDriveService>();
-services.AddScoped<SyncService>();
+                    // Configure Identity
+                     //services.AddIdentityCore<User>()
+                    //    .AddEntityFrameworkStores<AttendanceDbContext>();
+
+                    // Configure Identity
+                    services.AddIdentityCore<User>(options =>
+                {
+                     options.User.RequireUniqueEmail = true;
+                })
+                    .AddRoles<IdentityRole>()
+                    .AddEntityFrameworkStores<AttendanceDbContext>();
+
+
+                    // Add role management services
+                    services.AddScoped<RoleManager<IdentityRole>>();
+                    services.AddScoped<UserManager<User>>();
+                    services.AddScoped<CurrentUserService>();
+                    services.AddScoped<GoogleDriveService>();
+                    services.AddScoped<SyncService>();
 
 
 
 
-    // Register windows and pages with correct lifetimes
-services.AddTransient<MainWindow>();
-services.AddTransient<SplashScreen>();
-services.AddTransient<Login>();
-services.AddTransient<AddMembers>();
-services.AddTransient<EditMembers>();
-services.AddTransient<Members>();
-services.AddTransient<MarkAttendance>();
-services.AddTransient<ReportsPage>();
-services.AddTransient<MemberDetails>();
-services.AddTransient<Dashboard>();
-services.AddTransient<UsersManagement>();
+                    // Register windows and pages with correct lifetimes
+                    services.AddTransient<MainWindow>();
+                    services.AddTransient<SplashScreen>();
+                    services.AddTransient<Login>();
+                    services.AddTransient<AddMembers>();
+                    services.AddTransient<EditMembers>();
+                    services.AddTransient<Members>();
+                    services.AddTransient<MarkAttendance>();
+                    services.AddTransient<ReportsPage>();
+                    services.AddTransient<MemberDetails>();
+                    services.AddTransient<Dashboard>();
+                    services.AddTransient<UsersManagement>();
 
 
-    // Add navigation service
-services.AddSingleton<INavigationService, Services.NavigationService>();
-})
-.Build();
-        }
+                    // Add navigation service
+                    services.AddSingleton<INavigationService, Services.NavigationService>();
+                })
+                    .Build();
+            }
 
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
+            // Fade out LogoSplash
+            if (_logoSplash != null)
+            {
+                 _logoSplash.FadeOutAndCloseAsync();
+            }
             MessageBox.Show($"An unhandled exception occurred: {e.Exception.Message}\n{e.Exception.StackTrace}",
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             e.Handled = true;
@@ -142,48 +147,57 @@ services.AddSingleton<INavigationService, Services.NavigationService>();
             // 2) Let WPF render the splash
             await Dispatcher.Yield(DispatcherPriority.Background);
 
-            // 3) Run heavy startup work in background
-            await Task.Run(async () =>
+            try
             {
-                BuildHost();
-                await InitializeDatabaseAsync();
-            });
+                // 3) Run heavy startup work in background
+                await Task.Run(async () =>
+                {
+                    BuildHost();
+                    await InitializeDatabaseAsync();
+                });
 
-            // Temporary debug code
-            var env = _host.Services.GetRequiredService<IHostEnvironment>();
-            MessageBox.Show($"Current environment: {env.EnvironmentName}");
+                // Temporary debug code
+                var env = _host.Services.GetRequiredService<IHostEnvironment>();
+                MessageBox.Show($"Current environment: {env.EnvironmentName}");
 
-            var config = _host.Services.GetRequiredService<IConfiguration>();
-            MessageBox.Show($"Connection string: {config.GetConnectionString("DefaultConnection")}");
-            MessageBox.Show($"Online connection string: {config.GetConnectionString("OnlineConnection")}");
+                var config = _host.Services.GetRequiredService<IConfiguration>();
+                MessageBox.Show($"Connection string: {config.GetConnectionString("DefaultConnection")}");
+                MessageBox.Show($"Online connection string: {config.GetConnectionString("OnlineConnection")}");
 
-            //await InitializeDatabaseAsync();
+                //await InitializeDatabaseAsync();
 
-            // Create a DI scope for all scoped services
-            var scope = _host.Services.CreateScope();
-            var services = scope.ServiceProvider;
+                // Create a DI scope for all scoped services
+                var scope = _host.Services.CreateScope();
+                var services = scope.ServiceProvider;
 
-            //var loginWindow = _host.Services.GetRequiredService<Login>();
-            //loginWindow.Show();
-            
+                //var loginWindow = _host.Services.GetRequiredService<Login>();
+                //loginWindow.Show();
 
-            var loginWindow = services.GetRequiredService<Login>();
-            Application.Current.MainWindow = loginWindow;
-            
 
-            // Fade out LogoSplash
-            if (_logoSplash != null)
-            {
-                await _logoSplash.FadeOutAndCloseAsync();
+                var loginWindow = services.GetRequiredService<Login>();
+                Application.Current.MainWindow = loginWindow;
+
+
+                // Fade out LogoSplash
+                if (_logoSplash != null)
+                {
+                    await _logoSplash.FadeOutAndCloseAsync();
+                }
+
+                loginWindow.Show();
+
+                this.ShutdownMode = ShutdownMode.OnLastWindowClose;
+                //// Show MainWindow
+                //var mainWindow = services.GetRequiredService<MainWindow>();
+                //mainWindow.Closed += (s, args) => scope.Dispose();
+                //mainWindow.Show();
+
             }
-
-            loginWindow.Show();
-
-            this.ShutdownMode = ShutdownMode.OnLastWindowClose;
-            //// Show MainWindow
-            //var mainWindow = services.GetRequiredService<MainWindow>();
-            //mainWindow.Closed += (s, args) => scope.Dispose();
-            //mainWindow.Show();
+            catch (Exception ex)
+            {
+                await FadeOutSplashAndShowErrorAsync(ex);
+                Shutdown();
+            }
 
 
             //    var mainWindow = _host.Services.GetRequiredService<MainWindow>();
@@ -213,6 +227,13 @@ services.AddSingleton<INavigationService, Services.NavigationService>();
         //        throw;
         //    }
         //}
+        private async Task FadeOutSplashAndShowErrorAsync(System.Exception ex)
+        {
+            if (_logoSplash != null)
+                await _logoSplash.FadeOutAndCloseAsync();
+
+            MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
 
         private async Task InitializeDatabaseAsync()
         {
@@ -312,8 +333,9 @@ services.AddSingleton<INavigationService, Services.NavigationService>();
                 catch
                 {
                     // If parsing fails, retain the default message
+                    throw;  // don’t call MessageBox here
                 }
-                MessageBox.Show($"Database initialization failed: {ex.Message}\n\n{dbInfo}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show($"Database initialization failed: {ex.Message}\n\n{dbInfo}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
             }
         }
