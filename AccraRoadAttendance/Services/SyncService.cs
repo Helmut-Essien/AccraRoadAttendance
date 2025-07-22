@@ -27,7 +27,7 @@ namespace AccraRoadAttendance.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             _lastSyncTime = LoadLastSyncTime();
-            MessageBox.Show($"Initial lastSyncTime: {_lastSyncTime}", "Debug");
+            //MessageBox.Show($"Initial lastSyncTime: {_lastSyncTime}", "Debug");
             _logger.LogInformation("Initial lastSyncTime: {LastSyncTime:u}", _lastSyncTime);
         }
 
@@ -593,7 +593,7 @@ namespace AccraRoadAttendance.Services
         private DateTime LoadLastSyncTime()
         {
             // Load the last sync time from the local context
-            MessageBox.Show("Loading Last Sync Time", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Loading Last Sync Time", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
             var syncMetadata = _localContext.SyncMetadata.FirstOrDefault(sm => sm.Key == "LastSyncTime");
             //if (syncMetadata != null && DateTime.TryParse(syncMetadata.Value, out DateTime lastSyncTime))
             //{
@@ -604,11 +604,11 @@ namespace AccraRoadAttendance.Services
             if (syncMetadata != null)
             {
                 // Debug: Show raw SyncMetadata value
-                MessageBox.Show($"SyncMetadata Value: {syncMetadata.Value}", "Debug");
+                //MessageBox.Show($"SyncMetadata Value: {syncMetadata.Value}", "Debug");
                 if (DateTime.TryParse(syncMetadata.Value, out DateTime lastSyncTime))
                 {
                     // Debug: Show parsed lastSyncTime
-                    MessageBox.Show($"Parsed lastSyncTime: {lastSyncTime}", "Debug");
+                    //MessageBox.Show($"Parsed lastSyncTime: {lastSyncTime}", "Debug");
                     return lastSyncTime;
                 }
                 else

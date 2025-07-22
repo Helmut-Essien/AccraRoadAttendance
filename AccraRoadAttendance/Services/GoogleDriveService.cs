@@ -58,7 +58,7 @@ namespace AccraRoadAttendance.Services
                 // Set the ProfilePictures folder ID
                 _profilePicturesFolderId = "1gN_Hhie-bN7FGIm_MN3DQ1QZF95eHRjR";
                 Console.WriteLine($"ProfilePictures folder ID set to: {_profilePicturesFolderId}");
-                MessageBox.Show($"ProfilePictures folder ID set to: {_profilePicturesFolderId}");
+                //MessageBox.Show($"ProfilePictures folder ID set to: {_profilePicturesFolderId}");
             }
             catch (Exception ex)
             {
