@@ -158,11 +158,11 @@ namespace AccraRoadAttendance
 
                 // Temporary debug code
                 var env = _host.Services.GetRequiredService<IHostEnvironment>();
-                MessageBox.Show($"Current environment: {env.EnvironmentName}");
+                //MessageBox.Show($"Current environment: {env.EnvironmentName}");
 
                 var config = _host.Services.GetRequiredService<IConfiguration>();
-                MessageBox.Show($"Connection string: {config.GetConnectionString("DefaultConnection")}");
-                MessageBox.Show($"Online connection string: {config.GetConnectionString("OnlineConnection")}");
+                //MessageBox.Show($"Connection string: {config.GetConnectionString("DefaultConnection")}");
+                //MessageBox.Show($"Online connection string: {config.GetConnectionString("OnlineConnection")}");
 
                 //await InitializeDatabaseAsync();
 

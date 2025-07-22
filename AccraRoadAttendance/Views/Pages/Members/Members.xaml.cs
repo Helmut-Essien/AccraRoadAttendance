@@ -8,6 +8,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace AccraRoadAttendance.Views.Pages.Members
 {
@@ -18,7 +20,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private List<Member> allMembers; // All members in the system
         private List<Member> displayedMembers; // Members displayed on the current page
         private int currentPage = 1;
-        private const int pageSize = 10;
+        private int pageSize = 2;
 
         public Members(AttendanceDbContext context, INavigationService navigationService)
         {
@@ -27,7 +29,14 @@ namespace AccraRoadAttendance.Views.Pages.Members
             _navigationService = navigationService;
             DataContext = this;
             IsPaginationVisible = false;
-            LoadMembers();
+            //LoadMembers();
+
+            // Subscribe to DataGrid events
+            membersDataGrid.Loaded += DataGrid_Loaded;
+            membersDataGrid.SizeChanged += DataGrid_SizeChanged;
+
+            // Subscribe to UserControl Loaded event
+            this.Loaded += Members_Loaded;
         }
         
 
@@ -82,24 +91,146 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
-        private async void LoadMembers()
+        // Helper method to find the ScrollViewer in the DataGrid
+        private ScrollViewer GetScrollViewer(DependencyObject depObj)
+        {
+            if (depObj is ScrollViewer scrollViewer)
+                return scrollViewer;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                var child = VisualTreeHelper.GetChild(depObj, i);
+                var result = GetScrollViewer(child);
+                if (result != null)
+                    return result;
+            }
+            return null;
+        }
+
+        // Calculate the pageSize based on DataGrid's available space
+        private void CalculatePageSize()
+        {
+            var scrollViewer = GetScrollViewer(membersDataGrid);
+            if (scrollViewer != null)
+            {
+                double viewportHeight = scrollViewer.ActualHeight;
+                double rowHeight = 0;
+
+                if (membersDataGrid.Items.Count > 0)
+                {
+                    var firstItem = membersDataGrid.Items[0];
+                    var row = (DataGridRow)membersDataGrid.ItemContainerGenerator.ContainerFromItem(firstItem);
+                    if (row != null)
+                    {
+                        rowHeight = row.ActualHeight;
+                    }
+                }
+
+                if (rowHeight == 0)
+                {
+                    rowHeight = 30; // Default row height
+                }
+
+                if (viewportHeight > 0 && rowHeight > 0)
+                {
+                    int newPageSize = (int)(viewportHeight / rowHeight);
+                    pageSize = Math.Max(1, newPageSize);
+                }
+                else
+                {
+                    pageSize = 1; // Reasonable default
+                }
+            }
+            else
+            {
+                pageSize = 1; // Default if ScrollViewer not found
+            }
+        }
+
+        // Adjust CurrentPage to stay valid after pageSize changes
+        private void AdjustCurrentPage()
+        {
+            if (allMembers == null) return;
+
+            int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
+            if (totalPages == 0)
+            {
+                CurrentPage = 1; // No pages available
+            }
+            else
+            {
+                CurrentPage = Math.Max(1, Math.Min(CurrentPage, totalPages)); // Keep within bounds
+            }
+        }
+
+        private void DataGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            CalculatePageSize();
+            if (allMembers != null)
+            {
+                AdjustCurrentPage();
+                RefreshDataGrid();
+                UpdatePagination();
+            }
+        }
+
+        private void DataGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            CalculatePageSize();
+            if (allMembers != null)
+            {
+                AdjustCurrentPage();
+                RefreshDataGrid();
+                UpdatePagination();
+            }
+        }
+
+        private async void Members_Loaded(object sender, RoutedEventArgs e)
+        {
+            await LoadMembersAsync();
+            RefreshDataGrid(); // Set initial ItemsSource to trigger rendering
+
+            // Schedule pagination calculation after UI rendering
+            _ = Dispatcher.InvokeAsync(() =>
+            {
+                CalculatePageSize();    // Calculate page size based on rendered dimensions
+                AdjustCurrentPage();    // Adjust the current page if necessary
+                RefreshDataGrid();      // Refresh the DataGrid with the correct page
+                UpdatePagination();     // Update pagination controls
+            }, DispatcherPriority.Render);
+        }
+
+        //private async void LoadMembers()
+        //{
+        //    try
+        //    {
+        //        allMembers = await _context.Members.ToListAsync();
+        //        CurrentPage = 1;
+        //        RefreshDataGrid();
+        //        UpdatePagination();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"An error occurred while loading members: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    }
+        //}
+        private async Task LoadMembersAsync()
         {
             try
             {
                 allMembers = await _context.Members.ToListAsync();
                 CurrentPage = 1;
-                RefreshDataGrid();
-                UpdatePagination();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred while loading members: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
         private void RefreshDataGrid()
         {
-            int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
+            //int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
+            if (allMembers == null) return;
+
             displayedMembers = allMembers
                 .Skip((CurrentPage - 1) * pageSize)
                 .Take(pageSize)
@@ -110,6 +241,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
 
         private void UpdatePagination()
         {
+            if (allMembers == null) return;
             int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
             IsPaginationVisible = totalPages > 1;
 
@@ -213,10 +345,16 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 {
                     try
                     {
+                        //_context.Members.Remove(member);
+                        //await _context.SaveChangesAsync();
+                        //allMembers.Remove(member);
+                        //LoadMembers(); // Reload instead of just removing from list to ensure data consistency
                         _context.Members.Remove(member);
                         await _context.SaveChangesAsync();
-                        allMembers.Remove(member);
-                        LoadMembers(); // Reload instead of just removing from list to ensure data consistency
+                        await LoadMembersAsync();
+                        AdjustCurrentPage();
+                        RefreshDataGrid();
+                        UpdatePagination();
                     }
                     catch (Exception ex)
                     {
@@ -241,12 +379,26 @@ namespace AccraRoadAttendance.Views.Pages.Members
                                 m.OtherNames.ToLower().Contains(query))
                     .ToList();
                 CurrentPage = 1; // Reset to first page when searching
+                AdjustCurrentPage();
                 RefreshDataGrid();
                 UpdatePagination();
             }
             else
             {
-                LoadMembers();
+                LoadMembersAsync().ContinueWith(t =>
+                {
+                    if (t.IsFaulted)
+                    {
+                        MessageBox.Show($"An error occurred while loading members: {t.Exception?.InnerException?.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    else
+
+                    {
+                        AdjustCurrentPage();
+                        RefreshDataGrid();
+                        UpdatePagination();
+                    }
+                }, TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
 
