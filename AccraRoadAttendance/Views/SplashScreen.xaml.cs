@@ -76,35 +76,66 @@ namespace AccraRoadAttendance.Views
             }
             // Wait to show the final message, then transition
             await Task.Delay(1000);
+            await ShowLoginAndCloseAsync();
 
             // Trigger fade-out and close
-            await FadeOutAndCloseAsync();
+            //await FadeOutAndCloseAsync();
 
 
-            var login = _serviceProvider.GetRequiredService<Login>();
-            Application.Current.MainWindow = login;
-            login.Show();
-            //Close();
+            //var login = _serviceProvider.GetRequiredService<Login>();
+            //Application.Current.MainWindow = login;
+            //login.Show();
+            ////Close();
+            //// 3) Now it’s safe to let WPF auto‐shutdown when last window closes
+            //Application.Current.ShutdownMode = ShutdownMode.OnLastWindowClose;
+
         }
 
-        public Task FadeOutAndCloseAsync()
+        //public Task FadeOutAndCloseAsync()
+        //{
+        //    var tcs = new TaskCompletionSource<object>();
+
+        //    Dispatcher.Invoke(() =>
+        //    {
+        //        var fadeOut = (Storyboard)this.Resources["FadeOutStoryboard"];
+        //        fadeOut.Completed += (s, e) =>
+        //        {
+        //            this.Close();
+        //            tcs.SetResult(null);
+        //        };
+        //        fadeOut.Begin(this);
+        //    });
+
+        //    return tcs.Task;
+        //}
+        public async Task FadeOutAsync()
         {
             var tcs = new TaskCompletionSource<object>();
-
             Dispatcher.Invoke(() =>
             {
                 var fadeOut = (Storyboard)this.Resources["FadeOutStoryboard"];
-                fadeOut.Completed += (s, e) =>
-                {
-                    this.Close();
-                    tcs.SetResult(null);
-                };
+                fadeOut.Completed += (s, e) => tcs.SetResult(null);
                 fadeOut.Begin(this);
             });
-
-            return tcs.Task;
+            await tcs.Task;
         }
 
+        private async Task ShowLoginAndCloseAsync()
+        {
+            // Create login window first
+            var login = _serviceProvider.GetRequiredService<Login>();
+
+            // Fade out splash (without closing yet)
+            await FadeOutAsync();
+
+            // Show login BEFORE closing splash
+            login.Show();
+            login.Activate();
+            Application.Current.MainWindow = login;
+
+            // Now close splash
+            this.Close();
+        }
         private bool IsInternetAvailable()
         {
             try

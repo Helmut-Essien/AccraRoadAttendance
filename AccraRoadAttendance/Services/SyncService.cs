@@ -330,7 +330,7 @@ namespace AccraRoadAttendance.Services
                 }
             }
             
-            MessageBox.Show("Local Attendances Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Local Attendances Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void PushSummaries()
@@ -391,7 +391,7 @@ namespace AccraRoadAttendance.Services
                 }
             }
             
-            MessageBox.Show("Local Summaries Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Local Summaries Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         //Pulling Online Changes
@@ -418,7 +418,7 @@ namespace AccraRoadAttendance.Services
                .AsNoTracking()
                .ToList();
             // Debug: Show number of members to pull and _lastSyncTime
-            MessageBox.Show($"Members to pull: {onlineMembers.Count}, lastSyncTime: {_lastSyncTime}", "Debug");
+            //MessageBox.Show($"Members to pull: {onlineMembers.Count}, lastSyncTime: {_lastSyncTime}", "Debug");
             //if (onlineMembers.Any())
             //{
             //    // Debug: Show LastModified of the first member
@@ -487,7 +487,7 @@ namespace AccraRoadAttendance.Services
                     continue;
                 }
             }
-            MessageBox.Show("Online Members Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Online Members Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void PullAttendances()
@@ -540,7 +540,7 @@ namespace AccraRoadAttendance.Services
                     continue;
                 }
             }
-            MessageBox.Show("Online Attendances Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Online Attendances Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void PullSummaries()
@@ -597,7 +597,7 @@ namespace AccraRoadAttendance.Services
                     continue;
                 }
             }
-            MessageBox.Show("Online Summaries Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Online Summaries Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         // Helper Methods
@@ -625,13 +625,13 @@ namespace AccraRoadAttendance.Services
                 else
                 {
                     // Debug: Indicate parsing failure
-                    MessageBox.Show("Failed to parse SyncMetadata Value", "Debug");
+                    //MessageBox.Show("Failed to parse SyncMetadata Value", "Debug");
                 }
             }
             else
             {
                 // Debug: Indicate no metadata found
-                MessageBox.Show("No SyncMetadata found for LastSyncTime", "Debug");
+                //MessageBox.Show("No SyncMetadata found for LastSyncTime", "Debug");
             }
             return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         }
@@ -639,7 +639,7 @@ namespace AccraRoadAttendance.Services
         private void SaveLastSyncTime(DateTime time)
         {
             // Save the last sync time to the local context
-            MessageBox.Show("Saving Last Sync Time", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Saving Last Sync Time", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
             var syncMetadata = _localContext.SyncMetadata.FirstOrDefault(sm => sm.Key == "LastSyncTime");
             if (syncMetadata == null)
             {
@@ -652,7 +652,7 @@ namespace AccraRoadAttendance.Services
             }
             _localContext.SaveChanges();
             _lastSyncTime = time;
-            MessageBox.Show("Last Sync Time Saved", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Last Sync Time Saved", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

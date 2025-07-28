@@ -71,7 +71,7 @@ namespace AccraRoadAttendance.Services
         {
 
             Console.WriteLine($"Starting image upload for file: {localPath}");
-            MessageBox.Show($"Starting image upload for file: {localPath}");
+            //MessageBox.Show($"Starting image upload for file: {localPath}");
             try
             {
                 //CheckFolderExists(_profilePicturesFolderId);
@@ -83,7 +83,7 @@ namespace AccraRoadAttendance.Services
                     throw new FileNotFoundException($"Image file not found: {localPath}");
                 }
                 Console.WriteLine("File exists. Checking file extension...");
-                MessageBox.Show("File exists. Checking file extension...");
+                //MessageBox.Show("File exists. Checking file extension...");
 
 
                 // 1) Read into memory (this closes the file immediately)
@@ -98,7 +98,7 @@ namespace AccraRoadAttendance.Services
                     _ => throw new NotSupportedException($"Unsupported image format: {extension}")
                 };
                 Console.WriteLine($"File extension: {extension}, MIME type: {mimeType}");
-                MessageBox.Show($"File extension: {extension}, MIME type: {mimeType}");
+                //MessageBox.Show($"File extension: {extension}, MIME type: {mimeType}");
 
                 var fileMetadata = new Google.Apis.Drive.v3.Data.File
                 {
@@ -106,7 +106,7 @@ namespace AccraRoadAttendance.Services
                     Parents = new[] { _profilePicturesFolderId }
                 };
                 Console.WriteLine($"File metadata created. File name: {fileMetadata.Name}, Parent folder ID: {_profilePicturesFolderId}");
-                MessageBox.Show($"File metadata created. File name: {fileMetadata.Name}, Parent folder ID: {_profilePicturesFolderId}");
+                //MessageBox.Show($"File metadata created. File name: {fileMetadata.Name}, Parent folder ID: {_profilePicturesFolderId}");
 
                 //using (var stream = new FileStream(localPath, FileMode.Open))
                 //{
