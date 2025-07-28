@@ -174,8 +174,8 @@ namespace AccraRoadAttendance
                 //loginWindow.Show();
 
 
-                var loginWindow = services.GetRequiredService<Login>();
-                Application.Current.MainWindow = loginWindow;
+                var splashWindow = services.GetRequiredService<SplashScreen>();
+                Application.Current.MainWindow = splashWindow;
 
 
                 // Fade out LogoSplash
@@ -184,7 +184,8 @@ namespace AccraRoadAttendance
                     await _logoSplash.FadeOutAndCloseAsync();
                 }
 
-                loginWindow.Show();
+                splashWindow.Show();
+
 
                 this.ShutdownMode = ShutdownMode.OnLastWindowClose;
                 //// Show MainWindow
@@ -277,7 +278,7 @@ namespace AccraRoadAttendance
             try
             {
                 // 1. Drop existing database
-                await context.Database.EnsureDeletedAsync();
+                //await context.Database.EnsureDeletedAsync();
                 // Add 1s delay to allow file release
                 System.Threading.Thread.Sleep(1000);
                 // 1. Apply migrations

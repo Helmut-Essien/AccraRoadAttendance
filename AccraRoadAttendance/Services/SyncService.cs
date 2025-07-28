@@ -31,19 +31,24 @@ namespace AccraRoadAttendance.Services
             _logger.LogInformation("Initial lastSyncTime: {LastSyncTime:u}", _lastSyncTime);
         }
 
-        public void SyncData()
+        public void SyncData(IProgress<string>? progress = null)
         {
             try
             {
-                 _logger.LogInformation("Starting synchronization");
-                PushLocalChanges();
-                PullOnlineChanges();
+                progress?.Report("Starting synchronization...");
+                _logger.LogInformation("Starting synchronization");
+
+                PushLocalChanges(progress);
+                PullOnlineChanges(progress);
+
                 SaveLastSyncTime(DateTime.UtcNow);
+                progress?.Report("Synchronization complete.");
                 _logger.LogInformation("SyncData completed successfully at {Now:u}", DateTime.UtcNow);
             }
             catch (Exception ex)
             {
                 // Log the exception (e.g., using ILogger)
+                progress?.Report("Synchronization failed.");
                 _logger.LogError(ex, "SyncData failed: {Message}", ex.Message);
                 //throw new InvalidOperationException("Synchronization failed.", ex);
                 throw new InvalidOperationException("Synchronization failed.", ex); // Pass 'ex' as the inner exception
@@ -51,14 +56,17 @@ namespace AccraRoadAttendance.Services
         }
 
          // Pushing Local Changes
-        private void PushLocalChanges()
+        private void PushLocalChanges(IProgress<string>? progress = null)
         {
             // Order matters: Members first due to Attendance dependency
-            MessageBox.Show("Pushing Local Changes", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Pushing Local Changes", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            progress?.Report("Uploading local members...");
             PushMembers();
+            progress?.Report("Uploading local attendances...");
             PushAttendances();
+            progress?.Report("Uploading local summaries...");
             PushSummaries();
-            MessageBox.Show("Local Changes Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Local Changes Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         //private void PushMembers()
@@ -387,14 +395,17 @@ namespace AccraRoadAttendance.Services
         }
 
         //Pulling Online Changes
-        private void PullOnlineChanges()
+        private void PullOnlineChanges(IProgress<string>? progress = null)
         {
             // Order matters: Members first due to Attendance dependency
-            MessageBox.Show("Pulling Online Changes", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Pulling Online Changes", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            progress?.Report("Downloading online members...");
             PullMembers();
+            progress?.Report("Downloading online attendances...");
             PullAttendances();
+            progress?.Report("Downloading online summaries...");
             PullSummaries();
-            MessageBox.Show("Online Changes Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Online Changes Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void PullMembers()

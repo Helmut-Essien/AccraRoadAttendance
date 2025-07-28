@@ -1,4 +1,5 @@
 ﻿using AccraRoadAttendance.Services;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -35,27 +37,72 @@ namespace AccraRoadAttendance.Views
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
+            // Trigger fade-in animation
+            var fadeIn = (Storyboard)this.Resources["FadeInStoryboard"];
+            fadeIn.Begin(this);
+
+            // Small delay to ensure the animation starts smoothly
+            await Task.Delay(50);
+
+            // Create a progress reporter to update the UI
+            var progress = new Progress<string>(message => StatusText.Text = message);
+
+            // Initial status
+            StatusText.Text = "Checking internet connection...";
+            await Task.Delay(500); // Short delay to let the user read the message
+
             if (IsInternetAvailable())
             {
+                StatusText.Text = "Internet connected. Synchronizing data...";
                 try
                 {
-                    _syncService.SyncData();
+                    // Run sync on a background thread with progress reporting
+                    await Task.Run(() => _syncService.SyncData(progress));
+                    //_syncService.SyncData();
                     // Optionally update UI to show sync success
+                    StatusText.Text = "Synchronization complete.";
                 }
                 catch (Exception ex)
                 {
+                    StatusText.Text = "Sync failed.";
                     MessageBox.Show($"Sync failed: {ex.Message}", "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     
                 }
             }
             else
             {
+                StatusText.Text = "No internet! Skipping sync.";
                 MessageBox.Show("No internet connection. Data may not be up to date.", "Offline Mode", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+            // Wait to show the final message, then transition
+            await Task.Delay(1000);
+
+            // Trigger fade-out and close
+            await FadeOutAndCloseAsync();
+
 
             var login = _serviceProvider.GetRequiredService<Login>();
+            Application.Current.MainWindow = login;
             login.Show();
-            Close();
+            //Close();
+        }
+
+        public Task FadeOutAndCloseAsync()
+        {
+            var tcs = new TaskCompletionSource<object>();
+
+            Dispatcher.Invoke(() =>
+            {
+                var fadeOut = (Storyboard)this.Resources["FadeOutStoryboard"];
+                fadeOut.Completed += (s, e) =>
+                {
+                    this.Close();
+                    tcs.SetResult(null);
+                };
+                fadeOut.Begin(this);
+            });
+
+            return tcs.Task;
         }
 
         private bool IsInternetAvailable()
