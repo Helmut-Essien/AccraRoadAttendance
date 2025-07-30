@@ -10,11 +10,28 @@
     Height="350"
     AllowsTransparency="True"
     Background="{x:Null}"
+    Opacity="0"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
+    <Window.Resources>
+        <Storyboard x:Key="FadeInStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetProperty="Opacity"
+                From="0"
+                To="1"
+                Duration="0:0:0.5" />
+        </Storyboard>
 
+        <Storyboard x:Key="FadeOutStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetProperty="Opacity"
+                From="1"
+                To="0"
+                Duration="0:0:0.5" />
+        </Storyboard>
+    </Window.Resources>
     <Grid>
         <!--  Main Container  -->
         <Border
@@ -59,10 +76,19 @@
                         Text="Accra-Road Church of Christ, Kasoa"
                         TextWrapping="Wrap" />
                     <!--  ProgressBar  -->
+                    <TextBlock
+                        x:Name="StatusText"
+                        Grid.Row="2"
+                        Margin="30,10,30,30"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
+                        FontSize="14"
+                        Foreground="{DynamicResource PrimaryHueMidBrush}"
+                        Text="Initializing…" />
                     <ProgressBar
                         Grid.Row="2"
                         Height="8"
-                        Margin="30,10,30,30"
+                        Margin="30,30,30,20"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Bottom"
                         Background="{DynamicResource MaterialDesignDivider}"

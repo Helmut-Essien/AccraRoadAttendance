@@ -31,34 +31,64 @@ namespace AccraRoadAttendance.Services
             _logger.LogInformation("Initial lastSyncTime: {LastSyncTime:u}", _lastSyncTime);
         }
 
-        public void SyncData()
+        public void SyncData(IProgress<string>? progress = null)
         {
-            try
+            const int maxRetries = 1;
+            const int delayMs = 5000; // 5 seconds
+            int attempt = 0;
+            TimeSpan delay = TimeSpan.FromSeconds(5);
+
+            while (attempt < maxRetries)
             {
-                 _logger.LogInformation("Starting synchronization");
-                PushLocalChanges();
-                PullOnlineChanges();
-                SaveLastSyncTime(DateTime.UtcNow);
-                _logger.LogInformation("SyncData completed successfully at {Now:u}", DateTime.UtcNow);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception (e.g., using ILogger)
-                _logger.LogError(ex, "SyncData failed: {Message}", ex.Message);
-                //throw new InvalidOperationException("Synchronization failed.", ex);
-                throw new InvalidOperationException("Synchronization failed.", ex); // Pass 'ex' as the inner exception
+                try
+                {
+                    progress?.Report("Starting synchronization...");
+                    _logger.LogInformation("Starting synchronization");
+
+                    PushLocalChanges(progress);
+                    PullOnlineChanges(progress);
+
+                    SaveLastSyncTime(DateTime.UtcNow);
+                    progress?.Report("Synchronization complete.");
+                    _logger.LogInformation("SyncData completed successfully at {Now:u}", DateTime.UtcNow);
+                }
+                catch (Exception ex)
+                {
+                    attempt++;
+                    // Log the exception (e.g., using ILogger)
+                    progress?.Report($"Synchronization attempt {attempt} failed.");
+                    progress?.Report($"Retrying in {delay.TotalSeconds}s ({attempt}/{maxRetries})...");
+                    _logger.LogInformation(ex, "SyncData failed on attempt {Attempt}: {Message}", attempt, ex.Message);
+                    //throw new InvalidOperationException("Synchronization failed.", ex);
+                    //throw new InvalidOperationException("Synchronization failed.", ex); // Pass 'ex' as the inner exception
+                    if (attempt == maxRetries)
+                    {
+                        progress?.Report($"Synchronization attempt {attempt} failed.");
+                        Thread.Sleep(delayMs);
+
+                        _logger.LogError(ex, "Sync ultimately failed after {MaxRetries} attempts.", maxRetries);
+                        progress?.Report($"Synchronization failed after {maxRetries} attempts.");
+
+                        throw new InvalidOperationException($"Synchronization failed after {maxRetries} attempts.", ex);
+                    }
+
+                    Thread.Sleep(delayMs);
+                }
             }
         }
 
          // Pushing Local Changes
-        private void PushLocalChanges()
+        private void PushLocalChanges(IProgress<string>? progress = null)
         {
             // Order matters: Members first due to Attendance dependency
-            MessageBox.Show("Pushing Local Changes", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Pushing Local Changes", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            progress?.Report("Uploading local members...");
             PushMembers();
+            progress?.Report("Uploading local attendances...");
             PushAttendances();
+            progress?.Report("Uploading local summaries...");
             PushSummaries();
-            MessageBox.Show("Local Changes Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Local Changes Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         //private void PushMembers()
@@ -322,7 +352,7 @@ namespace AccraRoadAttendance.Services
                 }
             }
             
-            MessageBox.Show("Local Attendances Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Local Attendances Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void PushSummaries()
@@ -383,18 +413,21 @@ namespace AccraRoadAttendance.Services
                 }
             }
             
-            MessageBox.Show("Local Summaries Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Local Summaries Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         //Pulling Online Changes
-        private void PullOnlineChanges()
+        private void PullOnlineChanges(IProgress<string>? progress = null)
         {
             // Order matters: Members first due to Attendance dependency
-            MessageBox.Show("Pulling Online Changes", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Pulling Online Changes", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            progress?.Report("Downloading online members...");
             PullMembers();
+            progress?.Report("Downloading online attendances...");
             PullAttendances();
+            progress?.Report("Downloading online summaries...");
             PullSummaries();
-            MessageBox.Show("Online Changes Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Online Changes Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void PullMembers()
@@ -407,7 +440,7 @@ namespace AccraRoadAttendance.Services
                .AsNoTracking()
                .ToList();
             // Debug: Show number of members to pull and _lastSyncTime
-            MessageBox.Show($"Members to pull: {onlineMembers.Count}, lastSyncTime: {_lastSyncTime}", "Debug");
+            //MessageBox.Show($"Members to pull: {onlineMembers.Count}, lastSyncTime: {_lastSyncTime}", "Debug");
             //if (onlineMembers.Any())
             //{
             //    // Debug: Show LastModified of the first member
@@ -476,7 +509,7 @@ namespace AccraRoadAttendance.Services
                     continue;
                 }
             }
-            MessageBox.Show("Online Members Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Online Members Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void PullAttendances()
@@ -529,7 +562,7 @@ namespace AccraRoadAttendance.Services
                     continue;
                 }
             }
-            MessageBox.Show("Online Attendances Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Online Attendances Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void PullSummaries()
@@ -586,7 +619,7 @@ namespace AccraRoadAttendance.Services
                     continue;
                 }
             }
-            MessageBox.Show("Online Summaries Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Online Summaries Pulled", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         // Helper Methods
@@ -614,13 +647,13 @@ namespace AccraRoadAttendance.Services
                 else
                 {
                     // Debug: Indicate parsing failure
-                    MessageBox.Show("Failed to parse SyncMetadata Value", "Debug");
+                    //MessageBox.Show("Failed to parse SyncMetadata Value", "Debug");
                 }
             }
             else
             {
                 // Debug: Indicate no metadata found
-                MessageBox.Show("No SyncMetadata found for LastSyncTime", "Debug");
+                //MessageBox.Show("No SyncMetadata found for LastSyncTime", "Debug");
             }
             return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         }
@@ -628,7 +661,7 @@ namespace AccraRoadAttendance.Services
         private void SaveLastSyncTime(DateTime time)
         {
             // Save the last sync time to the local context
-            MessageBox.Show("Saving Last Sync Time", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Saving Last Sync Time", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
             var syncMetadata = _localContext.SyncMetadata.FirstOrDefault(sm => sm.Key == "LastSyncTime");
             if (syncMetadata == null)
             {
@@ -641,7 +674,7 @@ namespace AccraRoadAttendance.Services
             }
             _localContext.SaveChanges();
             _lastSyncTime = time;
-            MessageBox.Show("Last Sync Time Saved", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Last Sync Time Saved", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

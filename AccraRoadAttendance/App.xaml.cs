@@ -174,8 +174,8 @@ namespace AccraRoadAttendance
                 //loginWindow.Show();
 
 
-                var loginWindow = services.GetRequiredService<Login>();
-                Application.Current.MainWindow = loginWindow;
+                var splashWindow = services.GetRequiredService<SplashScreen>();
+                Application.Current.MainWindow = splashWindow;
 
 
                 // Fade out LogoSplash
@@ -184,7 +184,8 @@ namespace AccraRoadAttendance
                     await _logoSplash.FadeOutAndCloseAsync();
                 }
 
-                loginWindow.Show();
+                splashWindow.Show();
+
 
                 this.ShutdownMode = ShutdownMode.OnLastWindowClose;
                 //// Show MainWindow
