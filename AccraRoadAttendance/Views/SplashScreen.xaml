@@ -62,7 +62,7 @@
                         Margin="0,20,0,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
-                        Source="pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogo.jpg" />
+                        Source="/AppImages/CLogoc.png" />
 
                     <!--  Text  -->
                     <TextBlock
