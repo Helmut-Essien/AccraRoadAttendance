@@ -33,25 +33,47 @@ namespace AccraRoadAttendance.Services
 
         public void SyncData(IProgress<string>? progress = null)
         {
-            try
-            {
-                progress?.Report("Starting synchronization...");
-                _logger.LogInformation("Starting synchronization");
+            const int maxRetries = 1;
+            const int delayMs = 5000; // 5 seconds
+            int attempt = 0;
+            TimeSpan delay = TimeSpan.FromSeconds(5);
 
-                PushLocalChanges(progress);
-                PullOnlineChanges(progress);
-
-                SaveLastSyncTime(DateTime.UtcNow);
-                progress?.Report("Synchronization complete.");
-                _logger.LogInformation("SyncData completed successfully at {Now:u}", DateTime.UtcNow);
-            }
-            catch (Exception ex)
+            while (attempt < maxRetries)
             {
-                // Log the exception (e.g., using ILogger)
-                progress?.Report("Synchronization failed.");
-                _logger.LogError(ex, "SyncData failed: {Message}", ex.Message);
-                //throw new InvalidOperationException("Synchronization failed.", ex);
-                throw new InvalidOperationException("Synchronization failed.", ex); // Pass 'ex' as the inner exception
+                try
+                {
+                    progress?.Report("Starting synchronization...");
+                    _logger.LogInformation("Starting synchronization");
+
+                    PushLocalChanges(progress);
+                    PullOnlineChanges(progress);
+
+                    SaveLastSyncTime(DateTime.UtcNow);
+                    progress?.Report("Synchronization complete.");
+                    _logger.LogInformation("SyncData completed successfully at {Now:u}", DateTime.UtcNow);
+                }
+                catch (Exception ex)
+                {
+                    attempt++;
+                    // Log the exception (e.g., using ILogger)
+                    progress?.Report($"Synchronization attempt {attempt} failed.");
+                    progress?.Report($"Retrying in {delay.TotalSeconds}s ({attempt}/{maxRetries})...");
+                    _logger.LogInformation(ex, "SyncData failed on attempt {Attempt}: {Message}", attempt, ex.Message);
+                    //throw new InvalidOperationException("Synchronization failed.", ex);
+                    //throw new InvalidOperationException("Synchronization failed.", ex); // Pass 'ex' as the inner exception
+                    if (attempt == maxRetries)
+                    {
+                        progress?.Report($"Synchronization attempt {attempt} failed.");
+                        Thread.Sleep(delayMs);
+
+                        _logger.LogError(ex, "Sync ultimately failed after {MaxRetries} attempts.", maxRetries);
+                        progress?.Report($"Synchronization failed after {maxRetries} attempts.");
+
+                        throw new InvalidOperationException($"Synchronization failed after {maxRetries} attempts.", ex);
+                    }
+
+                    Thread.Sleep(delayMs);
+                }
             }
         }
 

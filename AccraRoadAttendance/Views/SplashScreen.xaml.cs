@@ -64,9 +64,10 @@ namespace AccraRoadAttendance.Views
                 }
                 catch (Exception ex)
                 {
-                    StatusText.Text = "Sync failed.";
-                    MessageBox.Show($"Sync failed: {ex.Message}", "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    
+                    //StatusText.Text = "Sync failed.";
+                    ////MessageBox.Show($"Sync failed: {ex.Message}", "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(ex.ToString(), "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
                 }
             }
             else
@@ -151,5 +152,7 @@ namespace AccraRoadAttendance.Views
                 return false;
             }
         }
+
+        
     }
 }
