@@ -133,7 +133,9 @@ namespace AccraRoadAttendance
             {
                  _logoSplash.FadeOutAndCloseAsync();
             }
-            MessageBox.Show($"An unhandled exception occurred: {e.Exception.Message}\n{e.Exception.StackTrace}",
+            //MessageBox.Show($"An unhandled exception occurred: {e.Exception.Message}\n{e.Exception.StackTrace}",
+            //    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"An unhandled exception occurred: {e.Exception.Message}",
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             e.Handled = true;
         }
