@@ -68,6 +68,7 @@ namespace AccraRoadAttendance.Services
 
                         _logger.LogError(ex, "Sync ultimately failed after {MaxRetries} attempts.", maxRetries);
                         progress?.Report($"Synchronization failed after {maxRetries} attempts.");
+                        MessageBox.Show($"Synchronization failed after {maxRetries} attempts.", "Syncing", MessageBoxButton.OK, MessageBoxImage.Error);
 
                         throw new InvalidOperationException($"Synchronization failed after {maxRetries} attempts.", ex);
                     }
