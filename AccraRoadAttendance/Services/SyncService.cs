@@ -51,6 +51,8 @@ namespace AccraRoadAttendance.Services
                     SaveLastSyncTime(DateTime.UtcNow);
                     progress?.Report("Synchronization complete.");
                     _logger.LogInformation("SyncData completed successfully at {Now:u}", DateTime.UtcNow);
+
+                    break; // <-- Add this line to exit the loop on s
                 }
                 catch (Exception ex)
                 {
@@ -61,6 +63,7 @@ namespace AccraRoadAttendance.Services
                     _logger.LogInformation(ex, "SyncData failed on attempt {Attempt}: {Message}", attempt, ex.Message);
                     //throw new InvalidOperationException("Synchronization failed.", ex);
                     //throw new InvalidOperationException("Synchronization failed.", ex); // Pass 'ex' as the inner exception
+
                     if (attempt == maxRetries)
                     {
                         progress?.Report($"Synchronization attempt {attempt} failed.");
