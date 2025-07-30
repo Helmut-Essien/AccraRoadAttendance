@@ -73,7 +73,7 @@ namespace AccraRoadAttendance.Services
                         progress?.Report($"Synchronization failed after {maxRetries} attempts.");
                         
 
-                        throw new InvalidOperationException($"Synchronization failed after {maxRetries} attempts.", ex);
+                        throw new InvalidOperationException($"Synchronization failed after {maxRetries} attempts.");
                     }
 
                     Thread.Sleep(delayMs);
