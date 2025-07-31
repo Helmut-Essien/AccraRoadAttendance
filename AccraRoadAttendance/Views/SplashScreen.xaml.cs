@@ -60,13 +60,13 @@ namespace AccraRoadAttendance.Views
                     await Task.Run(() => _syncService.SyncData(progress));
                     //_syncService.SyncData();
                     // Optionally update UI to show sync success
-                    StatusText.Text = "Synchronization complete.";
+                    //StatusText.Text = "Synchronization complete.";
                 }
                 catch (Exception ex)
                 {
                     //StatusText.Text = "Sync failed.";
                     ////MessageBox.Show($"Sync failed: {ex.Message}", "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    MessageBox.Show(ex.ToString(), "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(ex.Message, "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 }
             }

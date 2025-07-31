@@ -6,8 +6,8 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="SplashScreen"
-    Width="600"
-    Height="350"
+    Width="500"
+    Height="280"
     AllowsTransparency="True"
     Background="{x:Null}"
     Opacity="0"
@@ -35,9 +35,7 @@
     <Grid>
         <!--  Main Container  -->
         <Border
-            Margin="25"
-            Background="White"
-            BorderBrush="#FF9E9E9E"
+            Margin="5"
             BorderThickness="1"
             CornerRadius="15"
             SnapsToDevicePixels="True">
@@ -67,7 +65,7 @@
                     <!--  Text  -->
                     <TextBlock
                         Grid.Row="1"
-                        Margin="0,20,0,20"
+                        Margin="0,20,0,5"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Bottom"
                         FontSize="20"

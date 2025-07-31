@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using Member = AccraRoadAttendance.Models.Member;
@@ -33,10 +34,11 @@ namespace AccraRoadAttendance.Services
 
         public void SyncData(IProgress<string>? progress = null)
         {
-            const int maxRetries = 1;
-            const int delayMs = 5000; // 5 seconds
+            const int maxRetries = 2;
+            const int delayMs = 2000; // 5 seconds
             int attempt = 0;
             TimeSpan delay = TimeSpan.FromSeconds(5);
+            bool syncSucceeded = false;
 
             while (attempt < maxRetries)
             {
@@ -49,9 +51,10 @@ namespace AccraRoadAttendance.Services
                     PullOnlineChanges(progress);
 
                     SaveLastSyncTime(DateTime.UtcNow);
-                    progress?.Report("Synchronization complete.");
+                    //progress?.Report("Synchronization complete.");
                     _logger.LogInformation("SyncData completed successfully at {Now:u}", DateTime.UtcNow);
 
+                    syncSucceeded = true;
                     break; // <-- Add this line to exit the loop on s
                 }
                 catch (Exception ex)
@@ -59,27 +62,56 @@ namespace AccraRoadAttendance.Services
                     attempt++;
                     // Log the exception (e.g., using ILogger)
                     progress?.Report($"Synchronization attempt {attempt} failed.");
-                    progress?.Report($"Retrying in {delay.TotalSeconds}s ({attempt}/{maxRetries})...");
+                    Thread.Sleep(delayMs);
+                    //progress?.Report($"Retrying in {delay.TotalSeconds}s ({attempt}/{maxRetries})...");
+                    
                     _logger.LogInformation(ex, "SyncData failed on attempt {Attempt}: {Message}", attempt, ex.Message);
                     //throw new InvalidOperationException("Synchronization failed.", ex);
                     //throw new InvalidOperationException("Synchronization failed.", ex); // Pass 'ex' as the inner exception
-
+                    if (attempt < maxRetries)
+                    {
+                        for (int i = (int)delay.TotalSeconds; i > 0; i--)
+                        {
+                            progress?.Report($"Retrying in {i}s ({attempt}/{maxRetries})...");
+                            Thread.Sleep(1000);
+                        }
+                    }
                     if (attempt == maxRetries)
                     {
-                        progress?.Report($"Synchronization attempt {attempt} failed.");
-                        Thread.Sleep(delayMs);
+                        try
+                        {
+                            progress?.Report($"Synchronization attempt {attempt} failed.");
+                            Thread.Sleep(delayMs);
 
-                        _logger.LogError(ex, "Sync ultimately failed after {MaxRetries} attempts.", maxRetries);
-                        progress?.Report($"Synchronization failed after {maxRetries} attempts.");
-                        
+                            _logger.LogError(ex, "Sync ultimately failed after {MaxRetries} attempts.", maxRetries);
+                            progress?.Report($"Synchronization failed after {maxRetries} attempts.");
 
-                        throw new InvalidOperationException($"Synchronization failed after {maxRetries} attempts.");
+
+                            throw new InvalidOperationException($"Synchronization failed after {maxRetries} attempts.");
+                        }
+                        catch (InvalidOperationException ioe)
+                        {
+                            // Handle the exception (e.g., log it, show a message, etc.)
+                            _logger.LogError(ioe, "Sync failed after max retries.");
+                            MessageBox.Show(ioe.Message, "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return; // Exit the method if max retries reached
+                        }
+
+
                     }
-
+                    // Wait before retrying
                     Thread.Sleep(delayMs);
                 }
+                
+            }
+            if (syncSucceeded)
+            {
+                progress?.Report("Synchronization complete.");
             }
         }
+
+
+    
 
          // Pushing Local Changes
         private void PushLocalChanges(IProgress<string>? progress = null)
