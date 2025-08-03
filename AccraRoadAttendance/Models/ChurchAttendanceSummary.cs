@@ -10,7 +10,6 @@ namespace AccraRoadAttendance.Models
 {
     public class ChurchAttendanceSummary
     {
-        [Key]
         [Column(TypeName = "date")]
         public DateTime SummaryDate { get; set; }
 
