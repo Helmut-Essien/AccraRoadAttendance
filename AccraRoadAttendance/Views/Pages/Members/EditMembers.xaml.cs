@@ -891,6 +891,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 memberToUpdate.FamilyMemberName = HasFamilyMemberInChurch ? FamilyMemberName : null;
                 memberToUpdate.FamilyMemberContact = HasFamilyMemberInChurch ? FamilyMemberContact : null;
                 memberToUpdate.LastModified = DateTime.UtcNow;
+                memberToUpdate.SyncStatus = false;
 
                 if (maritalStatus.Value != 0)
                 {

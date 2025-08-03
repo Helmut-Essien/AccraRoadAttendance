@@ -66,7 +66,7 @@ namespace AccraRoadAttendance.Views
                 {
                     //StatusText.Text = "Sync failed.";
                     ////MessageBox.Show($"Sync failed: {ex.Message}", "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    MessageBox.Show(ex.Message, "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(ex.ToString(), "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 }
             }

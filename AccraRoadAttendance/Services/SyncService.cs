@@ -34,7 +34,7 @@ namespace AccraRoadAttendance.Services
 
         public void SyncData(IProgress<string>? progress = null)
         {
-            const int maxRetries = 2;
+            const int maxRetries = 1;
             const int delayMs = 2000; // 5 seconds
             int attempt = 0;
             TimeSpan delay = TimeSpan.FromSeconds(5);
@@ -78,7 +78,7 @@ namespace AccraRoadAttendance.Services
                     }
                     if (attempt == maxRetries)
                     {
-                        try
+                        //try
                         {
                             progress?.Report($"Synchronization attempt {attempt} failed.");
                             Thread.Sleep(delayMs);
@@ -89,13 +89,13 @@ namespace AccraRoadAttendance.Services
 
                             throw new InvalidOperationException($"Synchronization failed after {maxRetries} attempts.");
                         }
-                        catch (InvalidOperationException ioe)
-                        {
-                            // Handle the exception (e.g., log it, show a message, etc.)
-                            _logger.LogError(ioe, "Sync failed after max retries.");
-                            MessageBox.Show(ioe.Message, "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return; // Exit the method if max retries reached
-                        }
+                        //catch (InvalidOperationException ioe)
+                        //{
+                        //    // Handle the exception (e.g., log it, show a message, etc.)
+                        //    _logger.LogError(ioe, "Sync failed after max retries.");
+                        //    MessageBox.Show(ioe.Message, "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        //    return; // Exit the method if max retries reached
+                        //}
 
 
                     }
@@ -281,12 +281,22 @@ namespace AccraRoadAttendance.Services
                             _logger.LogInformation("Adding new member {MemberId} to online DB", member.Id);
                             _onlineContext.Members.Add(onlineMemberToSync);
                         }
+                        //else
+                        //{
+                        //    _logger.LogInformation("Updating online member {MemberId}", member.Id);
+                        //    //_onlineContext.Entry(onlineMember).CurrentValues.SetValues(member);
+                        //    _onlineContext.Members.Update(onlineMemberToSync);
+                        //    _onlineContext.Entry(onlineMemberToSync).State = EntityState.Modified;
+                        //}
+                        else if (onlineMember.LastModified < member.LastModified)
+                        {
+                            _onlineContext.Members.Attach(onlineMember);
+                            _onlineContext.Entry(onlineMember).CurrentValues.SetValues(member);
+                            _onlineContext.Entry(onlineMember).State = EntityState.Modified;
+                        }
                         else
                         {
-                            _logger.LogInformation("Updating online member {MemberId}", member.Id);
-                            //_onlineContext.Entry(onlineMember).CurrentValues.SetValues(member);
-                            _onlineContext.Members.Attach(onlineMemberToSync);
-                            _onlineContext.Entry(onlineMemberToSync).State = EntityState.Modified;
+                            continue; // No newer changes
                         }
 
                         _onlineContext.SaveChanges();
@@ -325,9 +335,17 @@ namespace AccraRoadAttendance.Services
             {
                 try
                 {
-                     var onlineAttendance = _onlineContext.Attendances
-                        .AsNoTracking()
-                        .SingleOrDefault(a => a.Id == attendance.Id);
+                    //var onlineAttendance = _onlineContext.Attendances
+                    //   .AsNoTracking()
+                    //   .SingleOrDefault(a => a.Id == attendance.Id);
+                    var onlineAttendance = _onlineContext.Attendances
+               .AsNoTracking()
+               .SingleOrDefault(a =>
+                   a.Id == attendance.Id ||
+                   (a.MemberId == attendance.MemberId &&
+                    a.ServiceDate == attendance.ServiceDate &&
+                    a.ServiceType == attendance.ServiceType));
+
                     if (onlineAttendance == null || onlineAttendance.AttendanceLastModified < attendance.AttendanceLastModified)
                     {
                         var trackedInOnline = _onlineContext.ChangeTracker
@@ -355,11 +373,14 @@ namespace AccraRoadAttendance.Services
                             //    // Add other properties as needed
                             //};
                             //_onlineContext.Attendances.Add(newAttendance);
+                            // Detach or mark the Member as Unchanged
+                            _onlineContext.Entry(attendance.Member).State = EntityState.Unchanged;
                             _onlineContext.Attendances.Add(attendance);
                         }
-                        else
-                        {
-                            _logger.LogInformation("Updating existing online Attendance {AttendanceId}.", attendance.Id);
+                        else if (onlineAttendance.AttendanceLastModified < attendance.AttendanceLastModified)
+                        {//else
+
+                            //_logger.LogInformation("Updating existing online Attendance {AttendanceId}.", attendance.Id);
                             //_onlineContext.Entry(onlineAttendance).CurrentValues.SetValues(new
                             //{
                             //    attendance.AttendanceLastModified,
@@ -371,8 +392,18 @@ namespace AccraRoadAttendance.Services
                             //    attendance.ServiceType,
                             //    attendance.Status
                             //});
+                            //_onlineContext.Attendances.Update(attendance);
+                            //_onlineContext.Entry(attendance).State = EntityState.Modified;
+                            _logger.LogInformation("Updating existing online Attendance {AttendanceId}.", onlineAttendance.Id);
+                            // Attach the onlineAttendance and update its values
                             _onlineContext.Attendances.Attach(attendance);
-                            _onlineContext.Entry(attendance).State = EntityState.Modified;
+                            _onlineContext.Entry(onlineAttendance).CurrentValues.SetValues(attendance);
+                            _onlineContext.Entry(onlineAttendance).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            _logger.LogInformation("Skipping attendance {AttendanceId} (no newer changes).", attendance.Id);
+                            continue;
                         }
 
                         _onlineContext.SaveChanges();
@@ -433,7 +464,7 @@ namespace AccraRoadAttendance.Services
                             "Updating existing online Summary {Date}-{Type}.",
                             summary.SummaryDate, summary.ServiceType);
                             //_onlineContext.Entry(onlineSummary).CurrentValues.SetValues(summary);
-                            _onlineContext.ChurchAttendanceSummaries.Attach(summary);
+                            _onlineContext.ChurchAttendanceSummaries.Update(summary);
                             _onlineContext.Entry(summary).State = EntityState.Modified;
                         }
 

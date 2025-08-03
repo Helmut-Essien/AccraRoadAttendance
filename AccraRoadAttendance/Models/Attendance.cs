@@ -12,7 +12,6 @@ namespace AccraRoadAttendance.Models
 {
     public class Attendance
     {
-        [Key]
         public string Id { get; set; } = Ulid.NewUlid().ToString();
 
         [ForeignKey("Member")]
