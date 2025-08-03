@@ -907,7 +907,9 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 {
                     // Generate filename
                     string fileName = SanitizeFilename(newMember.FullName) + Path.GetExtension(SelectedPicturePath);
-                    string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProfilePictures");
+                    string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                    string folderPath = Path.Combine(appDataPath, "AccraRoadAttendance", "ProfilePictures");
+                    //string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProfilePictures");
                     Directory.CreateDirectory(folderPath);
                     string newFilePath = Path.Combine(folderPath, fileName);
 
