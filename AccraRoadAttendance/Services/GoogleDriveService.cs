@@ -193,8 +193,15 @@ namespace AccraRoadAttendance.Services
                 };
 
                 //var localPath = Path.Combine("ProfilePictures", $"{fileId}{extension}");
-                var localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProfilePictures", $"{fileId}{extension}");
-                Directory.CreateDirectory(Path.GetDirectoryName(localPath));
+                //var localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProfilePictures", $"{fileId}{extension}");
+                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string localPath = Path.Combine(appDataPath, "AccraRoadAttendance", "ProfilePictures", $"{fileId}{extension}");
+                //Directory.CreateDirectory(Path.GetDirectoryName(localPath));
+                string? directoryPath = Path.GetDirectoryName(localPath);
+                if (directoryPath is not null)
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
 
                 // Check if file already exists locally
                 if (File.Exists(localPath))
