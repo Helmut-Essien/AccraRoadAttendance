@@ -194,7 +194,7 @@ namespace AccraRoadAttendance.Services
 
                 //var localPath = Path.Combine("ProfilePictures", $"{fileId}{extension}");
                 //var localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProfilePictures", $"{fileId}{extension}");
-                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 string localPath = Path.Combine(appDataPath, "AccraRoadAttendance", "ProfilePictures", $"{fileId}{extension}");
                 //Directory.CreateDirectory(Path.GetDirectoryName(localPath));
                 string? directoryPath = Path.GetDirectoryName(localPath);

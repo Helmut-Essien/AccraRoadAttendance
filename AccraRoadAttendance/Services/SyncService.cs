@@ -78,7 +78,7 @@ namespace AccraRoadAttendance.Services
                     }
                     if (attempt == maxRetries)
                     {
-                        //try
+                        try
                         {
                             progress?.Report($"Synchronization attempt {attempt} failed.");
                             Thread.Sleep(delayMs);
@@ -89,16 +89,16 @@ namespace AccraRoadAttendance.Services
 
                             throw new InvalidOperationException($"Synchronization failed after {maxRetries} attempts.");
                         }
-                        //catch (InvalidOperationException ioe)
-                        //{
-                        //    // Handle the exception (e.g., log it, show a message, etc.)
-                        //    _logger.LogError(ioe, "Sync failed after max retries.");
-                        //    MessageBox.Show(ioe.Message, "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        //    return; // Exit the method if max retries reached
-                        //}
+                        catch (InvalidOperationException ioe)
+                {
+                    // Handle the exception (e.g., log it, show a message, etc.)
+                    _logger.LogError(ioe, "Sync failed after max retries.");
+                    MessageBox.Show(ioe.Message, "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return; // Exit the method if max retries reached
+                }
 
 
-                    }
+            }
                     // Wait before retrying
                     Thread.Sleep(delayMs);
                 }
