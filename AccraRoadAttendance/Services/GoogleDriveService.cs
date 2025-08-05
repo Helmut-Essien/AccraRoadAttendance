@@ -2,6 +2,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Reflection;
@@ -15,10 +16,13 @@ namespace AccraRoadAttendance.Services
     {
         private readonly DriveService _driveService;
         private readonly string _profilePicturesFolderId;
+        private readonly ILogger<GoogleDriveService> _logger;
 
-        public GoogleDriveService()
+        public GoogleDriveService(ILogger<GoogleDriveService> logger)
         {
-            Console.WriteLine("Initializing GoogleDriveService...");
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            _logger.LogInformation("Initializing GoogleDriveService...");
             try
             {
                 
@@ -53,7 +57,7 @@ namespace AccraRoadAttendance.Services
                     HttpClientInitializer = credential,
                     ApplicationName = "AccraRoadAttendance"
                 });
-                Console.WriteLine("DriveService initialized.");
+                _logger.LogInformation("DriveService initialized.");
 
                 // Set the ProfilePictures folder ID
                 _profilePicturesFolderId = "1gN_Hhie-bN7FGIm_MN3DQ1QZF95eHRjR";
@@ -62,7 +66,7 @@ namespace AccraRoadAttendance.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error initializing GoogleDriveService: {ex.Message}");
+                _logger.LogInformation($"Error initializing GoogleDriveService: {ex.Message}");
                 throw;
             }
         }
@@ -70,7 +74,7 @@ namespace AccraRoadAttendance.Services
         public string UploadImage(string localPath)
         {
 
-            Console.WriteLine($"Starting image upload for file: {localPath}");
+            _logger.LogInformation($"Starting image upload for file: {localPath}");
             //MessageBox.Show($"Starting image upload for file: {localPath}");
             try
             {
@@ -79,10 +83,10 @@ namespace AccraRoadAttendance.Services
 
                 if (!File.Exists(localPath))
                 {
-                    Console.WriteLine($"File not found: {localPath}");
+                    _logger.LogInformation($"File not found: {localPath}");
                     throw new FileNotFoundException($"Image file not found: {localPath}");
                 }
-                Console.WriteLine("File exists. Checking file extension...");
+                _logger.LogInformation("File exists. Checking file extension...");
                 //MessageBox.Show("File exists. Checking file extension...");
 
 
@@ -97,7 +101,7 @@ namespace AccraRoadAttendance.Services
                     ".png" => "image/png",
                     _ => throw new NotSupportedException($"Unsupported image format: {extension}")
                 };
-                Console.WriteLine($"File extension: {extension}, MIME type: {mimeType}");
+                _logger.LogInformation($"File extension: {extension}, MIME type: {mimeType}");
                 //MessageBox.Show($"File extension: {extension}, MIME type: {mimeType}");
 
                 var fileMetadata = new Google.Apis.Drive.v3.Data.File
@@ -134,10 +138,10 @@ namespace AccraRoadAttendance.Services
                 var file = request.ResponseBody;
                 if (file == null)
                 {
-                    Console.WriteLine("Upload failed: No file metadata returned.");
+                    _logger.LogInformation("Upload failed: No file metadata returned.");
                     throw new Exception("Failed to upload file: ResponseBody is null");
                 }
-                Console.WriteLine($"File uploaded successfully. File ID: {file.Id}");
+                _logger.LogInformation($"File uploaded successfully. File ID: {file.Id}");
                 
 
 
@@ -148,23 +152,23 @@ namespace AccraRoadAttendance.Services
                 Console.WriteLine("Permissions set successfully.");
 
                 var publicUrl = $"https://drive.google.com/uc?id={file.Id}";
-                Console.WriteLine($"Public URL generated: {publicUrl}");
+                _logger.LogInformation($"Public URL generated: {publicUrl}");
                 return publicUrl;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error uploading image to Google Drive: {ex.Message}");
+                _logger.LogInformation($"Error uploading image to Google Drive: {ex.Message}");
                 throw new Exception($"Failed to upload image to Google Drive: {ex.Message}", ex);
             }
         }
 
         public string DownloadImage(string driveUrl)
         {
-            Console.WriteLine($"Starting image download from URL: {driveUrl}");
+            _logger.LogInformation($"Starting image download from URL: {driveUrl}");
             try
             {
                 var fileId = driveUrl.Split('=')[1];
-                Console.WriteLine($"Extracted file ID: {fileId}");
+                _logger.LogInformation($"Extracted file ID: {fileId}");
 
                 //var request = _driveService.Files.Get(fileId);
                 //var stream = new MemoryStream();
@@ -192,11 +196,10 @@ namespace AccraRoadAttendance.Services
                     _ => ".jpg" // Default to .jpg if unknown
                 };
 
-                //var localPath = Path.Combine("ProfilePictures", $"{fileId}{extension}");
-                //var localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProfilePictures", $"{fileId}{extension}");
+                
                 string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 string localPath = Path.Combine(appDataPath, "AccraRoadAttendance", "ProfilePictures", $"{fileId}{extension}");
-                //Directory.CreateDirectory(Path.GetDirectoryName(localPath));
+                
                 string? directoryPath = Path.GetDirectoryName(localPath);
                 if (directoryPath is not null)
                 {
@@ -206,7 +209,7 @@ namespace AccraRoadAttendance.Services
                 // Check if file already exists locally
                 if (File.Exists(localPath))
                 {
-                    Console.WriteLine($"File already exists at {localPath}; skipping download.");
+                    _logger.LogInformation($"File already exists at {localPath}; skipping download.");
                     return localPath;
                 }
 
@@ -214,15 +217,15 @@ namespace AccraRoadAttendance.Services
                 var request = _driveService.Files.Get(fileId);
                 using var stream = new MemoryStream();
                 request.Download(stream);
-                Console.WriteLine("File downloaded successfully.");
+                _logger.LogInformation("File downloaded successfully.");
 
                 File.WriteAllBytes(localPath, stream.ToArray());
-                Console.WriteLine($"File saved to: {localPath}");
+                _logger.LogInformation($"File saved to: {localPath}");
                 return localPath;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error downloading image from Google Drive: {ex.Message}");
+                _logger.LogInformation($"Error downloading image from Google Drive: {ex.Message}");
                 throw new Exception($"Failed to download image from Google Drive: {ex.Message}", ex);
             }
         }

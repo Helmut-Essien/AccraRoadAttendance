@@ -182,6 +182,7 @@ namespace AccraRoadAttendance.Services
         private void PushMembers()
         {
             var localMembers = _localContext.Members
+                .AsNoTracking()
                 .Where(m => !m.SyncStatus || m.LastModified > _lastSyncTime)
                 .ToList();
 
@@ -203,7 +204,7 @@ namespace AccraRoadAttendance.Services
                     var onlineMember = _onlineContext.Members
                        .AsNoTracking()
                        .SingleOrDefault(m => m.Id == member.Id);
-                    bool needsSync = onlineMember == null || onlineMember.LastModified < member.LastModified;
+                    bool needsSync = onlineMember == null || onlineMember.LastModified < member.LastModified /*|| member.SyncStatus == false*/;
 
                     _logger.LogInformation("Found online? {Exists}, onlineLastModified={OnlineLastModified:u}, needsSync={NeedsSync}",
                                      onlineMember != null, onlineMember?.LastModified, needsSync);
@@ -258,6 +259,7 @@ namespace AccraRoadAttendance.Services
 
                     if (needsSync)
                     {
+                        
                         // 3. Detach any tracked copy of this Member in the online context
                         var trackedInOnline = _onlineContext.ChangeTracker
                             .Entries<Member>()
@@ -267,13 +269,13 @@ namespace AccraRoadAttendance.Services
                             trackedInOnline.State = EntityState.Detached;
                         }
 
-
+                        _logger.LogInformation("Local member {MemberId} PicturePath: {PicturePath}", member.Id, member.PicturePath);
                         if (!string.IsNullOrEmpty(onlineMemberToSync.PicturePath)
                             && !onlineMemberToSync.PicturePath.StartsWith("https://drive.google.com"))
                         {
                             _logger.LogInformation("Uploading image for member {MemberId}", member.Id);
                             onlineMemberToSync.PicturePath = _googleDriveService.UploadImage(member.PicturePath);
-                            _logger.LogInformation("Image uploaded: {PicturePath}", member.PicturePath);
+                            _logger.LogInformation("Image uploaded: {PicturePath}", onlineMemberToSync.PicturePath);
                         }
 
                         if (onlineMember == null)
@@ -291,7 +293,7 @@ namespace AccraRoadAttendance.Services
                         else if (onlineMember.LastModified < member.LastModified)
                         {
                             _onlineContext.Members.Attach(onlineMember);
-                            _onlineContext.Entry(onlineMember).CurrentValues.SetValues(member);
+                            _onlineContext.Entry(onlineMember).CurrentValues.SetValues(onlineMemberToSync);
                             _onlineContext.Entry(onlineMember).State = EntityState.Modified;
                         }
                         else
@@ -301,9 +303,17 @@ namespace AccraRoadAttendance.Services
 
                         _onlineContext.SaveChanges();
 
-                        _logger.LogInformation("Successfully synced member {MemberId}", member.Id);
                         member.SyncStatus = true;
+                        // Instead of attaching, do this:
+                        _localContext.Members
+                            .Where(m => m.Id == member.Id)
+                            .ExecuteUpdate(setters => setters.SetProperty(m => m.SyncStatus, true));
                         _localContext.SaveChanges();
+
+                        _logger.LogInformation("Local member {MemberId} Sync Status: {SyncStatus}", member.Id, member.SyncStatus);
+                        _logger.LogInformation("Successfully synced member {MemberId}", member.Id);
+                        
+                        
                     }
                     else
                     {
