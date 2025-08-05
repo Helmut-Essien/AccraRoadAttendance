@@ -1,19 +1,22 @@
 ﻿using AccraRoadAttendance.Data;
+using AccraRoadAttendance.Models;
+using AccraRoadAttendance.Services;
+using iTextSharp.text.log;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Win32;
-using AccraRoadAttendance.Models;
 using static AccraRoadAttendance.Models.Member;
-using AccraRoadAttendance.Services;
-using System.ComponentModel.DataAnnotations;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AccraRoadAttendance.Views.Pages.Members
 {
@@ -24,13 +27,15 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private readonly INavigationService _navigationService;
         private readonly Dictionary<string, List<string>> _errors = new();
         private bool _pictureChanged = false;
+        private readonly ILogger<EditMembers> _logger;
 
-        public EditMembers(AttendanceDbContext context, INavigationService navigationService)
+        public EditMembers(AttendanceDbContext context, INavigationService navigationService, ILogger<EditMembers> logger)
         {
             InitializeComponent();
             _context = context;
             _navigationService = navigationService;
             DataContext = this;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             InitializeComboBoxes();
             InitializeVisibility();
         }
@@ -916,10 +921,15 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     string newFilePath = Path.Combine(folderPath, fileName);
                     File.Copy(SelectedPicturePath, newFilePath, true);
                     memberToUpdate.PicturePath = newFilePath;
+                    _logger.LogInformation(memberToUpdate.PicturePath, "Editing {PicturePath} as new path for {Id}", memberToUpdate.Id);
+                    memberToUpdate.SyncStatus = false;
+                    memberToUpdate.LastModified = DateTime.UtcNow;
                 }
 
                 await _context.SaveChangesAsync();
                 MessageBox.Show("Member updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                _logger.LogInformation(memberToUpdate.Id, "Successfully updated");
+                _logger.LogInformation( memberToUpdate.PicturePath, "is the saved image path for", memberToUpdate.Id);
                 _navigationService.NavigateTo<Members>();
             }
             catch (DbUpdateException dbEx)
@@ -931,12 +941,14 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     innerException = innerException.InnerException;
                 }
                 MessageBox.Show($"An error occurred while updating the member: {dbEx.Message}. Check the debug output for more details.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _logger.LogInformation("An error occurred while updating the member: {Message}", dbEx.Message);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Error: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                 MessageBox.Show($"An error occurred while updating the member: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _logger.LogInformation("An error occurred while updating the member: {Message}", ex.Message);
             }
         }
 
