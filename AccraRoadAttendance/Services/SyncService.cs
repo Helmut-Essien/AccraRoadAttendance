@@ -32,9 +32,9 @@ namespace AccraRoadAttendance.Services
             _logger.LogInformation("Initial lastSyncTime: {LastSyncTime:u}", _lastSyncTime);
         }
 
-        public void SyncData(IProgress<string>? progress = null)
+        public async Task SyncDataAsync(IProgress<string>? progress = null)
         {
-            const int maxRetries = 1;
+            const int maxRetries = 2;
             const int delayMs = 2000; // 5 seconds
             int attempt = 0;
             TimeSpan delay = TimeSpan.FromSeconds(5);
@@ -61,10 +61,11 @@ namespace AccraRoadAttendance.Services
                 {
                     attempt++;
                     // Log the exception (e.g., using ILogger)
-                    progress?.Report($"Synchronization attempt {attempt} failed.");
-                    Thread.Sleep(delayMs);
+                    progress?.Report($"Synchronization failed.");
+                    //progress?.Report($"Synchronization /*attempt {attempt}*/ failed.");
+                    await Task.Delay(delayMs);
                     //progress?.Report($"Retrying in {delay.TotalSeconds}s ({attempt}/{maxRetries})...");
-                    
+
                     _logger.LogInformation(ex, "SyncData failed on attempt {Attempt}: {Message}", attempt, ex.Message);
                     //throw new InvalidOperationException("Synchronization failed.", ex);
                     //throw new InvalidOperationException("Synchronization failed.", ex); // Pass 'ex' as the inner exception
@@ -73,15 +74,17 @@ namespace AccraRoadAttendance.Services
                         for (int i = (int)delay.TotalSeconds; i > 0; i--)
                         {
                             progress?.Report($"Retrying in {i}s ({attempt}/{maxRetries})...");
-                            Thread.Sleep(1000);
+                            
+                            await Task.Delay(1000);
                         }
                     }
                     if (attempt == maxRetries)
                     {
                         try
                         {
-                            progress?.Report($"Synchronization attempt {attempt} failed.");
-                            Thread.Sleep(delayMs);
+                            //progress?.Report($"Synchronization attempt {attempt}failed.");
+                            progress?.Report($"Synchronization failed.");
+                            await Task.Delay(delayMs);
 
                             _logger.LogError(ex, "Sync ultimately failed after {MaxRetries} attempts.", maxRetries);
                             progress?.Report($"Synchronization failed after {maxRetries} attempts.");
@@ -93,14 +96,16 @@ namespace AccraRoadAttendance.Services
                 {
                     // Handle the exception (e.g., log it, show a message, etc.)
                     _logger.LogError(ioe, "Sync failed after max retries.");
-                    MessageBox.Show(ioe.Message, "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return; // Exit the method if max retries reached
+                            //MessageBox.Show(ioe.Message, "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            progress?.Report($"Synchronization failed after {maxRetries} attempts.");
+                            await Task.Delay(delayMs);
+                            return; // Exit the method if max retries reached
                 }
 
 
             }
                     // Wait before retrying
-                    Thread.Sleep(delayMs);
+                    await Task.Delay(delayMs);
                 }
                 
             }
@@ -127,57 +132,7 @@ namespace AccraRoadAttendance.Services
             //MessageBox.Show("Local Changes Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        //private void PushMembers()
-        //{
-        //    var localMembers = _localContext.Members
-        //        .Where(m => !m.SyncStatus || m.LastModified > _lastSyncTime)
-        //        .ToList();
-        //    // Debug: Show number of members to push and _lastSyncTime
-        //    MessageBox.Show($"Members to push: {localMembers.Count}, lastSyncTime: {_lastSyncTime}", "Debug");
-        //    if (localMembers.Any())
-        //    {
-        //        // Debug: Show LastModified of the first member
-        //        MessageBox.Show($"First member LastModified: {localMembers.First().LastModified}", "Debug");
-        //    }
-
-        //    foreach (var member in localMembers)
-        //    {
-        //        try
-        //        {
-        //            var onlineMember = _onlineContext.Members.Find(member.Id);
-        //            if (onlineMember == null || onlineMember.LastModified < member.LastModified)
-        //            {
-        //                // Handle image upload if necessary
-        //                if (!string.IsNullOrEmpty(member.PicturePath) && !member.PicturePath.StartsWith("https://drive.google.com"))
-        //                {
-        //                    member.PicturePath = _googleDriveService.UploadImage(member.PicturePath);
-        //                }
-
-        //                if (onlineMember == null)
-        //                {
-        //                    _onlineContext.Members.Add(member);
-        //                }
-        //                else
-        //                {
-        //                    _onlineContext.Entry(onlineMember).CurrentValues.SetValues(member);
-        //                }
-
-        //                _onlineContext.SaveChanges();
-        //                member.SyncStatus = true;
-
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            // Log error and continue with next member
-        //            Console.WriteLine($"Failed to sync member {member.Id}: {ex.Message}");
-        //            MessageBox.Show(ex.Message, "Sync Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //            continue;
-        //        }
-        //    }
-        //    _localContext.SaveChanges();
-        //    MessageBox.Show("Local Members Pushed", "Syncing", MessageBoxButton.OK, MessageBoxImage.Information);
-        //}
+        
 
         private void PushMembers()
         {
