@@ -49,15 +49,16 @@ namespace AccraRoadAttendance.Views
 
             // Initial status
             StatusText.Text = "Checking internet connection...";
-            await Task.Delay(500); // Short delay to let the user read the message
+            await Task.Delay(1000); // Short delay to let the user read the message
 
             if (IsInternetAvailable())
             {
                 StatusText.Text = "Internet connected. Synchronizing data...";
+                await Task.Delay(1000);
                 try
                 {
                     // Run sync on a background thread with progress reporting
-                    await Task.Run(() => _syncService.SyncData(progress));
+                    await Task.Run(() => _syncService.SyncDataAsync(progress));
                     //_syncService.SyncData();
                     // Optionally update UI to show sync success
                     //StatusText.Text = "Synchronization complete.";
@@ -73,42 +74,16 @@ namespace AccraRoadAttendance.Views
             else
             {
                 StatusText.Text = "No internet! Skipping sync.";
-                MessageBox.Show("No internet connection. Data may not be up to date.", "Offline Mode", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //MessageBox.Show("No internet connection. Data may not be up to date.", "Offline Mode", MessageBoxButton.OK, MessageBoxImage.Warning);
+                await Task.Delay(1000);
+                StatusText.Text = "Offline Mode!!..Data may not be up to date";
             }
             // Wait to show the final message, then transition
             await Task.Delay(1000);
             await ShowLoginAndCloseAsync();
-
-            // Trigger fade-out and close
-            //await FadeOutAndCloseAsync();
-
-
-            //var login = _serviceProvider.GetRequiredService<Login>();
-            //Application.Current.MainWindow = login;
-            //login.Show();
-            ////Close();
-            //// 3) Now it’s safe to let WPF auto‐shutdown when last window closes
-            //Application.Current.ShutdownMode = ShutdownMode.OnLastWindowClose;
-
         }
 
-        //public Task FadeOutAndCloseAsync()
-        //{
-        //    var tcs = new TaskCompletionSource<object>();
-
-        //    Dispatcher.Invoke(() =>
-        //    {
-        //        var fadeOut = (Storyboard)this.Resources["FadeOutStoryboard"];
-        //        fadeOut.Completed += (s, e) =>
-        //        {
-        //            this.Close();
-        //            tcs.SetResult(null);
-        //        };
-        //        fadeOut.Begin(this);
-        //    });
-
-        //    return tcs.Task;
-        //}
+        
         public async Task FadeOutAsync()
         {
             var tcs = new TaskCompletionSource<object>();

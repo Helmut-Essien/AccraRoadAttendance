@@ -7,12 +7,15 @@ using AccraRoadAttendance.Views.Pages.Members;
 using AccraRoadAttendance.Views.Pages.Reports;
 using AccraRoadAttendance.Views.Pages.Users;
 using DocumentFormat.OpenXml.Bibliography;
+using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 using Microsoft.Win32;
 using System;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -22,12 +25,29 @@ namespace AccraRoadAttendance.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly INavigationService _navigationService;
         private readonly CurrentUserService _currentUserService;
         private readonly IServiceProvider _serviceProvider;
         private readonly SyncService _syncService;
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private string _syncStatusMessage = "Initializing...";
+        public string SyncStatusMessage
+        {
+            get => _syncStatusMessage;
+            set
+            {
+                _syncStatusMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public MainWindow(INavigationService navigationService, CurrentUserService currentUserService, IServiceProvider serviceProvider, SyncService syncService)
         {
@@ -106,96 +126,98 @@ namespace AccraRoadAttendance.Views
             // Logic to toggle light/dark theme
         }
 
-        private void TestGoogleDrive(object sender, RoutedEventArgs e)
+        private async void TestGoogleDrive(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Starting Google Drive test...");
-            try
+
+
+            //var dialogHost = this.FindName("SyncDialogHost") as DialogHost;
+            //if (dialogHost == null) return;
+
+            //// Store the dialog content separately
+            //var dialogContent = (FrameworkElement)dialogHost.DialogContent;
+
+            ////IProgress<string> progress = new Progress<string>(msg =>
+            ////{
+            ////    //var dialogContent = dialogHost.DialogContent as FrameworkElement;
+            ////    var txt = dialogContent?.FindName("SyncStatusText") as TextBlock;
+            ////    txt?.Dispatcher.Invoke(() => txt.Text = msg);
+            ////});
+            //IProgress<string> progress = new Progress<string>(msg =>
+            //{
+            //    var txt = dialogContent.FindName("SyncStatusText") as TextBlock;
+            //    if (txt != null) txt.Text = msg; // No Dispatcher.Invoke needed
+            //});
+
+            //// Explicitly specify the DialogOpenedEventHandler type
+            //await DialogHost.Show(
+            //    dialogContent,
+            //    dialogHost.Identifier,
+            //    new DialogOpenedEventHandler(async (sender, args) =>
+            //    {
+            //        try
+            //        {
+            //            progress.Report("Starting synchronization…");
+            //            await Task.Delay(1000);
+            //            await Task.Run(() => _syncService.SyncData(progress));
+            //            progress.Report("Synchronization complete.");
+            //            await Task.Delay(500);
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            MessageBox.Show($"Sync failed: {ex.Message}", "Sync Error",
+            //                            MessageBoxButton.OK, MessageBoxImage.Error);
+            //        }
+            //        finally
+            //        {
+            //            args.Session.Close();  // Close the dialog
+            //        }
+            //    })
+            //);
+            var dialogHost = this.FindName("SyncDialogHost") as DialogHost;
+            if (dialogHost == null) return;
+
+            //var dialogContent = (FrameworkElement)dialogHost.DialogContent;
+            // Set DataContext for binding (if not already set)
+            if (SyncDialogHost.DialogContent is FrameworkElement dialogContent)
             {
-                //    // Open file picker to select multiple images
-                //    var openFileDialog = new OpenFileDialog
-                //    {
-                //        Filter = "Image files (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png",
-                //        InitialDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProfilePictures"),
-                //        Multiselect = true
-                //    };
-                //    Console.WriteLine("File picker opened.");
-
-                //    if (openFileDialog.ShowDialog() != true)
-                //    {
-                //        Console.WriteLine("No images selected by user.");
-                //        MessageBox.Show("No images selected.", "Test Cancelled", MessageBoxButton.OK, MessageBoxImage.Information);
-                //        return;
-                //    }
-                //    Console.WriteLine($"Selected {openFileDialog.FileNames.Length} file(s) for upload.");
-
-                //    // Ensure the local ProfilePictures folder exists
-                //    Directory.CreateDirectory("ProfilePictures");
-                //    Console.WriteLine("ProfilePictures directory created or already exists.");
-
-                //    // Process each selected file
-                //    foreach (string filePath in openFileDialog.FileNames)
-                //    {
-                //        Console.WriteLine($"Processing file: {filePath}");
-                //        try
-                //        {
-                //            // Test UploadImage
-                //            string driveUrl = _googleDriveService.UploadImage(filePath);
-                //            Console.WriteLine($"Image '{Path.GetFileName(filePath)}' uploaded successfully. URL: {driveUrl}");
-                //            MessageBox.Show($"Image '{Path.GetFileName(filePath)}' uploaded to Google Drive. URL: {driveUrl}",
-                //                "Upload Success", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                //            // Optionally test download (uncomment to enable)
-
-                //            Console.WriteLine($"Testing download for URL: {driveUrl}");
-                //            string downloadedPath = _googleDriveService.DownloadImage(driveUrl);
-                //            Console.WriteLine($"Image downloaded successfully to: {downloadedPath}");
-                //            MessageBox.Show($"Image downloaded to: {downloadedPath}", "Download Success", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            Console.WriteLine($"Failed to process file '{Path.GetFileName(filePath)}': {ex.Message}");
-                //            MessageBox.Show($"Failed to upload image '{Path.GetFileName(filePath)}': {ex.Message}",
-                //                "Upload Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                //        }
-                //    }
-                //    Console.WriteLine("Google Drive test completed.");
-
-                _syncService.SyncData();
+                dialogContent.DataContext = this;
             }
-            catch (Exception ex)
+
+            IProgress<string> progress = new Progress<string>(msg =>
             {
+                //var txt = dialogContent?.FindName("SyncStatusText") as TextBlock;
+                //txt?.Dispatcher.Invoke(() => txt.Text = msg);
+                // Update the bound property
+                SyncStatusMessage = msg;
+            });
 
-                //Console.WriteLine(ex.Message);
-                //MessageBox.Show(ex.Message, "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                // Build a detailed error message including inner exceptions
-                string errorMessage = ex.Message;
-                Exception currentException = ex;
-                int depth = 1;
-
-                // Traverse all inner exceptions
-                while (currentException.InnerException != null)
+            await DialogHost.Show(
+                dialogHost.DialogContent,
+                dialogHost.Identifier,
+                new DialogOpenedEventHandler(async (sender, args) =>
                 {
-                    currentException = currentException.InnerException;
-                    errorMessage += $"\nInner Exception {depth}: {currentException.Message}";
-                    depth++;
-                }
+                    try
+                    {
+                        progress.Report("Starting synchronization…");
+                        await Task.Delay(1000);
+                        await Task.Run(() => _syncService.SyncDataAsync(progress));
+                        //progress.Report("Synchronization complete.");
+                        await Task.Delay(1000);
+                    }
+                    catch (Exception ex)
+                    {
+                        progress.Report("Synchronization failed.");
+                        await Task.Delay(3000);
+                    }
+                    finally
+                    {
+                        args.Session.Close();
+                    }
+                })
+            );
 
-                // Optionally include the stack trace for full context
-                errorMessage += $"\nStack Trace: {ex.StackTrace}";
-
-                // Log to console
-                Console.WriteLine("Exception Details:");
-                Console.WriteLine(errorMessage);
-
-                // Show in MessageBox
-                MessageBox.Show(errorMessage, "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
         }
-        //protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        //{
-        //    base.OnMouseLeftButtonDown(e);
-        //    DragMove();
+
         //}
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
