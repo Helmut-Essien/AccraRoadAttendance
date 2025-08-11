@@ -989,6 +989,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             ClearForm();
+            _navigationService.NavigateTo<Members>();
         }
 
         private void ClearForm()

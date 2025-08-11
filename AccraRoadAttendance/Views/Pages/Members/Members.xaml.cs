@@ -305,7 +305,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
 
         private void AddMember_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Add Member clicked!");
+            //MessageBox.Show("Add Member clicked!");
             _navigationService.NavigateTo<AddMembers>();
         }
 

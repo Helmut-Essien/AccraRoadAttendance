@@ -1,5 +1,6 @@
 ﻿using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
+using AccraRoadAttendance.Views.Pages.Dashboard;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -17,10 +18,11 @@ namespace AccraRoadAttendance.Services
         private readonly AttendanceDbContext _localContext;
         private readonly OnlineAttendanceDbContext _onlineContext;
         private readonly GoogleDriveService _googleDriveService;
+        private readonly INavigationService _navigationService;
         private readonly ILogger<SyncService> _logger;
         private DateTime _lastSyncTime;
 
-        public SyncService(AttendanceDbContext localContext, OnlineAttendanceDbContext onlineContext, GoogleDriveService googleDriveService, ILogger<SyncService> logger)
+        public SyncService(AttendanceDbContext localContext, OnlineAttendanceDbContext onlineContext, GoogleDriveService googleDriveService, ILogger<SyncService> logger, INavigationService navigationService)
         {
             _localContext = localContext ?? throw new ArgumentNullException(nameof(localContext));
             _onlineContext = onlineContext ?? throw new ArgumentNullException(nameof(onlineContext));
@@ -30,6 +32,7 @@ namespace AccraRoadAttendance.Services
             _lastSyncTime = LoadLastSyncTime();
             //MessageBox.Show($"Initial lastSyncTime: {_lastSyncTime}", "Debug");
             _logger.LogInformation("Initial lastSyncTime: {LastSyncTime:u}", _lastSyncTime);
+            _navigationService = navigationService;
         }
 
         public async Task SyncDataAsync(IProgress<string>? progress = null)
@@ -53,6 +56,8 @@ namespace AccraRoadAttendance.Services
                     SaveLastSyncTime(DateTime.UtcNow);
                     //progress?.Report("Synchronization complete.");
                     _logger.LogInformation("SyncData completed successfully at {Now:u}", DateTime.UtcNow);
+                    await Task.Delay(delayMs);
+                    
 
                     syncSucceeded = true;
                     break; // <-- Add this line to exit the loop on s
@@ -467,10 +472,15 @@ namespace AccraRoadAttendance.Services
             //var onlineMembers = _onlineContext.Members
             //    .Where(m => m.LastModified > _lastSyncTime)
             //    .ToList();
+
+            //var onlineMembers = _onlineContext.Members
+            //   .Where(m => m.LastModified > _lastSyncTime)
+            //   .AsNoTracking()
+            //   .ToList();
+
             var onlineMembers = _onlineContext.Members
-               .Where(m => m.LastModified > _lastSyncTime)
-               .AsNoTracking()
-               .ToList();
+            .AsNoTracking()
+            .ToList();
             // Debug: Show number of members to pull and _lastSyncTime
             //MessageBox.Show($"Members to pull: {onlineMembers.Count}, lastSyncTime: {_lastSyncTime}", "Debug");
             //if (onlineMembers.Any())
