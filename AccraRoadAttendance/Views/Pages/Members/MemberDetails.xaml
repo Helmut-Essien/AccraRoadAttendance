@@ -48,7 +48,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!--  Profile Picture Section  -->
-                <Border
+                <!--<Border
                     Grid.Column="0"
                     Width="120"
                     Height="120"
@@ -57,27 +57,32 @@
                     BorderThickness="1"
                     CornerRadius="60">
                     <Grid>
-                        <Image Source="{Binding Member.PicturePath}" Stretch="UniformToFill">
-                            <Image.Clip>
-                                <EllipseGeometry
-                                    Center="60,60"
-                                    RadiusX="60"
-                                    RadiusY="60" />
-                            </Image.Clip>
-                            <Image.Style>
-                                <Style TargetType="Image">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Member.PicturePath}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Member.PicturePath}" Value="">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Image.Style>
-                        </Image>
+                        <Viewbox
+                            Width="120"
+                            Height="120"
+                            Stretch="UniformToFill">
+                            <Image Source="{Binding Member.PicturePath}" Stretch="UniformToFill">
+                                <Image.Clip>
+                                    <EllipseGeometry
+                                        Center="60,60"
+                                        RadiusX="60"
+                                        RadiusY="60" />
+                                </Image.Clip>
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Member.PicturePath}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Member.PicturePath}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Viewbox>
                         <materialDesign:PackIcon
                             Width="120"
                             Height="120"
@@ -98,7 +103,66 @@
                             </materialDesign:PackIcon.Style>
                         </materialDesign:PackIcon>
                     </Grid>
+                </Border>-->
+
+                <Border
+    Grid.Column="0"
+    Width="120"
+    Height="120"
+    Background="{DynamicResource MaterialDesignPaper}"
+    BorderBrush="{DynamicResource MaterialDesignDivider}"
+    BorderThickness="1"
+    CornerRadius="60"
+    ClipToBounds="True">
+
+                    <Grid>
+                        <!-- Ellipse with ImageBrush -->
+                        <Ellipse Width="120" Height="120" StrokeThickness="0">
+                            <Ellipse.Fill>
+                                <ImageBrush 
+                    ImageSource="{Binding Member.PicturePath}"
+                    Stretch="UniformToFill"
+                    AlignmentX="Center"
+                    AlignmentY="Center" />
+                            </Ellipse.Fill>
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Member.PicturePath}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Member.PicturePath}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+
+                        <!-- Placeholder Icon when no image -->
+                        <materialDesign:PackIcon
+            Width="120"
+            Height="120"
+            Foreground="{DynamicResource MaterialDesignBodyLight}"
+            Kind="AccountCircle">
+                            <materialDesign:PackIcon.Style>
+                                <Style TargetType="materialDesign:PackIcon">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Member.PicturePath}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Member.PicturePath}" Value="">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </materialDesign:PackIcon.Style>
+                        </materialDesign:PackIcon>
+                    </Grid>
                 </Border>
+
 
                 <!--  Profile Info  -->
                 <StackPanel

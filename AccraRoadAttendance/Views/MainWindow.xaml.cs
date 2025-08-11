@@ -203,6 +203,7 @@ namespace AccraRoadAttendance.Views
                         await Task.Run(() => _syncService.SyncDataAsync(progress));
                         //progress.Report("Synchronization complete.");
                         await Task.Delay(1000);
+                        
                     }
                     catch (Exception ex)
                     {
@@ -212,6 +213,7 @@ namespace AccraRoadAttendance.Views
                     finally
                     {
                         args.Session.Close();
+                        _navigationService.NavigateTo<Dashboard>();
                     }
                 })
             );
