@@ -21,14 +21,38 @@ namespace AccraRoadAttendance.Views.Pages.Reports
 
         public void GenerateReport(string reportType, object data, DateTime startDate, DateTime endDate, string filePath, string memberName = null)
         {
-            
+            //_document = new Document();
+            //_section = _document.AddSection();
+            //_section.PageSetup.DifferentFirstPageHeaderFooter = true;
+            //_section.PageSetup.TopMargin = "5.3cm";
+            //_section.PageSetup.HeaderDistance = "1cm";
+            //_section.PageSetup.LeftMargin = "1cm";
+            //_section.PageSetup.RightMargin = "1cm";
+            ////_section.PageSetup.FooterDistance = "3.2";
+            //_section.PageSetup.BottomMargin = "7cm"; // Set bottom margin for footer
+
+
 
 
             // Add header and footer using the letterhead template from the attached file
-            AddHeader();
+            CreateDocument();
+            //AddHeaderContent(_section.Headers.FirstPage);
             AddReportContent(reportType, startDate, endDate, data, memberName);
             AddFooter();
             RenderAndSavePdf(filePath);
+        }
+
+        private void CreateDocument()
+        {
+            _document = new Document();
+            _section = _document.AddSection();
+            _section.PageSetup.DifferentFirstPageHeaderFooter = false;
+            _section.PageSetup.TopMargin = "1cm";
+            _section.PageSetup.HeaderDistance = "1cm";
+            _section.PageSetup.LeftMargin = "1cm";
+            _section.PageSetup.RightMargin = "1cm";
+            _section.PageSetup.FooterDistance = "0.5cm"; // Increased for space between content and footer line
+            _section.PageSetup.BottomMargin = "2.5cm"; // Increased to accommodate footer content and prevent overflow/clipping
         }
 
         private void AddReportContent(string reportType, DateTime startDate, DateTime endDate, object data, string memberName)
@@ -102,24 +126,118 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             }
         }
 
-        private void AddHeader()
-        {
-            _document = new Document();
-            //_document.DefaultPageSetup.LeftMargin = "2cm";
-            //_document.DefaultPageSetup.RightMargin = "2cm";
+        //private void AddHeader()
+        //{
+        //    _document = new Document();
+        //    _section = _document.AddSection();
+        //    // Enable different first page
+        //    _section.PageSetup.DifferentFirstPageHeaderFooter = true;
+        //    // Set page margins on the section's PageSetup instead of modifying DefaultPageSetup
+        //    _section.PageSetup.TopMargin = "5.3cm";
+        //    _section.PageSetup.HeaderDistance = "1cm";
+        //    _section.PageSetup.LeftMargin = "1cm";
+        //    _section.PageSetup.RightMargin = "1cm";
 
-            _section = _document.AddSection();
-            // Enable different first page
-            _section.PageSetup.DifferentFirstPageHeaderFooter = true;
-            // Set page margins on the section's PageSetup instead of modifying DefaultPageSetup
-            _section.PageSetup.TopMargin = "5.3cm";
-            _section.PageSetup.HeaderDistance = "1cm";
-            _section.PageSetup.LeftMargin = "1cm";
-            _section.PageSetup.RightMargin = "1cm";
-            //var header = _section.Headers.Primary;
-            var header = _section.Headers.FirstPage; // Only first page gets this header
+        //    var header = _section.Headers.Primary;
+        //    /*var header = _section.Headers.FirstPage; */// Only first page gets this header
 
-            // Step 1: Load the image from the application's resources
+        //    Step 1: Load the image from the application's resources
+        //    var imageUri = new Uri("pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogoCropped.png", UriKind.Absolute);
+        //    var imageStream = System.Windows.Application.GetResourceStream(imageUri).Stream;
+
+        //    Step 2: Save the image to a temporary file
+        //    string tempImagePath = Path.Combine(Path.GetTempPath(), "CLogoc.png");
+        //    using (var fileStream = new FileStream(tempImagePath, FileMode.Create))
+        //    {
+        //        imageStream.CopyTo(fileStream);
+        //    }
+
+        //    Logo and Church Name Section
+        //   var mainTable = header.AddTable();
+        //    mainTable.AddColumn("6.5cm"); // Left column for logo
+        //    mainTable.AddColumn("11cm"); // Center column for text
+        //    mainTable.AddColumn("1cm"); // Right column (spacer for centering)
+
+
+        //    var mainRow = mainTable.AddRow();
+
+        //    Instead of adding the image directly, add a paragraph to control alignment
+        //   var logoParagraph = mainRow.Cells[0].AddParagraph();
+        //    logoParagraph.Format.Alignment = ParagraphAlignment.Right; // Align the paragraph (and image) to the right
+        //    var logo = logoParagraph.AddImage(tempImagePath);
+        //    logo.Height = "1.5cm"; // Adjust based on your actual text height
+
+
+        //    Text container
+        //    var textCell = mainRow.Cells[1];
+        //    textCell.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Center;
+
+
+
+        //    Main church name
+        //   var churchName = textCell.AddParagraph("Church of Christ");
+        //    churchName.Format.Font.Name = "Arial"; // Ensure font supports bold
+        //    churchName.Format.Font.Size = 26;
+        //    churchName.Format.Font.Bold = true;
+        //    churchName.Format.Alignment = ParagraphAlignment.Left; // Align left relative to the cell to position beside the logo
+
+        //    Subtitle with expanded character spacing
+        //   var subtitleText = "The Pillar and Foundation of the Truth";
+        //    var spacedText = string.Join("\u200A", subtitleText.ToCharArray()); // Using hair space for subtle spacing
+        //    var subtitle = textCell.AddParagraph(spacedText);
+        //    subtitle.Format.Font.Name = "Arial";
+        //    subtitle.Format.Font.Size = 10;
+        //    subtitle.Format.Font.Italic = true;
+        //    subtitle.Format.Alignment = ParagraphAlignment.Left;
+        //    subtitle.Format.SpaceBefore = "0.2cm";
+
+
+        //    Congregation Name
+        //    var congregation = header.AddParagraph("Accra-Road Congregation");
+        //    congregation.Format.Font.Size = 16;
+        //    congregation.Format.Font.Color = _blueColor;
+        //    congregation.Format.Font.Bold = true;
+        //    congregation.Format.SpaceBefore = "0.2cm";
+        //    congregation.Format.SpaceAfter = "0.2cm";
+        //    congregation.Format.Alignment = ParagraphAlignment.Center;
+
+        //    Contact Information Table
+        //   var contactTable = header.AddTable();
+        //    var T1 = contactTable.AddColumn("9.5cm");
+        //    T1.Format.Alignment = ParagraphAlignment.Left;
+        //    var T2 = contactTable.AddColumn("9.5cm");
+        //    T2.Format.Alignment = ParagraphAlignment.Right;
+
+        //    First row
+        //    var row = contactTable.AddRow();
+        //    row.Cells[0].AddParagraph("Location: Y0582, SONATA ST");
+        //    row.Cells[1].AddParagraph("Amanfro behind JD Restaurant");
+        //    row.Format.Alignment = ParagraphAlignment.Center;
+
+
+
+        //    Second row
+        //    row = contactTable.AddRow();
+        //    row.Cells[0].AddParagraph("Email Address: archurchofchrist@gmail.com");
+        //    row.Cells[1].AddParagraph("Digital Address: GS-0686-7830");
+        //    row.Format.Alignment = ParagraphAlignment.Center;
+
+        //    Third row
+        //    row = contactTable.AddRow();
+        //    var telCell = row.Cells[0].AddParagraph("TEL: 0244265642/0244161872");
+        //    row.Cells[1].AddParagraph("P.O.Box WU 554, Kasoa.");
+        //    Add horizontal line
+        //   var classificationBar = _section.Headers.FirstPage.AddParagraph();
+        //    classificationBar.Format.Borders.Top.Width = 3;
+        //    classificationBar.Format.Borders.Top.Color = Colors.Black;
+        //    classificationBar.Format.SpaceBefore = "0.2cm";
+        //    classificationBar.Format.SpaceAfter = "0.1cm";
+
+        //    AddHeaderContent(_section.Headers.FirstPage);
+        //}
+
+        private void AddLetterhead()
+        {// Step 1: Load the image from the application's resources
             var imageUri = new Uri("pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogoCropped.png", UriKind.Absolute);
             var imageStream = System.Windows.Application.GetResourceStream(imageUri).Stream;
 
@@ -131,7 +249,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             }
 
             // Logo and Church Name Section
-            var mainTable = header.AddTable();
+            var mainTable = _section.AddTable();
             mainTable.AddColumn("6.5cm"); // Left column for logo
             mainTable.AddColumn("11cm"); // Center column for text
             mainTable.AddColumn("1cm"); // Right column (spacer for centering)
@@ -170,8 +288,9 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             //subtitle.Format.SpaceBefore = "0.2cm";
 
 
+
             // Congregation Name
-            var congregation = header.AddParagraph("Accra-Road Congregation");
+            var congregation = _section.AddParagraph("Accra-Road Congregation");
             congregation.Format.Font.Size = 16;
             congregation.Format.Font.Color = _blueColor;
             congregation.Format.Font.Bold = true;
@@ -180,7 +299,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             congregation.Format.Alignment = ParagraphAlignment.Center;
 
             // Contact Information Table
-            var contactTable = header.AddTable();
+            var contactTable = _section.AddTable();
             var T1 = contactTable.AddColumn("9.5cm");
             T1.Format.Alignment = ParagraphAlignment.Left;
             var T2 = contactTable.AddColumn("9.5cm");
@@ -204,22 +323,12 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             row = contactTable.AddRow();
             var telCell = row.Cells[0].AddParagraph("TEL: 0244265642/0244161872");
             row.Cells[1].AddParagraph("P.O.Box WU 554, Kasoa.");
-            ////row.Format.Alignment = ParagraphAlignment.Center;
-            //telCell.Format.SpaceAfter = "0.1cm";
-
-
-            // Add line after 
-            //var classificationBar = _section.Headers.FirstPage.AddParagraph();
-            //classificationBar.Format.Shading.Color = Colors.Black;
-            //classificationBar.Format.SpaceBefore = "0.3cm";
-            //classificationBar.Format.SpaceAfter = "0.2cm"; // Removed the invalid 'Height' property
             // Add horizontal line
-            var classificationBar = _section.Headers.FirstPage.AddParagraph();
+            var classificationBar = _section.AddParagraph();
             classificationBar.Format.Borders.Top.Width = 3;
             classificationBar.Format.Borders.Top.Color = Colors.Black;
             classificationBar.Format.SpaceBefore = "0.2cm";
             classificationBar.Format.SpaceAfter = "0.1cm";
-
         }
 
         private void AddFooter()
@@ -242,6 +351,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             line.Format.Borders.Top.Width = 0.75;
             line.Format.Borders.Top.Color = Colors.Black;
             line.Format.SpaceBefore = "0.2cm";
+        
 
             var footTable = footer.AddTable();
             footTable.AddColumn("14cm").Format.Alignment = ParagraphAlignment.Left; // Left column for Bible verse
@@ -534,16 +644,12 @@ namespace AccraRoadAttendance.Views.Pages.Reports
         //Method to print member profile details
         public void GenerateMemberDetailsReport(Member member, string filePath)
         {
-            _document = new Document();
-            _section = _document.AddSection();
+            CreateDocument();
+            AddLetterhead();
+            //_section.PageSetup.TopMargin = "5.7cm"; // Override for this report if needed
+            //AddHeaderContent(_section.Headers.FirstPage);
 
-            // Same margins as other reports
-            _section.PageSetup.TopMargin = "5.7cm";
-            _section.PageSetup.HeaderDistance = "1cm";
-            _section.PageSetup.LeftMargin = "1cm";
-            _section.PageSetup.RightMargin = "1cm";
-
-            AddHeader();
+            //AddHeader();
             AddMemberDetailsContent(member);
             AddFooter();
             RenderAndSavePdf(filePath);
@@ -615,7 +721,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
         {"Nationality", member.Nationality ?? "N/A"}
     });
 
-            AddHorizontalLine();
+            //AddHorizontalLine();
 
             AddCardSection("CONTACT INFO", new Dictionary<string, string>
     {
@@ -624,7 +730,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
         {"Physical Address", member.Address ?? "N/A"}
     });
 
-            AddHorizontalLine();
+            //AddHorizontalLine();
 
             AddCardSection("MEMBERSHIP INFO", new Dictionary<string, string>
     {
@@ -634,7 +740,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
         {"Baptism Date", member.IsBaptized ? (member.BaptismDate?.ToString("dd-MMM-yyyy") ?? "N/A") : "N/A"}
     });
 
-            AddHorizontalLine();
+            //AddHorizontalLine();
 
             AddCardSection("FAMILY INFO", new Dictionary<string, string>
     {
@@ -644,7 +750,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
         {"Family Member Contact", member.HasFamilyMemberInChurch ? (member.FamilyMemberContact ?? "N/A") : "N/A"}
     });
 
-            AddHorizontalLine();
+            //AddHorizontalLine();
 
             AddCardSection("OTHER INFO", new Dictionary<string, string>
     {
@@ -654,7 +760,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
         {"Hometown", member.Hometown ?? "N/A"}
     });
 
-            AddHorizontalLine();
+            //AddHorizontalLine();
 
             AddCardSection("EMERGENCY CONTACT", new Dictionary<string, string>
     {
@@ -693,8 +799,19 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             }
         }
 
+        private bool _isFirstCard = true; // Add this field to your class to track the first card
+
         private void AddCardSection(string title, Dictionary<string, string> details)
         {
+            // Add horizontal line for non-first cards
+            if (!_isFirstCard)
+            {
+                var line = _section.AddParagraph();
+                line.Format.Borders.Top.Width = "0.5pt"; // Line above the card
+                line.Format.Borders.Top.Color = Colors.Black;
+                line.Format.SpaceBefore = "0.5cm";
+                line.Format.SpaceAfter = "0.5cm";
+            }
             // Add section title
             var titleParagraph = _section.AddParagraph(title);
             titleParagraph.Format.Font.Name = "Arial";
@@ -703,6 +820,16 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             titleParagraph.Format.Font.Color = _blueColor; // Matches header/footer
             titleParagraph.Format.SpaceBefore = "0.5cm";
             titleParagraph.Format.SpaceAfter = "0.3cm";
+
+            // Chain the title to the first detail (if any details exist)
+            if (details.Any())
+            {
+                titleParagraph.Format.KeepWithNext = true;
+            }
+
+            // Add bullet-pointed details, chaining all except the last
+            int count = details.Count;
+            int index = 0;
 
             // Add bullet-pointed details
             foreach (var detail in details)
@@ -714,17 +841,26 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                 p.Format.Font.Name = "Arial";
                 p.Format.Font.Size = 10;
                 p.Format.SpaceAfter = "0.2cm";
+
+                // Keep with next detail if not the last one
+                if (index < count - 1)
+                {
+                    p.Format.KeepWithNext = true;
+                }
+                index++;
             }
+            // After the first card is added, set flag to false
+            _isFirstCard = false;
         }
 
-        private void AddHorizontalLine()
-        {
-            var line = _section.AddParagraph();
-            line.Format.Borders.Bottom.Width = "0.5pt";
-            line.Format.Borders.Bottom.Color = Colors.Black;
-            line.Format.SpaceBefore = "0.5cm";
-            line.Format.SpaceAfter = "0.5cm";
-        }
+        //private void AddHorizontalLine()
+        //{
+        //    var line = _section.AddParagraph();
+        //    line.Format.Borders.Bottom.Width = "0.5pt";
+        //    line.Format.Borders.Bottom.Color = Colors.Black;
+        //    line.Format.SpaceBefore = "0.5cm";
+        //    line.Format.SpaceAfter = "0.5cm";
+        //}
     }
 }
         
