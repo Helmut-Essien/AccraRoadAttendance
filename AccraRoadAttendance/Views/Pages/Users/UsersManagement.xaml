@@ -106,7 +106,7 @@
                                     <Button
                                         Margin="2"
                                         Click="SaveRole_Click"
-                                        Content="Save"
+                                        Content="Update role"
                                         Style="{StaticResource MaterialDesignToolButton}" />
                                     <Button
                                         Margin="2"

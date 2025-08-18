@@ -18,6 +18,8 @@ namespace AccraRoadAttendance.Views.Pages.Users
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly INavigationService _navigationService;
+        private System.Windows.Threading.DispatcherTimer _searchTimer;
+        private CancellationTokenSource _searchCts;
 
         public UsersManagement(AttendanceDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
@@ -25,7 +27,20 @@ namespace AccraRoadAttendance.Views.Pages.Users
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+
+            // Initialize debounce timer (300ms delay)
+            _searchTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(300)
+            };
+            _searchTimer.Tick += SearchTimer_Tick;
+
+            _searchCts = new CancellationTokenSource();
+
             LoadData();
+
+            // Subscribe to Unloaded for cleanup
+            this.Unloaded += UsersManagement_Unloaded;
         }
 
         private async void LoadData()
@@ -33,8 +48,11 @@ namespace AccraRoadAttendance.Views.Pages.Users
             // Clear existing data
             usersDataGrid.ItemsSource = null;
 
-            // Load roles
-            roleComboBox.ItemsSource = await _roleManager.Roles.ToListAsync();
+            //// Load roles
+            //roleComboBox.ItemsSource = await _roleManager.Roles.ToListAsync();
+            // Load roles once
+            var allRoles = await _roleManager.Roles.ToListAsync();
+            roleComboBox.ItemsSource = allRoles;
 
             // Load existing users
             var users = await _context.Users
@@ -47,7 +65,7 @@ namespace AccraRoadAttendance.Views.Pages.Users
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                var allRoles = await _roleManager.Roles.ToListAsync();
+                //var allRoles = await _roleManager.Roles.ToListAsync();
 
                 userViewModels.Add(new UserViewModel
                 {
@@ -62,19 +80,71 @@ namespace AccraRoadAttendance.Views.Pages.Users
             usersDataGrid.Items.Refresh();
         }
 
+        private async void SearchTimer_Tick(object sender, EventArgs e)
+        {
+            _searchTimer.Stop(); // Prevent re-triggering
+
+            if (_searchCts.IsCancellationRequested)
+                return;
+
+            var token = _searchCts.Token;
+            var searchText = searchTextBox.Text.ToLower();
+
+            try
+            {
+                //var members = await _context.Members
+                //    .Where(m => !_context.Users.Any(u => u.MemberId == m.Id) &&
+                //               (m.FirstName.ToLower().Contains(searchText) ||
+                //                m.LastName.ToLower().Contains(searchText) ||
+                //                (m.OtherNames != null && m.OtherNames.ToLower().Contains(searchText)) ||
+                //                m.PhoneNumber.Contains(searchText) ||
+                //                m.Email.Contains(searchText)))
+                //    .ToListAsync(token);
+                var userMemberIds = await _context.Users.Select(u => u.MemberId).ToListAsync(token);
+                var members = await _context.Members
+                    .Where(m => !userMemberIds.Contains(m.Id) &&
+                               (m.FirstName.ToLower().Contains(searchText) ||
+                                m.LastName.ToLower().Contains(searchText) ||
+                                (m.OtherNames != null && m.OtherNames.ToLower().Contains(searchText)) ||
+                                m.PhoneNumber.Contains(searchText) ||
+                                m.Email.Contains(searchText)))
+                    .ToListAsync(token);
+
+                membersListBox.ItemsSource = members;
+            }
+            catch (OperationCanceledException)
+            {
+                // Search was canceled (e.g., user typed more); ignore and let the new search handle it
+            }
+            catch (Exception ex)
+            {
+                // Handle other errors (e.g., log or show message)
+                System.Diagnostics.Debug.WriteLine($"Search error: {ex.Message}");
+            }
+        }
+
         private async void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var searchText = searchTextBox.Text.ToLower();
-            var members = await _context.Members
-                .Where(m => !_context.Users.Any(u => u.MemberId == m.Id) &&
-                           (m.FirstName.ToLower().Contains(searchText) ||
-                            m.LastName.ToLower().Contains(searchText) ||
-                            (m.OtherNames != null && m.OtherNames.ToLower().Contains(searchText)) ||
-                            m.PhoneNumber.Contains(searchText) ||
-                            m.Email.Contains(searchText)))
-                .ToListAsync();
+            //var searchText = searchTextBox.Text.ToLower();
+            //var members = await _context.Members
+            //    .Where(m => !_context.Users.Any(u => u.MemberId == m.Id) &&
+            //               (m.FirstName.ToLower().Contains(searchText) ||
+            //                m.LastName.ToLower().Contains(searchText) ||
+            //                (m.OtherNames != null && m.OtherNames.ToLower().Contains(searchText)) ||
+            //                m.PhoneNumber.Contains(searchText) ||
+            //                m.Email.Contains(searchText)))
+            //    .ToListAsync();
 
-            membersListBox.ItemsSource = members;
+            //membersListBox.ItemsSource = members;
+
+            // Cancel any ongoing search
+            _searchCts?.Cancel();
+            _searchCts?.Dispose();
+            _searchCts = new CancellationTokenSource();
+
+            // Restart debounce timer
+            _searchTimer.Stop();
+            _searchTimer.Start();
         }
 
         private void MembersListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -192,6 +262,38 @@ namespace AccraRoadAttendance.Views.Pages.Users
             }
         }
 
+        //private async void SaveRole_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (((FrameworkElement)sender).DataContext is UserViewModel viewModel &&
+        //        viewModel.SelectedRole != null)
+        //    {
+        //        // Fetch a tracked user instance to avoid tracking conflicts with the detached one
+        //        var user = await _userManager.FindByIdAsync(viewModel.User.Id);
+
+        //        if (user == null)
+        //        {
+        //            MessageBox.Show("User not found");
+        //            return;
+        //        }
+
+        //        var currentRoles = await _userManager.GetRolesAsync(user);
+
+        //        // Optional: Skip if the role hasn't changed (prevents unnecessary remove/add)
+        //        if (currentRoles.Count == 1 && currentRoles[0] == viewModel.SelectedRole.Name)
+        //        {
+        //            MessageBox.Show("Role is unchanged");
+        //            return;
+        //        }
+
+        //        await _userManager.RemoveFromRolesAsync(user, currentRoles);
+        //        await _userManager.AddToRoleAsync(user, viewModel.SelectedRole.Name);
+        //        MessageBox.Show("Role updated successfully");
+
+        //        // Reload data to reflect changes if needed
+        //        LoadData();
+        //    }
+        //}
+
         private async void DeleteUser_Click(object sender, RoutedEventArgs e)
         {
             if (((FrameworkElement)sender).DataContext is UserViewModel viewModel)
@@ -254,5 +356,21 @@ namespace AccraRoadAttendance.Views.Pages.Users
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        private void UsersManagement_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _searchTimer.Stop();
+            _searchTimer.Tick -= SearchTimer_Tick; // Unsubscribe to prevent leaks
+            _searchCts?.Cancel();
+            _searchCts?.Dispose();
+            _searchCts = null; // Optional: null out to aid GC
+        }
+
+        // Optional: Add destructor as a fallback (add this at the class level)
+        //~UsersManagement()
+        //{
+        //    _searchCts?.Dispose();
+        //}
     }
+
 }
