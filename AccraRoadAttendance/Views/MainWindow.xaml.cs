@@ -99,7 +99,7 @@ namespace AccraRoadAttendance.Views
                     break;
                 case "Users":
                     
-                    if (await _currentUserService.IsInRoleAsync("Admin"))
+                    if (_currentUserService.IsInRole("Admin"))
                         _navigationService.NavigateTo<UsersManagement>();
                     else
                         MessageBox.Show("Access Denied: You do not have permission to manage users.");

@@ -1,14 +1,17 @@
 ﻿using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Services;
+using MaterialDesignThemes.Wpf;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace AccraRoadAttendance.Views.Pages.Users
 {
@@ -20,13 +23,16 @@ namespace AccraRoadAttendance.Views.Pages.Users
         private readonly INavigationService _navigationService;
         private System.Windows.Threading.DispatcherTimer _searchTimer;
         private CancellationTokenSource _searchCts;
+        private readonly ILogger<UsersManagement> _logger;
+        private Member _selectedMember; // Add this at the class level
 
-        public UsersManagement(AttendanceDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public UsersManagement(AttendanceDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, ILogger<UsersManagement> logger)
         {
             InitializeComponent();
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             // Initialize debounce timer (300ms delay)
             _searchTimer = new System.Windows.Threading.DispatcherTimer
@@ -37,13 +43,13 @@ namespace AccraRoadAttendance.Views.Pages.Users
 
             _searchCts = new CancellationTokenSource();
 
-            LoadData();
+            _ = LoadData();
 
             // Subscribe to Unloaded for cleanup
             this.Unloaded += UsersManagement_Unloaded;
         }
 
-        private async void LoadData()
+        private async Task LoadData()
         {
             // Clear existing data
             usersDataGrid.ItemsSource = null;
@@ -57,7 +63,7 @@ namespace AccraRoadAttendance.Views.Pages.Users
             // Load existing users
             var users = await _context.Users
                 .Include(u => u.Member)
-                .AsNoTracking()
+                //.AsNoTracking()
                 .ToListAsync();
 
             //var userViewModels = new List<UserViewModel>();
@@ -151,9 +157,15 @@ namespace AccraRoadAttendance.Views.Pages.Users
         {
             if (membersListBox.SelectedItem is Member selectedMember)
             {
+                _selectedMember = selectedMember; // Store the selected member
                 userFormPanel.Visibility = Visibility.Visible;
-                emailTextBox.Text = selectedMember.Email ?? string.Empty;
-                emailTextBox.IsEnabled = string.IsNullOrEmpty(selectedMember.Email);
+                emailTextBox.Text = _selectedMember.Email ?? string.Empty;
+                emailTextBox.IsEnabled = string.IsNullOrEmpty(_selectedMember.Email);
+                //membersListBox.SelectedItem = selectedMember;
+
+                // Clear search suggestions
+                membersListBox.Visibility = Visibility.Collapsed;
+                searchTextBox.Text = selectedMember.FullName ?? string.Empty;
             }
         }
 
@@ -161,10 +173,20 @@ namespace AccraRoadAttendance.Views.Pages.Users
         {
             try
             {
-                if (membersListBox.SelectedItem is not Member selectedMember ||
-                    roleComboBox.SelectedItem is not IdentityRole selectedRole)
+                //if (membersListBox.SelectedItem is not Member selectedMember ||
+                //    roleComboBox.SelectedItem is not IdentityRole selectedRole)
+                //{
+                //    MessageBox.Show("Please select a member and role");
+                //    return;
+                //}
+                if (_selectedMember == null)
                 {
-                    MessageBox.Show("Please select a member and role");
+                    MessageBox.Show("Please select a member");
+                    return;
+                }
+                if ( roleComboBox.SelectedItem is not IdentityRole selectedRole)
+                {
+                    MessageBox.Show("Please select role");
                     return;
                 }
 
@@ -182,14 +204,14 @@ namespace AccraRoadAttendance.Views.Pages.Users
                 }
 
                 System.Diagnostics.Debug.WriteLine($"Attempting to create user with email: {email}");
-                System.Diagnostics.Debug.WriteLine($"Selected member ID: {selectedMember.Id}");
+                System.Diagnostics.Debug.WriteLine($"Selected member ID: {_selectedMember.Id}");
                 System.Diagnostics.Debug.WriteLine($"Selected role: {selectedRole.Name}");
 
                 var user = new User
                 {
                     UserName = email,
                     Email = email,
-                    MemberId = selectedMember.Id
+                    MemberId = _selectedMember.Id
                 };
 
                 System.Diagnostics.Debug.WriteLine("User object created:");
@@ -209,7 +231,7 @@ namespace AccraRoadAttendance.Views.Pages.Users
                         System.Diagnostics.Debug.WriteLine("Role added successfully");
                         MessageBox.Show("User created successfully");
                         ClearForm();
-                        LoadData();
+                        await LoadData();
                     }
                     else
                     {
@@ -250,49 +272,86 @@ namespace AccraRoadAttendance.Views.Pages.Users
             }
         }
 
-        private async void SaveRole_Click(object sender, RoutedEventArgs e)
-        {
-            if (((FrameworkElement)sender).DataContext is UserViewModel viewModel &&
-                viewModel.SelectedRole != null)
-            {
-                var currentRoles = await _userManager.GetRolesAsync(viewModel.User);
-                await _userManager.RemoveFromRolesAsync(viewModel.User, currentRoles);
-                await _userManager.AddToRoleAsync(viewModel.User, viewModel.SelectedRole.Name);
-                MessageBox.Show("Role updated successfully");
-            }
-        }
-
         //private async void SaveRole_Click(object sender, RoutedEventArgs e)
         //{
         //    if (((FrameworkElement)sender).DataContext is UserViewModel viewModel &&
         //        viewModel.SelectedRole != null)
         //    {
-        //        // Fetch a tracked user instance to avoid tracking conflicts with the detached one
-        //        var user = await _userManager.FindByIdAsync(viewModel.User.Id);
-
-        //        if (user == null)
-        //        {
-        //            MessageBox.Show("User not found");
-        //            return;
-        //        }
-
-        //        var currentRoles = await _userManager.GetRolesAsync(user);
-
-        //        // Optional: Skip if the role hasn't changed (prevents unnecessary remove/add)
-        //        if (currentRoles.Count == 1 && currentRoles[0] == viewModel.SelectedRole.Name)
-        //        {
-        //            MessageBox.Show("Role is unchanged");
-        //            return;
-        //        }
-
-        //        await _userManager.RemoveFromRolesAsync(user, currentRoles);
-        //        await _userManager.AddToRoleAsync(user, viewModel.SelectedRole.Name);
+        //        var currentRoles = await _userManager.GetRolesAsync(viewModel.User);
+        //        await _userManager.RemoveFromRolesAsync(viewModel.User, currentRoles);
+        //        await _userManager.AddToRoleAsync(viewModel.User, viewModel.SelectedRole.Name);
         //        MessageBox.Show("Role updated successfully");
-
-        //        // Reload data to reflect changes if needed
-        //        LoadData();
         //    }
         //}
+
+
+
+        private async void SaveRole_Click(object sender, RoutedEventArgs e)
+        {
+            if (((FrameworkElement)sender).DataContext is UserViewModel viewModel &&
+                viewModel.SelectedRole != null)
+            {
+                _logger.LogInformation("Starting role update for user {UserId}", viewModel.User.Id);
+                _logger.LogInformation("Selected role in UI: {SelectedRole}", viewModel.SelectedRole.Name);
+
+                // Get properly tracked user instance
+                var user = await _userManager.FindByIdAsync(viewModel.User.Id);
+                if (user == null)
+                {
+                    _logger.LogWarning("User {UserId} not found in database", viewModel.User.Id);
+                    MessageBox.Show("User not found");
+                    return;
+                }
+
+                // Get current roles
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                _logger.LogInformation("Current roles for user {UserId}: {Roles}",
+                    user.Id, string.Join(", ", currentRoles));
+
+                // Remove existing roles
+                var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                if (!removeResult.Succeeded)
+                {
+                    _logger.LogError("Failed to remove roles for user {UserId}. Errors: {Errors}",
+                        user.Id, string.Join(", ", removeResult.Errors.Select(e => e.Description)));
+                    MessageBox.Show($"Error removing roles: {string.Join(", ", removeResult.Errors.Select(e => e.Description))}");
+                    return;
+                }
+                _logger.LogInformation("Successfully removed all roles for user {UserId}", user.Id);
+
+                // Add new role
+                var addResult = await _userManager.AddToRoleAsync(user, viewModel.SelectedRole.Name);
+                if (!addResult.Succeeded)
+                {
+                    _logger.LogError("Failed to add role {Role} to user {UserId}. Errors: {Errors}",
+                        viewModel.SelectedRole.Name, user.Id,
+                        string.Join(", ", addResult.Errors.Select(e => e.Description)));
+                    MessageBox.Show($"Error adding role: {string.Join(", ", addResult.Errors.Select(e => e.Description))}");
+                    return;
+                }
+                _logger.LogInformation("Successfully added role {Role} to user {UserId}",
+                    viewModel.SelectedRole.Name, user.Id);
+
+                // Verify changes
+                var updatedRoles = await _userManager.GetRolesAsync(user);
+                _logger.LogInformation("Roles after update for user {UserId}: {Roles}",
+                    user.Id, string.Join(", ", updatedRoles));
+
+                if (updatedRoles.Count == 1 && updatedRoles[0] == viewModel.SelectedRole.Name)
+                {
+                    _logger.LogInformation("Role update successful for user {UserId}", user.Id);
+                    MessageBox.Show("Role updated successfully");
+                    await LoadData();
+                }
+                else
+                {
+                    _logger.LogWarning("Role update verification failed for user {UserId}. " +
+                        "Expected: {ExpectedRole}, Actual: {ActualRoles}",
+                        user.Id, viewModel.SelectedRole.Name, string.Join(", ", updatedRoles));
+                    MessageBox.Show($"Role update failed verification. Current roles: {string.Join(", ", updatedRoles)}");
+                }
+            }
+        }
 
         private async void DeleteUser_Click(object sender, RoutedEventArgs e)
         {
@@ -300,18 +359,94 @@ namespace AccraRoadAttendance.Views.Pages.Users
             {
                 if (MessageBox.Show("Delete this user?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    await _userManager.DeleteAsync(viewModel.User);
-                    LoadData();
-                    MessageBox.Show("User deleted successfully");
+                    // Get properly tracked user
+                    var user = await _userManager.FindByIdAsync(viewModel.User.Id);
+                    if (user == null)
+                    {
+                        MessageBox.Show("User not found");
+                        return;
+                    }
+
+                    var result = await _userManager.DeleteAsync(user);
+                    if (result.Succeeded)
+                    {
+                        MessageBox.Show("User deleted successfully");
+                        await LoadData();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Error deleting user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                    }
                 }
             }
         }
+
+        private void TogglePasswordVisibility_Checked(object sender, RoutedEventArgs e)
+        {
+            // Copy password from PasswordBox to TextBox
+            passwordTextBox.Text = passwordBox.Password;
+            // Hide PasswordBox, show TextBox
+            passwordBox.Visibility = Visibility.Collapsed;
+            passwordTextBox.Visibility = Visibility.Visible;
+            // Change icon to "EyeOff"
+            (togglePasswordVisibility.Content as PackIcon).Kind = PackIconKind.EyeOff;
+            // Set focus to TextBox
+            passwordTextBox.Focus();
+        }
+
+        private void TogglePasswordVisibility_Unchecked(object sender, RoutedEventArgs e)
+        {
+            // Copy text from TextBox to PasswordBox
+            passwordBox.Password = passwordTextBox.Text;
+            // Hide TextBox, show PasswordBox
+            passwordTextBox.Visibility = Visibility.Collapsed;
+            passwordBox.Visibility = Visibility.Visible;
+            // Change icon to "Eye"
+            (togglePasswordVisibility.Content as PackIcon).Kind = PackIconKind.Eye;
+            // Set focus to PasswordBox
+            passwordBox.Focus();
+        }
+
+        private void PasswordBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Optional: Sync TextBox if needed during key input
+            if (passwordTextBox.Visibility == Visibility.Visible)
+            {
+                passwordTextBox.Text = passwordBox.Password;
+            }
+        }
+
+        private void PasswordTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Optional: Sync PasswordBox if needed during key input
+            if (passwordBox.Visibility == Visibility.Visible)
+            {
+                passwordBox.Password = passwordTextBox.Text;
+            }
+        }
+
+        //private async void DeleteUser_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (((FrameworkElement)sender).DataContext is UserViewModel viewModel)
+        //    {
+        //        if (MessageBox.Show("Delete this user?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+        //        {
+        //            await _userManager.DeleteAsync(viewModel.User);
+        //            LoadData();
+        //            MessageBox.Show("User deleted successfully");
+        //        }
+        //    }
+        //}
 
         private void ClearForm()
         {
             membersListBox.SelectedItem = null;
             userFormPanel.Visibility = Visibility.Collapsed;
-            passwordBox.Clear();
+            //passwordBox.Clear();
+            passwordBox.Password = string.Empty;
+            passwordTextBox.Text = string.Empty;
+            searchTextBox.Text = string.Empty;
+            roleComboBox.Text = string.Empty;
             emailTextBox.Clear();
         }
 
@@ -321,6 +456,8 @@ namespace AccraRoadAttendance.Views.Pages.Users
         //    public List<IdentityRole> Roles { get; set; }
         //    public IdentityRole SelectedRole { get; set; }
         //}
+
+        
 
         public class UserViewModel : INotifyPropertyChanged
         {

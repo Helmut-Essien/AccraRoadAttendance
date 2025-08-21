@@ -56,7 +56,7 @@
                     SelectionChanged="MembersListBox_SelectionChanged" />
 
                 <!--  User Creation Form  -->
-                <StackPanel x:Name="userFormPanel" Visibility="Collapsed">
+                <!--<StackPanel x:Name="userFormPanel" Visibility="Collapsed">
                     <TextBox
                         x:Name="emailTextBox"
                         Margin="0,10"
@@ -68,6 +68,49 @@
                         Margin="0,10"
                         materialDesign:HintAssist.Hint="Password"
                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}" />
+
+                    <Button
+                        Margin="0,10"
+                        HorizontalAlignment="Right"
+                        Click="AddUser_Click"
+                        Content="Create User"
+                        Style="{StaticResource MaterialDesignOutlinedButton}" />
+                </StackPanel>-->
+                <StackPanel x:Name="userFormPanel" Visibility="Collapsed">
+                    <TextBox
+                        x:Name="emailTextBox"
+                        Margin="0,10"
+                        materialDesign:HintAssist.Hint="Email"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+
+                    <Grid Margin="0,10">
+                        <PasswordBox
+                            x:Name="passwordBox"
+                            materialDesign:HintAssist.Hint="Password"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}"
+                            BorderThickness="2"
+                            FontSize="14"
+                            KeyDown="PasswordBox_KeyDown"
+                            Style="{StaticResource MaterialDesignOutlinedPasswordBox}" />
+                        <TextBox
+                            x:Name="passwordTextBox"
+                            materialDesign:HintAssist.Hint="Password"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}"
+                            BorderThickness="2"
+                            FontSize="18"
+                            KeyDown="PasswordTextBox_KeyDown"
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                            Visibility="Collapsed" />
+                        <ToggleButton
+                            x:Name="togglePasswordVisibility"
+                            Margin="0,0,10,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Checked="TogglePasswordVisibility_Checked"
+                            Unchecked="TogglePasswordVisibility_Unchecked">
+                            <materialDesign:PackIcon Kind="Eye" />
+                        </ToggleButton>
+                    </Grid>
 
                     <Button
                         Margin="0,10"
@@ -95,7 +138,7 @@
                                     x:Name="rolesComboBox"
                                     DisplayMemberPath="Name"
                                     ItemsSource="{Binding Roles}"
-                                    SelectedItem="{Binding SelectedRole}" />
+                                    SelectedItem="{Binding SelectedRole, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
