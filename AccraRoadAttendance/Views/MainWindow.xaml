@@ -53,10 +53,11 @@
                                 VerticalAlignment="Stretch"
                                 Background="{DynamicResource MaterialDesignDrawerBackground}">
                                 <Image
+                                    x:Name="logoImage"
                                     Height="100"
                                     Margin="0,10,10,10"
-                                    HorizontalAlignment="Left"
-                                    Source="pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogoc.png" />
+                                    HorizontalAlignment="Left" />
+                                    <!--Source="pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogoc.png"--> 
 
                             </StackPanel>
                         </Grid>

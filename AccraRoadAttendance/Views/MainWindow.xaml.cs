@@ -7,6 +7,7 @@ using AccraRoadAttendance.Views.Pages.Members;
 using AccraRoadAttendance.Views.Pages.Reports;
 using AccraRoadAttendance.Views.Pages.Users;
 using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Drawing;
 using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace AccraRoadAttendance.Views
 {
@@ -32,6 +34,7 @@ namespace AccraRoadAttendance.Views
         private readonly IServiceProvider _serviceProvider;
         private readonly SyncService _syncService;
         public event PropertyChangedEventHandler? PropertyChanged;
+        private readonly PaletteHelper _paletteHelper = new PaletteHelper();
 
         private string _syncStatusMessage = "Initializing...";
         public string SyncStatusMessage
@@ -40,6 +43,17 @@ namespace AccraRoadAttendance.Views
             set
             {
                 _syncStatusMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isDarkTheme;
+        public bool IsDarkTheme
+        {
+            get => _isDarkTheme;
+            set
+            {
+                _isDarkTheme = value;
                 OnPropertyChanged();
             }
         }
@@ -76,6 +90,18 @@ namespace AccraRoadAttendance.Views
             }
 
             //_navigationService.NavigateTo<Dashboard>();
+            // Set initial theme and image
+            MaterialDesignThemes.Wpf.Theme theme = _paletteHelper.GetTheme();
+            IsDarkTheme = theme.GetBaseTheme() == BaseTheme.Dark;
+            UpdateLogoImage();
+        }
+
+        private void UpdateLogoImage()
+        {
+            logoImage.Source = new BitmapImage(new Uri(
+                IsDarkTheme
+                    ? "pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogocw.png"
+                    : "pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogoc.png"));
         }
 
         private async void Navigate(object sender, RoutedEventArgs e)
@@ -123,6 +149,21 @@ namespace AccraRoadAttendance.Views
 
         private void ToggleTheme(object sender, RoutedEventArgs e)
         {
+            MaterialDesignThemes.Wpf.Theme theme = _paletteHelper.GetTheme();
+
+            if (IsDarkTheme = theme.GetBaseTheme() == BaseTheme.Dark)
+            {
+                IsDarkTheme = false;
+                theme.SetBaseTheme(BaseTheme.Light);
+            }
+            else
+            {
+                IsDarkTheme = true;
+                theme.SetBaseTheme(BaseTheme.Dark);
+            }
+
+            _paletteHelper.SetTheme(theme);
+            UpdateLogoImage();
             // Logic to toggle light/dark theme
         }
 

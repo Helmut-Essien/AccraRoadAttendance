@@ -36,6 +36,21 @@ namespace AccraRoadAttendance.Views
             _userManager = userManager;
             _currentUserService = currentUserService;
             _serviceProvider = serviceProvider;
+
+            Loaded += Login_Loaded;
+        }
+
+        private void Login_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Get the current theme
+            Theme theme = paletteHelper.GetTheme();
+            IsDarkTheme = theme.GetBaseTheme() == BaseTheme.Dark;
+
+            // Set the initial image source based on the theme
+            logoImage.Source = new BitmapImage(new Uri(
+                IsDarkTheme
+                    ? "pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogocw.png"
+                    : "pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogoc.png"));
         }
 
         private void TogglePasswordVisibility_Checked(object sender, RoutedEventArgs e)
