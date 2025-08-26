@@ -55,9 +55,9 @@
                                 <Image
                                     x:Name="logoImage"
                                     Height="100"
-                                    Margin="0,10,10,10"
+                                    Margin="10,10,10,10"
                                     HorizontalAlignment="Left" />
-                                    <!--Source="pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogoc.png"--> 
+                                <!--  Source="pack://application:,,,/AccraRoadAttendance;component/AppImages/CLogoc.png"  -->
 
                             </StackPanel>
                         </Grid>
@@ -263,11 +263,11 @@
                                         DockPanel.Dock="Bottom"
                                         FontSize="24"
                                         FontWeight="Bold"
+                                        Foreground="{DynamicResource MaterialDesignBody}"
                                         MouseRightButtonDown="TitleText_MouseRightButtonDown"
                                         Text="Attendance Management System"
                                         ToolTip="Double-click to maximize/restore. Right-click to minimize."
-                                        WindowChrome.IsHitTestVisibleInChrome="True" 
-                                        Foreground="{DynamicResource MaterialDesignBody}"/>
+                                        WindowChrome.IsHitTestVisibleInChrome="True" />
                                     <materialDesign:PopupBox
                                         Height="25"
                                         HorizontalAlignment="Right"
@@ -309,7 +309,7 @@
                             x:Name="SyncStatusText"
                             Margin="0,0,0,16"
                             Style="{StaticResource MaterialDesignBody1TextBlock}"
-                            Text="{Binding SyncStatusMessage}"/>
+                            Text="{Binding SyncStatusMessage}" />
                         <ProgressBar
                             Height="4"
                             IsIndeterminate="True"

@@ -38,21 +38,25 @@
             <TextBlock
                 Margin="0,0,10,0"
                 VerticalAlignment="Center"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 Text="Select Date:" />
             <DatePicker
                 Name="ServiceDatePicker"
                 Margin="0,0,10,0"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 SelectedDate="{x:Static sys:DateTime.Today}" />
             <ComboBox
                 Name="ServiceTypeComboBox"
                 Width="150"
                 Margin="0,0,10,0"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 SelectionChanged="ServiceTypeComboBox_SelectionChanged" />
             <TextBox
                 Name="ServiceThemeTextBox"
                 Width="200"
                 Margin="0,0,10,0"
                 materialDesign:HintAssist.Hint="Service Theme"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 IsEnabled="False" />
         </StackPanel>
 
@@ -65,6 +69,7 @@
             CellEditEnding="AttendanceDataGrid_CellEditEnding"
             CellStyle="{DynamicResource DataGridCellStyle1}"
             ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}"
+           
             HeadersVisibility="Column"
             IsReadOnly="False"
             RowStyle="{DynamicResource DataGridRowStyle1}"
@@ -104,6 +109,7 @@
                     Width="Auto"
                     Binding="{Binding Member.FirstName}"
                     ElementStyle="{StaticResource VerticallyCenteredCellStyle}"
+                    
                     Header="First Name"
                     IsReadOnly="True" />
 
@@ -112,6 +118,7 @@
                     Width="Auto"
                     Binding="{Binding Member.LastName}"
                     ElementStyle="{StaticResource VerticallyCenteredCellStyle}"
+                    
                     Header="Last Name"
                     IsReadOnly="True" />
 
@@ -120,6 +127,7 @@
                     Width="Auto"
                     Binding="{Binding Member.Sex}"
                     ElementStyle="{StaticResource VerticallyCenteredCellStyle}"
+                    
                     Header="Gender"
                     IsReadOnly="True" />
 
@@ -129,6 +137,7 @@
                         <DataTemplate>
                             <ComboBox
                                 Height="25"
+                                
                                 IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=IsEnabled}"
                                 ItemsSource="{Binding Source={StaticResource AttendanceStatusValues}}"
                                 PreviewMouseWheel="ComboBox_PreviewMouseWheel"
@@ -141,6 +150,7 @@
                         <DataTemplate>
                             <ComboBox
                                 Height="25"
+                               
                                 ItemsSource="{Binding Source={StaticResource AttendanceStatusValues}}"
                                 PreviewMouseWheel="ComboBox_PreviewMouseWheel"
                                 SelectedItem="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -154,6 +164,7 @@
                 <DataGridTextColumn
                     Width="*"
                     Binding="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    
                     Header="Notes"
                     IsReadOnly="False" />
             </DataGrid.Columns>
@@ -173,7 +184,10 @@
             CornerRadius="5"
             Visibility="{Binding Path=IsPaginationVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Orientation="Horizontal">
-                <Button Click="PreviousPage_Click" Style="{StaticResource pagingButton}">
+                <Button
+                    Click="PreviousPage_Click"
+                    
+                    Style="{StaticResource pagingButton}">
                     <Icon:PackIconMaterial Kind="ChevronLeft" Style="{StaticResource pagingButtonIcon}" />
                 </Button>
                 <Rectangle
@@ -230,26 +244,32 @@
             <TextBlock
                 Margin="0,0,10,0"
                 FontWeight="Bold"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 Text="Total Present:" />
             <TextBlock
                 Name="TotalPresentText"
                 Margin="0,0,20,0"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 Text="0" />
             <TextBlock
                 Margin="0,0,10,0"
                 FontWeight="Bold"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 Text="Total Male Present:" />
             <TextBlock
                 Name="TotalMalePresentText"
                 Margin="0,0,20,0"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 Text="0" />
             <TextBlock
                 Margin="0,0,10,0"
                 FontWeight="Bold"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 Text="Total Female Present:" />
             <TextBlock
                 Name="TotalFemalePresentText"
                 Margin="0,0,20,0"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 Text="0" />
         </StackPanel>
 
@@ -260,15 +280,16 @@
             HorizontalAlignment="Right"
             Background="{DynamicResource PrimaryHueMidBrush}"
             Click="SaveAttendance_Click"
-            Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+            Foreground="{DynamicResource MaterialDesignBody}"
             Style="{StaticResource MaterialDesignRaisedButton}">
             <StackPanel Orientation="Horizontal">
                 <Icon:PackIconMaterial
                     Width="20"
                     Height="20"
                     Margin="0,0,5,0"
+                    Foreground="{DynamicResource MaterialDesignBody}"
                     Kind="CheckCircleOutline" />
-                <TextBlock Text="End and Save Attendance for Event" />
+                <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="End and Save Attendance for Event" />
             </StackPanel>
         </Button>
     </Grid>
