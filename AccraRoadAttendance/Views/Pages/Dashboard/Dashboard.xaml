@@ -326,6 +326,7 @@
                         Margin="0,0,0,15"
                         FontSize="18"
                         FontWeight="Bold"
+                        Foreground="{DynamicResource MaterialDesignBody}"
                         Text="Attendance Trends" />
                     <lvc:CartesianChart x:Name="AttendanceChart" Height="300" />
                 </StackPanel>
@@ -348,6 +349,7 @@
                         Margin="15,15,15,10"
                         FontSize="18"
                         FontWeight="Bold"
+                        Foreground="{DynamicResource MaterialDesignBody}"
                         Text="Absent for 2+ Weeks" />
 
                     <!--  Update AbsentMembersList GridViewColumns  -->
@@ -366,7 +368,8 @@
                                                 Click="NavigateToMemberDetails_Click"
                                                 CommandParameter="{Binding}"
                                                 Content="{Binding Member.FullName}"
-                                                Cursor="Hand" />
+                                                Cursor="Hand"
+                                                Foreground="{DynamicResource MaterialDesignBody}" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -379,7 +382,8 @@
                                                 Click="NavigateToMemberDetails_Click"
                                                 CommandParameter="{Binding}"
                                                 Content="{Binding LastAttendanceDate, StringFormat='dd/MM/yyyy'}"
-                                                Cursor="Hand" />
+                                                Cursor="Hand"
+                                                Foreground="{DynamicResource MaterialDesignBody}" />
                                             <!--<TextBlock
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"

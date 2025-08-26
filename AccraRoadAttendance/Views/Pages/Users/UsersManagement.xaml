@@ -26,6 +26,7 @@
                     Margin="0,0,0,10"
                     FontSize="20"
                     FontWeight="Bold"
+                    Foreground="{DynamicResource MaterialDesignBody}"
                     Text="Add New User" />
 
                 <!--  Member Search  -->
@@ -38,13 +39,15 @@
                         materialDesign:HintAssist.Hint="Search members..."
                         materialDesign:TextFieldAssist.HasLeadingIcon="True"
                         materialDesign:TextFieldAssist.LeadingIcon="AccountSearch"
+                        Foreground="{DynamicResource MaterialDesignBody}"
                         TextChanged="SearchTextBox_TextChanged" />
 
                     <ComboBox
                         x:Name="roleComboBox"
                         Width="150"
                         materialDesign:HintAssist.Hint="Select Role"
-                        DisplayMemberPath="Name" />
+                        DisplayMemberPath="Name"
+                        Foreground="{DynamicResource MaterialDesignBody}"/>
                 </StackPanel>
 
                 <!--  Search Results  -->
@@ -53,10 +56,11 @@
                     MaxHeight="150"
                     Margin="0,10"
                     DisplayMemberPath="FullName"
+                    Foreground="{DynamicResource MaterialDesignBody}"
                     SelectionChanged="MembersListBox_SelectionChanged" />
 
                 <!--  User Creation Form  -->
-                <StackPanel x:Name="userFormPanel" Visibility="Collapsed">
+                <!--<StackPanel x:Name="userFormPanel" Visibility="Collapsed">
                     <TextBox
                         x:Name="emailTextBox"
                         Margin="0,10"
@@ -75,6 +79,53 @@
                         Click="AddUser_Click"
                         Content="Create User"
                         Style="{StaticResource MaterialDesignOutlinedButton}" />
+                </StackPanel>-->
+                <StackPanel x:Name="userFormPanel" Visibility="Collapsed">
+                    <TextBox
+                        x:Name="emailTextBox"
+                        Margin="0,10"
+                        materialDesign:HintAssist.Hint="Email"
+                        Foreground="{DynamicResource MaterialDesignBody}"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+
+                    <Grid Margin="0,10">
+                        <PasswordBox
+                            x:Name="passwordBox"
+                            materialDesign:HintAssist.Hint="Password"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}"
+                            BorderThickness="2"
+                            FontSize="14"
+                            Foreground="{DynamicResource MaterialDesignBody}"
+                            KeyDown="PasswordBox_KeyDown"
+                            Style="{StaticResource MaterialDesignOutlinedPasswordBox}" />
+                        <TextBox
+                            x:Name="passwordTextBox"
+                            materialDesign:HintAssist.Hint="Password"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}"
+                            BorderThickness="2"
+                            FontSize="18"
+                            Foreground="{DynamicResource MaterialDesignBody}"
+                            KeyDown="PasswordTextBox_KeyDown"
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                            Visibility="Collapsed" />
+                        <ToggleButton
+                            x:Name="togglePasswordVisibility"
+                            Margin="0,0,10,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Checked="TogglePasswordVisibility_Checked"
+                            Unchecked="TogglePasswordVisibility_Unchecked">
+                            <materialDesign:PackIcon Kind="Eye" />
+                        </ToggleButton>
+                    </Grid>
+
+                    <Button
+                        Margin="0,10"
+                        HorizontalAlignment="Right"
+                        Click="AddUser_Click"
+                        Content="Create User"
+                        Style="{StaticResource MaterialDesignOutlinedButton}" 
+                        Foreground="{DynamicResource MaterialDesignBody}"/>
                 </StackPanel>
             </StackPanel>
         </materialDesign:Card>
@@ -95,7 +146,7 @@
                                     x:Name="rolesComboBox"
                                     DisplayMemberPath="Name"
                                     ItemsSource="{Binding Roles}"
-                                    SelectedItem="{Binding SelectedRole}" />
+                                    SelectedItem="{Binding SelectedRole, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -106,13 +157,15 @@
                                     <Button
                                         Margin="2"
                                         Click="SaveRole_Click"
-                                        Content="Save"
-                                        Style="{StaticResource MaterialDesignToolButton}" />
+                                        Content="Update role"
+                                        Style="{StaticResource MaterialDesignToolButton}"
+                                        Foreground="{DynamicResource MaterialDesignBody}"/>
                                     <Button
                                         Margin="2"
                                         Click="DeleteUser_Click"
                                         Content="Delete"
-                                        Style="{StaticResource MaterialDesignToolButton}" />
+                                        Style="{StaticResource MaterialDesignToolButton}"
+                                        Foreground="{DynamicResource MaterialDesignBody}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

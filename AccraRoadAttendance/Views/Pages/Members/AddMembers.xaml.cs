@@ -276,9 +276,16 @@ namespace AccraRoadAttendance.Views.Pages.Members
 
         private void ValidateNextOfKinContact()
         {
+            //var errors = new List<string>();
+            //if (string.IsNullOrWhiteSpace(NextOfKinContact))
+            //    errors.Add("Next of Kin Contact is required.");
+            //UpdateErrors(nameof(NextOfKinContact), errors);
+
             var errors = new List<string>();
             if (string.IsNullOrWhiteSpace(NextOfKinContact))
                 errors.Add("Next of Kin Contact is required.");
+            else if (!Regex.IsMatch(NextOfKinContact, @"^\d{10}$"))
+                errors.Add("Phone Number must be 10 digits.");
             UpdateErrors(nameof(NextOfKinContact), errors);
         }
 
