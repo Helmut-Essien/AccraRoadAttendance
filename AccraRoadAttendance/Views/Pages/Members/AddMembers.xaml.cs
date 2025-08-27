@@ -1,20 +1,21 @@
 ﻿using AccraRoadAttendance.Data;
+using AccraRoadAttendance.Models;
+using AccraRoadAttendance.Services;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
+using NUlid;
 using System;
 using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using Microsoft.Win32;
-using AccraRoadAttendance.Models;
-using Microsoft.EntityFrameworkCore;
-using static AccraRoadAttendance.Models.Member;
-using AccraRoadAttendance.Services;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Text.RegularExpressions;
-using DocumentFormat.OpenXml.Spreadsheet;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using static AccraRoadAttendance.Models.Member;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using Member = AccraRoadAttendance.Models.Member;
-using NUlid;
 
 namespace AccraRoadAttendance.Views.Pages.Members
 {
@@ -330,9 +331,27 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     nameErrors.Add("Family Member Name is required.");
                 if (string.IsNullOrWhiteSpace(FamilyMemberContact))
                     contactErrors.Add("Family Member Contact is required.");
+                else if (!Regex.IsMatch(FamilyMemberContact, @"^\d{10}$"))
+                    contactErrors.Add("Phone Number must be 10 digits.");
             }
             UpdateErrors(nameof(FamilyMemberName), nameErrors);
             UpdateErrors(nameof(FamilyMemberContact), contactErrors);
+        }
+
+        private void validateMotherContact()
+        {
+            var errors = new List<string>();
+            if (!Regex.IsMatch(MotherContact, @"^\d{10}$"))
+                errors.Add("Phone Number must be 10 digits.");
+            UpdateErrors(nameof(MotherContact), errors);
+        }
+
+        private void validateFatherContact()
+        {
+            var errors = new List<string>();
+            if (!Regex.IsMatch(FatherContact, @"^\d{10}$"))
+                errors.Add("Phone Number must be 10 digits.");
+            UpdateErrors(nameof(FatherContact), errors);
         }
         #endregion
 
@@ -682,7 +701,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
             {
                 if (_motherContact == value) return;
                 _motherContact = value;
-                //ValidateNextOfKinName();
+                validateMotherContact();
                 OnPropertyChanged(nameof(MotherContact));
             }
         }
@@ -708,7 +727,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
             {
                 if (_fatherContact == value) return;
                 _fatherContact = value;
-                //ValidateNextOfKinName();
+                validateFatherContact();
                 OnPropertyChanged(nameof(FatherContact));
             }
         }
