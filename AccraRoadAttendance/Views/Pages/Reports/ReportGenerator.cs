@@ -36,7 +36,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
 
             // Add header and footer using the letterhead template from the attached file
             CreateDocument();
-            //AddHeaderContent(_section.Headers.FirstPage);
+            AddLetterhead();
             AddReportContent(reportType, startDate, endDate, data, memberName);
             AddFooter();
             RenderAndSavePdf(filePath);
@@ -386,13 +386,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
 
         private void AddIndividualAttendanceTable(object data)
         {
-            //// Add redacted-style heading
-            //var title = _section.AddParagraph("OPERATION: SANCTUARY ATTENDANCE");
-            //title.Format.Font.Size = 14;
-            //title.Format.Font.Bold = true;
-            //title.Format.Font.Color = Colors.Black;
-            //title.Format.Alignment = ParagraphAlignment.Center;
-            //title.Format.SpaceAfter = "0.5cm";
+            
 
 
 
@@ -413,6 +407,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             headerRow.HeadingFormat = true;
             headerRow.Format.Font.Bold = true;
             headerRow.Format.Font.Color = Colors.White;
+            headerRow.Format.Font.Size = 15;
             headerRow.Format.Shading.Color = Colors.Black;
             headerRow.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Center;
             headerRow.Format.Alignment = ParagraphAlignment.Center;
@@ -441,6 +436,7 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                 // Key Change: Allow rows to expand vertically
                 row.HeightRule = RowHeightRule.Auto;
             }
+
         }
 
         private void AddChurchAttendanceSummaryTable(object data)
