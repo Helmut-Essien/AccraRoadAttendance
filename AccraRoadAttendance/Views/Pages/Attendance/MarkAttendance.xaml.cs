@@ -571,6 +571,11 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
                             _context.Attendances.RemoveRange(existingRecords);
                         }
 
+                        // Check for existing ChurchAttendanceSummary
+                        var existingSummary = await _context.ChurchAttendanceSummaries
+                        .FirstOrDefaultAsync(s => s.SummaryDate.Date == serviceDate.Date &&
+                                              s.ServiceType == serviceType);
+
                         // Update attendance records
                         foreach (var record in attendanceRecords)
                         {
@@ -582,21 +587,37 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
 
                         // Save ChurchAttendanceSummary
                         var allMembers = await _context.Members.ToListAsync(); // Fetch all members
-                        var summary = new ChurchAttendanceSummary
+                        if (existingSummary != null)
                         {
-                            SummaryDate = serviceDate,
-                            ServiceType = serviceType,
-                            TotalPresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present),
-                            TotalMalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Male),
-                            TotalFemalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Female),
-                            TotalMembers = allMembers.Count, // Total members in the database (active + inactive)
-                            Visitors = visitorsWindow.Visitors,
-                            Children = visitorsWindow.Children,
-                            OfferingAmount = visitorsWindow.OfferingAmount,
-                            ServiceTheme = serviceTheme
-                        };
-
-                        _context.ChurchAttendanceSummaries.Add(summary);
+                            // Update existing summary
+                            existingSummary.TotalPresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present);
+                            existingSummary.TotalMalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Male);
+                            existingSummary.TotalFemalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Female);
+                            existingSummary.TotalMembers = allMembers.Count;
+                            existingSummary.Visitors = visitorsWindow.Visitors;
+                            existingSummary.Children = visitorsWindow.Children;
+                            existingSummary.OfferingAmount = visitorsWindow.OfferingAmount;
+                            existingSummary.ServiceTheme = serviceTheme;
+                            existingSummary.SummaryLastModified = DateTime.UtcNow; // Update timestamp if needed
+                        }
+                        else
+                        {
+                            // Create new summary
+                            var summary = new ChurchAttendanceSummary
+                            {
+                                SummaryDate = serviceDate,
+                                ServiceType = serviceType,
+                                TotalPresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present),
+                                TotalMalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Male),
+                                TotalFemalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Female),
+                                TotalMembers = allMembers.Count,
+                                Visitors = visitorsWindow.Visitors,
+                                Children = visitorsWindow.Children,
+                                OfferingAmount = visitorsWindow.OfferingAmount,
+                                ServiceTheme = serviceTheme
+                            };
+                            _context.ChurchAttendanceSummaries.Add(summary);
+                        }
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
                         MessageBox.Show("Attendance saved successfully!", "Success", MessageBoxButton.OK);
