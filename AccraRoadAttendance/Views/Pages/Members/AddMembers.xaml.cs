@@ -890,6 +890,15 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     return;
                 }
 
+                // Proactive check for duplicate phone number
+                bool phoneExists = await _context.Members.AnyAsync(m => m.PhoneNumber == PhoneNumber);
+                if (phoneExists)
+                {
+                    MessageBox.Show("A member with this phone number already exists.",
+                        "Duplicate Phone Number", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 // Create a new Member object
                 var newMember = new Member
                 {
@@ -980,13 +989,25 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
             catch (DbUpdateException dbEx)
             {
-                var innerException = dbEx.InnerException;
-                while (innerException != null)
+                // Optional: Handle specific duplicate key exception as a fallback (e.g., race condition)
+                var sqlEx = dbEx.InnerException as Microsoft.Data.SqlClient.SqlException;
+                if (sqlEx != null && sqlEx.Number == 2601 && sqlEx.Message.Contains("IX_Members_PhoneNumber"))
                 {
-                    System.Diagnostics.Debug.WriteLine($"Inner Exception: {innerException.Message}");
-                    innerException = innerException.InnerException;
+                    MessageBox.Show("A member with this phone number already exists.",
+                        "Duplicate Phone Number", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
-                MessageBox.Show($"An error occurred while saving the member: {dbEx.Message}. Check the debug output for more details.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                else
+                {
+                    var innerException = dbEx.InnerException;
+                    while (innerException != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Inner Exception: {innerException.Message}");
+                        innerException = innerException.InnerException;
+                    }
+                    MessageBox.Show($"An error occurred while saving the member: {dbEx.Message}. Check the debug output for more details.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                }
+                    
             }
             catch (Exception ex)
             {
