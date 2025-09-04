@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
-using System.Windows.Threading;
-using AccraRoadAttendance.Data;
+﻿using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Services;
 using AccraRoadAttendance.Views.Pages.Members;
 using LiveCharts;
 using LiveCharts.Wpf;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Navigation;
+using System.Windows.Threading;
 
 namespace AccraRoadAttendance.Views.Pages.Dashboard
 {
@@ -86,7 +88,9 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
                     LastSundayMen = lastSundaySummary.TotalMalePresent.ToString();
                     LastSundayWomen = lastSundaySummary.TotalFemalePresent.ToString();
                     LastSundayTotal = lastSundaySummary.TotalPresent.ToString();
-                    LastSundayOffering = lastSundaySummary.OfferingAmount.ToString("C");
+                    //LastSundayOffering = lastSundaySummary.OfferingAmount.ToString("C");
+                    // Format with Ghanaian Cedi(₵) using en-GH culture
+                    LastSundayOffering = lastSundaySummary.OfferingAmount.ToString("C", CultureInfo.GetCultureInfo("en-GH"));
                 }
                 else
                 {
@@ -94,7 +98,8 @@ namespace AccraRoadAttendance.Views.Pages.Dashboard
                     LastSundayMen = "0";
                     LastSundayWomen = "0";
                     LastSundayTotal = "0";
-                    LastSundayOffering = "0.00";
+                    //LastSundayOffering = "0.00";
+                    0m.ToString("C", CultureInfo.GetCultureInfo("en-GH")); // Use 0m for decimal
                 }
 
                 // Load absent members (2+ weeks)

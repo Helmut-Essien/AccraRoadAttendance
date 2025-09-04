@@ -356,10 +356,11 @@
                     <ListView
                         x:Name="AbsentMembersList"
                         Grid.Row="1"
-                        Margin="15,0,15,15">
+                        Margin="15,0,15,15"
+                        VirtualizingStackPanel.IsVirtualizing="False">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Width="auto" Header="Name">
+                                <GridViewColumn Width="Auto" Header="Name">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Button
