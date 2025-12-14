@@ -50,7 +50,7 @@ jobs:
       run: dotnet tool install --global dotnet-ef
           
     - name: Apply EF Core Migrations
-      #working-directory: AccraRoadAttendance\Data
+      #working-directory: AccraRoadAttendance\Data "change master yaml"
       run: dotnet ef database update --context OnlineAttendanceDbContext --verbose --connection "${{ secrets.PRODUCTION_CONNECTION_STRING }}" --project AccraRoadAttendance/AccraRoadAttendance.csproj
 
     - name: Setup MSBuild
