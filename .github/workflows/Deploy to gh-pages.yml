@@ -43,6 +43,9 @@ jobs:
       with:
         dotnet-version: 8.0.x # Match your .NET version
 
+    - name: Restore NuGet packages
+      run: dotnet restore AccraRoadAttendance/AccraRoadAttendance.csproj
+
     - name: Install dotnet-ef
       run: dotnet tool install --global dotnet-ef
           
