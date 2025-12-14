@@ -1,309 +1,424 @@
-# Accra Road Church Attendance Management System
+# Accra Road Attendance
+
+A comprehensive church attendance tracking and management application built with .NET 8, WPF, and integrated with Google Drive for cloud synchronization. This application streamlines church member registration, attendance tracking, and reporting.
 
 ## Overview
 
-**Accra Road Attendance** is a desktop application designed to manage church member attendance records, member information, and generate attendance reports. Built with **.NET 8**, **WPF**, and **Entity Framework Core**, the system supports both local and cloud-based data synchronization.
-
-## Features
-
-### Core Functionality
-
-- **Member Management**: Add, edit, and manage comprehensive member profiles with detailed information including:
-  - Personal details (name, contact, date of birth, gender)
-  - Membership information (status, start date, baptism details)
-  - Family information (next of kin, family members in church)
-  - Educational and occupational background
-  - Profile pictures with cloud storage support
-
-- **Attendance Tracking**: Record and manage attendance for multiple service types:
-  - Sunday Service
-  - Wednesday Prayer
-  - Thursday Bible Study
-  - Special Events
-
-- **Dashboard**: Visual overview of attendance statistics and church metrics
-
-- **Reports**: Generate comprehensive attendance reports and summaries
-
-- **User Management**: Admin controls for user access and roles
-  - Admin role with elevated permissions
-  - User role with standard access
-
-- **Data Synchronization**: Bidirectional sync between local and cloud databases
-  - Automatic conflict resolution
-  - Google Drive integration for profile picture storage
-  - Retry mechanism with configurable attempts
-
-- **Theme Support**: Light/Dark theme toggle for improved user experience
-
-### Technical Capabilities
-
-- **Dual Database Architecture**: 
-  - Local SQL Server database for offline work
-  - Online SQL Server database for cloud synchronization
-  
-- **Google Drive Integration**: Automatic backup and cloud storage of profile pictures
-
-- **Role-Based Access Control**: ASP.NET Core Identity integration with role management
-
-- **Data Validation**: Comprehensive client-side and server-side validation
+Accra Road Attendance is a Windows desktop application designed to manage church operations with a focus on:
+- **Member Management**: Register and maintain detailed member profiles with comprehensive information.
+- **Attendance Tracking**: Record attendance for various service types (Sunday Service, Midweek Prayer, Bible Study, Special Events).
+- **Cloud Synchronization**: Automatic sync between local database and cloud storage via Google Drive.
+- **Reporting & Analytics**: Generate attendance reports and summary statistics.
+- **User Management**: Role-based access control with Admin and User roles.
 
 ## Technology Stack
 
 - **Framework**: .NET 8
-- **UI Framework**: WPF (Windows Presentation Foundation)
-- **Database**: SQL Server (local & online)
-- **ORM**: Entity Framework Core 9.0.1
-- **Authentication**: ASP.NET Core Identity
+- **UI**: Windows Presentation Foundation (WPF)
+- **Database**: SQL Server with Entity Framework Core
+- **Authentication**: ASP.NET Identity
 - **Cloud Storage**: Google Drive API
-- **UI Components**: Material Design In XAML (MaterialDesignInXamlToolkit)
-- **ID Generation**: ULID (.NUlid)
-
-## Prerequisites
-
-### System Requirements
-
-- Windows 10 or later
-- .NET 8 Runtime
-- SQL Server 2016 or later (local)
-- Internet connection (for cloud sync and Google Drive features)
-
-### Credentials & Configuration
-
-- **Default Admin Credentials**: 
-  - Email: `admin@example.com`
-  - Password: `Admin@123`
-
-- **Google Drive Setup**:
-  - Encrypted service key stored as embedded resource
-  - Passphrase: Configured in `GoogleDriveService`
-
-## Installation
-
-### Build from Source
-
-1. Clone the repository:
-```bash
-git clone https://github.com/Helmut-Essien/AccraRoadAttendance
-cd AccraRoadCoC
-```
-
-2. Configure connection strings in `appsettings.json`:
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=.\\SQLEXPRESS;Database=AccraRoadAttendanceDb;Trusted_Connection=true;",
-    "OnlineConnection": "Server=your_server;Database=AccraRoadAttendanceOnline;User Id=sa;Password=your_password;"
-  }
-}
-```
-
-3. Build the solution:
-```bash
-dotnet build
-```
-
-4. Run the application:
-```bash
-dotnet run
-```
+- **ORM**: Entity Framework Core with DbContext
 
 ## Project Structure
 
 ```
 AccraRoadAttendance/
-??? Models/
-?   ??? Member.cs                 # Member entity with comprehensive properties
-?   ??? User.cs                   # ASP.NET Core Identity user
-?   ??? Attendance.cs             # Attendance records
-?   ??? ChurchAttendanceSummary.cs # Summarized attendance data
-?   ??? SyncMetadata.cs           # Sync state tracking
-??? Data/
-?   ??? AttendanceDbContext.cs    # Local database context
-?   ??? OnlineAttendanceDbContext.cs # Cloud database context
-?   ??? DesignTimeDbContextFactory.cs
-??? Services/
-?   ??? INavigationService.cs     # Navigation between pages
-?   ??? CurrentUserService.cs     # User authentication state
-?   ??? SyncService.cs            # Bidirectional data synchronization
-?   ??? GoogleDriveService.cs     # Google Drive integration
-??? Views/
-?   ??? MainWindow.xaml           # Main application window
-?   ??? Login.xaml                # Login interface
-?   ??? Pages/
-?       ??? Dashboard/            # Dashboard overview
-?       ??? Members/              # Member management pages
-?       ??? Attendance/           # Attendance marking
-?       ??? Reports/              # Report generation
-?       ??? Users/                # User administration
-??? Migrations/
-?   ??? AttendanceDb/             # EF Core migrations
-??? appsettings.json              # Configuration file
+??? Models/                              # Domain models and data entities
+?   ??? Member.cs                        # Church member profile with comprehensive information
+?   ??? Attendance.cs                    # Service attendance records
+?   ??? User.cs                          # Identity user (extends ASP.NET Identity)
+?   ??? ChurchAttendanceSummary.cs       # Aggregated attendance statistics
+?
+??? Services/                            # Business logic and external integrations
+?   ??? GoogleDriveService.cs            # Google Drive API (upload/download profile pictures)
+?   ??? SyncService.cs                   # Bidirectional data synchronization
+?   ??? NavigationService.cs             # WPF page navigation service
+?   ??? CurrentUserService.cs            # User session and authentication management
+?
+??? Data/                                # Database access layer
+?   ??? AttendanceDbContext.cs           # Entity Framework DbContext configuration
+?
+??? Views/                               # User interface (XAML and code-behind)
+?   ??? MainWindow.xaml(.cs)             # Main application shell and navigation hub
+?   ??? Login.xaml(.cs)                  # User authentication page
+?   ??? SplashScreen.xaml(.cs)           # Application startup splash screen
+?   ?
+?   ??? Pages/                           # Feature-specific pages
+?       ??? Dashboard/
+?       ?   ??? Dashboard.xaml(.cs)      # Church statistics and quick access overview
+?       ?
+?       ??? Members/                     # Member management module
+?       ?   ??? Members.xaml(.cs)        # Member list and browsing
+?       ?   ??? AddMembers.xaml(.cs)     # New member registration form
+?       ?   ??? EditMembers.xaml(.cs)    # Member profile editing
+?       ?   ??? MemberDetails.xaml(.cs)  # Detailed member profile view
+?       ?
+?       ??? Attendance/                  # Attendance tracking module
+?       ?   ??? MarkAttendance.xaml(.cs) # Record service attendance
+?       ?
+?       ??? Reports/                     # Reporting and analytics module
+?       ?   ??? ReportsPage.xaml(.cs)    # Generate and view reports
+?       ?
+?       ??? Users/                       # User management module (Admin only)
+?           ??? UsersManagement.xaml(.cs)# Create and manage user accounts
+?
+??? Migrations/                          # Entity Framework migration history
+?   ??? [timestamp]_InitialCreate.cs     # Initial database schema
+?   ??? [timestamp]_AddSyncToDb.cs       # Sync status tracking columns
+?   ??? [...]                            # Additional migrations
+?
+??? Resources/                           # Configuration and static resources
+?   ??? service-account-key.json         # Google service account credentials
+?
+??? App.xaml(.cs)                        # Application entry point and DI configuration
+??? [Project Files]
+    ??? .csproj                          # Project configuration
+    ??? App.config                       # Application settings
+    ??? appsettings.json                 # Configuration file
 ```
 
-## Usage
+### Folder Descriptions
 
-### Adding a Member
+| Folder | Purpose |
+|--------|---------|
+| **Models/** | Domain entities representing core business objects (Member, Attendance, etc.) |
+| **Services/** | Business logic, external API integrations, and cross-cutting concerns |
+| **Data/** | Entity Framework context and database access configuration |
+| **Views/** | WPF XAML pages and code-behind for the user interface |
+| **Migrations/** | Database schema version history managed by Entity Framework |
+| **Resources/** | Configuration files, credentials, and static resources |
 
-1. Log in with admin or user credentials
-2. Navigate to **Members** section
-3. Click **Add Member**
-4. Fill in required fields marked with asterisks
-5. Upload a profile picture (optional)
-6. Click **Save**
+### Key Entry Points
 
-### Recording Attendance
+- **App.xaml.cs**: Application startup, dependency injection configuration, database initialization
+- **MainWindow.xaml.cs**: Main navigation hub after user authentication
+- **Login.xaml.cs**: Initial login page for user authentication
 
-1. Navigate to **Mark Attendance**
-2. Select the service type and date
-3. Mark members as Present, Absent, or Excused
-4. Save attendance records
 
-### Syncing Data
+## Core Models
 
-1. Click the **Sync** button in the main window
-2. Wait for synchronization to complete
-3. System will:
-   - Push local changes to cloud
-   - Pull updates from cloud database
-   - Update Google Drive with profile pictures
-   - Track last sync time
+### Member
+Represents a church member with extensive profile information:
+- **Basic Info**: First name, last name, other names
+- **Contact**: Phone number, email
+- **Personal**: Gender, date of birth, marital status, spouse information
+- **Church**: Membership start date, role, baptism details, attendance records
+- **Demographics**: Nationality, occupation, educational level, hometown
+- **Family**: Parent and family member contacts
+- **Status**: Active/inactive, sync status
 
-### Generating Reports
+**Key Properties**:
+- `FullName`: Computed property combining name fields
+- `AgeGroup`: Calculated from date of birth (Child, Teen, YoungAdult, Adult, Senior)
+- `SyncStatus`: Tracks synchronization with cloud database
 
-1. Navigate to **Reports**
-2. Select date range and filters
-3. View or export attendance statistics
+### Attendance
+Records member attendance for specific services:
+- **Service Date**: Date of the service
+- **Service Type**: Sunday Service, Wednesday Prayer, Thursday Bible Study, Special Event
+- **Status**: Present, Absent, Excused
+- **Notes**: Optional notes about the attendance record
+- **Tracking**: Record timestamp and sync status
+
+### ChurchAttendanceSummary
+Aggregated attendance statistics per service:
+- **Totals**: Present count, male/female breakdown, total members, visitors, children
+- **Offering**: Recorded offering amount
+- **Service Theme**: Optional description of the service
+- **Summary Date**: Date of the service
+- **Sync Status**: Cloud synchronization status
+
+### User
+Identity user extending ASP.NET Identity:
+- Linked to a member profile for role-based access
+- Email-unique requirement for system-wide uniqueness
+
+## Services
+
+### GoogleDriveService
+Handles Google Drive API interactions:
+- **UploadImage()**: Uploads member profile pictures to Google Drive
+  - Supports JPEG and PNG formats
+  - Returns publicly accessible shareable URL
+  - Auto-configures permissions for public access
+- **DownloadImage()**: Downloads images from Google Drive to local storage
+  - Caches images in the `ProfilePictures` folder
+
+**Configuration**: Requires `service-account-key.json` in `Resources` folder with:
+- Service account credentials
+- Profile pictures folder ID configured in `_profilePicturesFolderId`
+
+### SyncService
+Bidirectional data synchronization between local and cloud databases:
+- **SyncData()**: Main sync orchestrator
+  - Pushes local changes to cloud
+  - Pulls cloud updates to local database
+  - Handles image synchronization via Google Drive
+  - Tracks last sync time to optimize data transfer
+- **PushLocalChanges()**: Uploads local modifications
+- **PullOnlineChanges()**: Downloads remote updates
+
+**Sync Strategy**:
+- Based on `LastModified` timestamp comparison
+- `SyncStatus` flag indicates synchronization state
+- Profile pictures automatically uploaded/downloaded as needed
+
+### NavigationService
+WPF navigation abstraction:
+- Manages page transitions within `MainWindow`
+- Type-safe navigation to different views
+- Dependency injection integrated
+
+### CurrentUserService
+User session management:
+- Tracks currently logged-in user
+- Role verification
+- Logout functionality
 
 ## Database Schema
 
-### Key Tables
+### Entity Framework Relationships
+- **User ? Member**: One-to-one relationship
+- **Member ? Attendance**: One-to-many relationship (cascade delete)
+- **Identity Tables**: Configured for SQLite/SQL Server compatibility
 
-- **Members**: Core member information with 30+ properties
-- **Attendances**: Service attendance records with sync status tracking
-- **ChurchAttendanceSummaries**: Aggregated statistics by service and date
-- **AspNetUsers**: Identity users with role-based access
-- **SyncMetadata**: Tracks last synchronization time
+### Key Indexes
+- `Member.Email`: Unique index
+- `Member.PhoneNumber`: Unique index
+- `Attendance.ServiceDate`: Performance index
+- `Attendance.ServiceDate + ServiceType`: Composite index
+- `ChurchAttendanceSummary.SummaryDate`: Date-based index
+
+### Database Configuration
+- **Server**: SQL Server (FINSERVE\SQLEXPRESS)
+- **Database Name**: AttendanceDb
+- **ORM**: Entity Framework Core with POCO models
+- **Migrations**: Database-first approach with migration files
+
+## Authentication & Authorization
+
+### Identity Setup
+- ASP.NET Core Identity integration
+- Role-based access control (RBAC)
+- Unique email requirement per user
+- Two roles: **Admin** and **User**
+
+### Access Control
+- **Admin Role**: Full access to all features including user management
+- **User Role**: Standard member and attendance operations
+- Protected pages check role membership before navigation
+
+## Features
+
+### Dashboard
+- Overview of church statistics
+- Quick access to main operations
+- Summary views of recent activities
+
+### Member Management
+- **Add Members**: Register new church members with comprehensive profile data
+- **Edit Members**: Update existing member information
+- **Member Details**: View detailed member profiles
+- **Member Search**: Find members by various criteria
+- **Profile Pictures**: Upload member photos to Google Drive
+
+### Attendance Management
+- **Mark Attendance**: Record attendance for services
+- **View Attendance**: Check attendance history
+- **Multiple Service Types**: Support for different worship services
+- **Status Tracking**: Present, Absent, Excused status options
+
+### Reporting
+- **Attendance Reports**: Generate reports by date range or service type
+- **Summary Statistics**: Aggregate attendance data
+- **Member Demographics**: Analyze member composition
+- **Export Functionality**: Export reports for further analysis
+
+### User Management (Admin Only)
+- Create new user accounts
+- Assign roles (Admin/User)
+- Manage user permissions
+- Delete user accounts
+
+### Cloud Synchronization
+- Automatic bidirectional sync
+- Profile picture storage on Google Drive
+- Conflict resolution based on last modified timestamp
+- Sync status tracking
+
+## Getting Started
+
+### Prerequisites
+- .NET 8 SDK
+- SQL Server (local or remote)
+- Google Cloud Project with Drive API enabled
+- Service account key JSON file
+
+### Installation
+
+1. **Clone the repository**
+
+   git clone https://github.com/Helmut-Essien/AccraRoadAttendance.git
+   cd AccraRoadAttendance
+
+
+2. **Configure Database Connection**
+- Update connection string in `App.xaml.cs`:
+
+   services.AddDbContext<AttendanceDbContext>(options =>
+       options.UseSqlServer("YOUR_CONNECTION_STRING"));
+
+
+3. **Set Up Google Drive Credentials**
+- Place `service-account-key.json` in `Resources` folder
+- Update profile pictures folder ID in `GoogleDriveService.cs`:
+
+   _profilePicturesFolderId = "YOUR_FOLDER_ID";
+
+
+4. **Initialize Database**
+- Run migrations automatically on startup, or manually:
+
+   dotnet ef database update
+
+
+5. **Build and Run**
+
+   dotnet build
+   dotnet run
+
+
+### First Time Setup
+- Application launches with login screen
+- Create initial admin user through identity setup
+- Assign Admin role to first user
+- Login and start managing the church
 
 ## Configuration
 
-### appsettings.json
+### Database
+Connection string in `App.xaml.cs`:
 
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "connection_string_to_local_db",
-    "OnlineConnection": "connection_string_to_cloud_db"
-  }
-}
-```
+"Server=FINSERVE\\SQLEXPRESS;Database=AttendanceDb;Integrated Security=True;TrustServerCertificate=True;"
 
-### Supported Service Types
 
-- Sunday Service
-- Wednesday Prayer
-- Thursday Bible Study
-- Special Event
+### Google Drive
+1. Configure service account credentials in `GoogleDriveService` constructor
+2. Set the profile pictures folder ID
+3. Ensure service account has write permissions to the shared folder
 
-### Member Fields
+### Application Settings
+- Identity settings (email uniqueness, etc.) in `App.xaml.cs`
+- Role seeding during database initialization
+- View registration in dependency injection
 
-**Personal Info**: First Name, Last Name, Other Names, Gender, Date of Birth, Email, Phone
+## Enumerations
 
-**Membership**: Status, Start Date, Baptism Date/Place, Education Level, Nationality
+### Member Enums
+- **Gender**: Male, Female
+- **MaritalStatus**: Married, Single, Widowed, Divorced
+- **OccupationType**: Self Employed, Salary Worker, Student, Unemployed, Apprentice, Retired
+- **EducationalLevel**: No Formal Education, Primary School, Secondary School, Tertiary, Post Graduate
 
-**Contact**: Address, Location, Hometown
-
-**Family**: Next of Kin, Family Members in Church, Parents, Spouse (if married)
-
-**Professional**: Occupation Type, Occupation Description, Skills, Church Role
-
-## Sync Architecture
-
-The application uses a **Conflict-Free Synchronization** model:
-
-1. **Push Phase**: Local changes newer than last sync time are pushed to cloud
-2. **Pull Phase**: Cloud changes newer than last sync time are pulled locally
-3. **Image Handling**: Profile pictures are uploaded to Google Drive and stored as URLs
-4. **Retry Logic**: Failed syncs retry up to 2 times with configurable delays
-5. **Metadata Tracking**: Last sync time persists across sessions
-
-## Security
-
-- Password hashing via ASP.NET Core Identity
-- Role-based access control (Admin/User)
-- Encrypted Google Drive service credentials
-- Unique constraints on email and phone number
-- User session management
-
-## Logging
-
-Application logs are configured via Microsoft Extensions Logging:
-- Console output in debug mode
-- File logging (if configured)
-- Sync operations logged for troubleshooting
-
-## Troubleshooting
-
-### Database Issues
-
-- Ensure SQL Server is running and accessible
-- Verify connection strings in `appsettings.json`
-- Run migrations: `dotnet ef database update`
-
-### Sync Failures
-
-- Check internet connectivity
-- Verify Google Drive service credentials
-- Review logs for detailed error messages
-- Ensure adequate storage on Google Drive
-
-### Login Issues
-
-- Clear application cache
-- Verify admin credentials in database
-- Check user role assignments
+### Attendance Enums
+- **ServiceType**: Sunday Service, Wednesday Prayer, Thursday Bible Study, Special Event
+- **AttendanceStatus**: Present, Absent, Excused
 
 ## Development
 
-### Required Tools
+### Adding New Features
+1. Create model classes in `Models/`
+2. Add DbSet to `AttendanceDbContext`
+3. Create migration: `dotnet ef migrations add MigrationName`
+4. Create service class if needed
+5. Add view/page in `Views/`
+6. Register in dependency injection container
 
-- Visual Studio 2022 or VS Code
-- .NET 8 SDK
-- SQL Server (2016+) or SQL Server Express
+### Database Migrations
 
-### Running Migrations
+// Create migration
+dotnet ef migrations add InitialCreate
 
-```bash
-# Add a new migration
-dotnet ef migrations add MigrationName -p AccraRoadAttendance
-
-# Apply migrations
+// Apply migrations
 dotnet ef database update
-```
+
+// Rollback
+dotnet ef database update PreviousMigration
+
+
+### Testing Google Drive Integration
+- Use built-in test button in MainWindow
+- Select images to upload/download
+- Verify URLs and local storage
+
+## Architecture Decisions
+
+### Cloud-First Synchronization
+- Supports offline-first mobile sync scenarios
+- Profile pictures stored in cloud for accessibility
+- Timestamp-based conflict resolution
+
+### Role-Based Security
+- Admin controls user management
+- Standard users limited to data entry
+- Identity integration for future OAuth support
+
+### Entity Framework + Identity
+- Type-safe database queries
+- Built-in migration system
+- Standard ASP.NET authentication framework
+
+## Known Limitations
+
+- Sync service tracks last sync time in memory (consider persistent storage)
+- Image downloading stores files locally (consider memory streaming)
+- No built-in image compression before cloud upload
+- Attendance reporting limited to UI views (consider API/export features)
+
+## Future Enhancements
+
+- [ ] Mobile app companion (Xamarin/MAUI)
+- [ ] Web API for third-party integrations
+- [ ] Advanced reporting with charts/analytics
+- [ ] Automated backup and disaster recovery
+- [ ] Payment/giving tracking module
+- [ ] SMS/Email notifications
+- [ ] Barcode/QR code attendance
+- [ ] Sermon archive and notes
+- [ ] Member small groups management
+- [ ] Event calendar integration
 
 ## Contributing
 
-Contributions are welcome. Please ensure:
-- Code follows project conventions
-- Changes include appropriate validation
-- Database changes include migrations
-- Code is tested before submission
+Contributions are welcome! Please follow these guidelines:
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-Internal use only - All rights reserved
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Contact & Support
+## Support
 
-For issues, suggestions, or support:
-- Repository: https://github.com/Helmut-Essien/AccraRoadAttendance
-- Branch: Deploy
+For issues, questions, or suggestions:
+- Open an issue on GitHub
+- Contact the development team
+- Check documentation in this README
 
-## Changelog
+## Authors
 
-### Version 1.0
-- Initial release with core attendance management features
-- Google Drive integration for profile pictures
-- Bidirectional data synchronization
-- Role-based access control
-- Material Design UI
+- **Helmut Essien** - Initial development
+- See GitHub repository for full contributor list
+
+## Acknowledgments
+
+- Google Drive API documentation
+- Microsoft .NET and Entity Framework teams
+- WPF community resources
+- Church management software best practices
+
+
