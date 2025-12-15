@@ -47,7 +47,7 @@ jobs:
       run: dotnet restore AccraRoadAttendance/AccraRoadAttendance.csproj
 
     - name: Install dotnet-ef
-      run: dotnet tool install --global dotnet-ef
+      run: dotnet tool install --global dotnet-ef --version 8.*
           
     - name: Apply EF Core Migrations
       #working-directory: AccraRoadAttendance\Data "change master yaml"
