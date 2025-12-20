@@ -1,0 +1,10 @@
+
+
+I have re-encrypted using
+
+openssl enc -aes-256-cbc -salt -pbkdf2 -md sha256 -iter 10000 -in "C:\Users\Calypso Tumbler\Downloads\service_key.json" -out "C:\Users\Calypso Tumbler\Downloads\service_key.enc" -k 'A$$hole123'
+
+openssl enc -aes-256-cbc -d -salt -pbkdf2 -md sha256 -iter 10000 -in "C:\Users\Calypso Tumbler\Downloads\service_key.enc" -out "C:\Users\Calypso Tumbler\Downloads\decrypted.json" -k 'A$$hole123'
+
+edit my command to use -md sha256
+
