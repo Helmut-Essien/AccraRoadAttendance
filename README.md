@@ -2,7 +2,7 @@
 
 A comprehensive desktop application for managing church attendance records, member profiles, and attendance-related reporting for the Accra-Road Congregation.
 
-## ?? Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Key Features](#key-features)
@@ -85,96 +85,96 @@ Comprehensive report generation capabilities:
 
 ```
 AccraRoadAttendance/
-??? Views/
-?   ??? MainWindow.xaml                          # Main application shell
-?   ??? MainWindow.xaml.cs                       # Main window code-behind
-?   ??? SplashScreen.xaml                        # Startup splash screen
-?   ??? SplashScreen.xaml.cs                     # Splash screen code-behind
-?   ??? Login.xaml                               # Login window
-?   ??? Login.xaml.cs                            # Login code-behind
-?   ??? LogoSplashWindow.xaml                    # Logo splash window
-?   ??? LogoSplashWindow.xaml.cs                 # Logo splash code-behind
-?   ?
-?   ??? Pages/
-?       ??? Dashboard/
-?       ?   ??? Dashboard.xaml                   # Dashboard/home page
-?       ?   ??? Dashboard.xaml.cs                # Dashboard code-behind
-?       ?
-?       ??? Attendance/
-?       ?   ??? MarkAttendance.xaml              # Attendance marking UI
-?       ?   ??? MarkAttendance.xaml.cs           # Attendance code-behind
-?       ?   ??? VisitorsInputWindow.xaml         # Visitor input dialog
-?       ?
-?       ??? Members/
-?       ?   ??? Members.xaml                     # Members list/management
-?       ?   ??? Members.xaml.cs                  # Members code-behind
-?       ?   ??? AddMembers.xaml                  # Add new member form
-?       ?   ??? AddMembers.xaml.cs               # Add members code-behind
-?       ?   ??? EditMembers.xaml                 # Edit member form
-?       ?   ??? EditMembers.xaml.cs              # Edit members code-behind
-?       ?   ??? MemberDetails.xaml               # Member detail view
-?       ?   ??? MemberDetails.xaml.cs            # Member details code-behind
-?       ?
-?       ??? Reports/
-?       ?   ??? ReportsPage.xaml                 # Reports generation UI
-?       ?   ??? ReportsPage.xaml.cs              # Reports code-behind
-?       ?   ??? ReportGenerator.cs               # PDF report generation logic
-?       ?
-?       ??? Users/
-?           ??? UsersManagement.xaml             # User management UI
-?           ??? UsersManagement.xaml.cs          # User management code-behind
-?
-??? Services/
-?   ??? INavigationService.cs                    # Navigation service interface
-?   ??? NavigationService.cs                     # Navigation service implementation
-?   ??? CurrentUserService.cs                    # Current user session tracking
-?   ??? GoogleDriveService.cs                    # Google Drive API integration
-?   ??? SyncService.cs                           # Database synchronization service
-?   ??? IParameterReceiver.cs                    # Parameter receiver interface
-?
-??? Data/
-?   ??? AttendanceDbContext.cs                   # Local database context
-?   ??? OnlineAttendanceDbContext.cs             # Online database context
-?
-??? Models/
-?   ??? Member.cs                                # Member model
-?   ??? Attendance.cs                            # Attendance record model
-?   ??? ChurchAttendanceSummary.cs               # Attendance summary model
-?   ??? User.cs                                  # User account model
-?   ??? ServiceType.cs                           # Service type enumeration
-?
-??? Resources/
-?   ??? service_key.enc                          # Encrypted Google Drive credentials
-?   ??? (Configuration files)
-?
-??? AppImages/
-?   ??? CLogoc.png                               # Logo (light theme)
-?   ??? CLogocw.png                              # Logo (dark theme)
-?   ??? CLogoCropped.png                         # Cropped logo for reports
-?   ??? (Other image assets)
-?
-??? Migrations/
-?   ??? [YYYYMMDDHHmmss]_InitialCreate.cs        # Initial database migration
-?   ??? [YYYYMMDDHHmmss]_AddMemberFields.cs      # Add member fields migration
-?   ??? [YYYYMMDDHHmmss]_AddAttendanceFields.cs  # Add attendance fields migration
-?   ??? (More migration files)                   # Additional migrations
-?
-??? Properties/
-?   ??? PublishProfiles/
-?   ?   ??? ClickOnceProfile.pubxml              # ClickOnce publish profile 1
-?   ?   ??? ClickOnceProfile2.pubxml             # ClickOnce publish profile 2
-?   ??? launchSettings.json                      # Launch settings
-?   ??? AssemblyInfo.cs                          # Assembly information
-?
-??? App.xaml                                     # Application XAML configuration
-??? App.xaml.cs                                  # Application code-behind
-??? appsettings.json                             # Application settings (database connections)
-??? appsettings.Development.json                 # Development environment settings
-??? appsettings.Production.json                  # Production environment settings
-??? AccraRoadAttendance.csproj                   # Project file
-??? README.md                                    # This file
-??? LICENSE                                      # MIT License
-??? .gitignore                                   # Git ignore rules
+├── Views/
+│   ├── MainWindow.xaml                          # Main application shell
+│   ├── MainWindow.xaml.cs                       # Main window code-behind
+│   ├── SplashScreen.xaml                        # Startup splash screen
+│   ├── SplashScreen.xaml.cs                     # Splash screen code-behind
+│   ├── Login.xaml                               # Login window
+│   ├── Login.xaml.cs                            # Login code-behind
+│   ├── LogoSplashWindow.xaml                    # Logo splash window
+│   ├── LogoSplashWindow.xaml.cs                 # Logo splash code-behind
+│   │
+│   └── Pages/
+│       ├── Dashboard/
+│       │   ├── Dashboard.xaml                   # Dashboard/home page
+│       │   └── Dashboard.xaml.cs                # Dashboard code-behind
+│       │
+│       ├── Attendance/
+│       │   ├── MarkAttendance.xaml              # Attendance marking UI
+│       │   ├── MarkAttendance.xaml.cs           # Attendance code-behind
+│       │   └── VisitorsInputWindow.xaml         # Visitor input dialog
+│       │
+│       ├── Members/
+│       │   ├── Members.xaml                     # Members list/management
+│       │   ├── Members.xaml.cs                  # Members code-behind
+│       │   ├── AddMembers.xaml                  # Add new member form
+│       │   ├── AddMembers.xaml.cs               # Add members code-behind
+│       │   ├── EditMembers.xaml                 # Edit member form
+│       │   ├── EditMembers.xaml.cs              # Edit members code-behind
+│       │   ├── MemberDetails.xaml               # Member detail view
+│       │   └── MemberDetails.xaml.cs            # Member details code-behind
+│       │
+│       ├── Reports/
+│       │   ├── ReportsPage.xaml                 # Reports generation UI
+│       │   ├── ReportsPage.xaml.cs              # Reports code-behind
+│       │   └── ReportGenerator.cs               # PDF report generation logic
+│       │
+│       └── Users/
+│           ├── UsersManagement.xaml             # User management UI
+│           └── UsersManagement.xaml.cs          # User management code-behind
+│
+├── Services/
+│   ├── INavigationService.cs                    # Navigation service interface
+│   ├── NavigationService.cs                     # Navigation service implementation
+│   ├── CurrentUserService.cs                    # Current user session tracking
+│   ├── GoogleDriveService.cs                    # Google Drive API integration
+│   ├── SyncService.cs                           # Database synchronization service
+│   └── IParameterReceiver.cs                    # Parameter receiver interface
+│
+├── Data/
+│   ├── AttendanceDbContext.cs                   # Local database context
+│   └── OnlineAttendanceDbContext.cs             # Online database context
+│
+├── Models/
+│   ├── Member.cs                                # Member model
+│   ├── Attendance.cs                            # Attendance record model
+│   ├── ChurchAttendanceSummary.cs               # Attendance summary model
+│   ├── User.cs                                  # User account model
+│   └── ServiceType.cs                           # Service type enumeration
+│
+├── Resources/
+│   ├── service_key.enc                          # Encrypted Google Drive credentials
+│   └── (Configuration files)
+│
+├── AppImages/
+│   ├── CLogoc.png                               # Logo (light theme)
+│   ├── CLogocw.png                              # Logo (dark theme)
+│   ├── CLogoCropped.png                         # Cropped logo for reports
+│   └── (Other image assets)
+│
+├── Migrations/
+│   ├── [YYYYMMDDHHmmss]_InitialCreate.cs        # Initial database migration
+│   ├── [YYYYMMDDHHmmss]_AddMemberFields.cs      # Add member fields migration
+│   ├── [YYYYMMDDHHmmss]_AddAttendanceFields.cs  # Add attendance fields migration
+│   └── (More migration files)                   # Additional migrations
+│
+├── Properties/
+│   ├── PublishProfiles/
+│   │   ├── ClickOnceProfile.pubxml              # ClickOnce publish profile 1
+│   │   └── ClickOnceProfile2.pubxml             # ClickOnce publish profile 2
+│   ├── launchSettings.json                      # Launch settings
+│   └── AssemblyInfo.cs                          # Assembly information
+│
+├── App.xaml                                     # Application XAML configuration
+├── App.xaml.cs                                  # Application code-behind
+├── appsettings.json                             # Application settings (database connections)
+├── appsettings.Development.json                 # Development environment settings
+├── appsettings.Production.json                  # Production environment settings
+├── AccraRoadAttendance.csproj                   # Project file
+├── README.md                                    # This file
+├── LICENSE                                      # MIT License
+└── .gitignore                                   # Git ignore rules
 ```
 
 ### Key Directories Explained
@@ -244,12 +244,12 @@ cd AccraRoadAttendance
 #### 2. Open in Visual Studio
 
 1. Open **Visual Studio 2022**
-2. Click **File** ? **Open** ? **Project/Solution**
+2. Click **File** → **Open** → **Project/Solution**
 3. Navigate to the cloned directory and select `AccraRoadAttendance.csproj`
 4. Wait for Visual Studio to load the project and restore NuGet packages
 
 **Verify Workloads:**
-- Go to **Tools** ? **Get Tools and Features**
+- Go to **Tools** → **Get Tools and Features**
 - Ensure these workloads are installed:
   - **.NET desktop development**
   - **Data storage and processing**
@@ -283,7 +283,7 @@ dotnet restore
 ```
 
 Or in Visual Studio:
-- **Tools** ? **NuGet Package Manager** ? **Package Manager Console**
+- **Tools** → **NuGet Package Manager** → **Package Manager Console**
 - Run: `Update-Package`
 
 #### 5. Initialize the Database
@@ -316,7 +316,7 @@ dotnet build
 ```
 
 Or in Visual Studio:
-- **Build** ? **Build Solution** (Ctrl+Shift+B)
+- **Build** → **Build Solution** (Ctrl+Shift+B)
 
 Expected output: `Build succeeded.`
 
@@ -327,7 +327,7 @@ dotnet run
 ```
 
 Or in Visual Studio:
-- Press **F5** or click **Start** (?)
+- Press **F5** or click **Start** (▶)
 
 **Launch Sequence:**
 1. **Logo Splash Screen** appears (AccraRoad logo)
@@ -345,7 +345,7 @@ After initial setup, log in with these credentials:
 | **Email** | admin@example.com |
 | **Password** | Admin@123 |
 
-?? **CRITICAL SECURITY NOTICE**: 
+⚠️ **CRITICAL SECURITY NOTICE**: 
 - Change these credentials **immediately** after first login
 - Use a strong, unique password (minimum 12 characters)
 - Store the credentials securely
@@ -649,7 +649,7 @@ dotnet restore
 ```
 
 Or in Visual Studio:
-- **Tools** ? **NuGet Package Manager** ? **Package Manager Console**
+- **Tools** → **NuGet Package Manager** → **Package Manager Console**
 - Run: `Update-Package`
 
 #### 3. Configure Development Database
@@ -692,7 +692,7 @@ dotnet build -c Release
 ```
 
 #### Via Visual Studio
-- **Build** ? **Rebuild Solution** (Ctrl+Shift+B)
+- **Build** → **Rebuild Solution** (Ctrl+Shift+B)
 
 ### Running the Application
 
@@ -702,7 +702,7 @@ dotnet run --launch-profile Development
 ```
 
 #### Via Visual Studio
-1. Press **F5** or click **Start (?)**
+1. Press **F5** or click **Start** (▶)
 2. Application launches with development configuration
 
 ### Code Style & Conventions
@@ -859,7 +859,7 @@ git merge [branch]      # Merge branches
 ### Publishing
 
 **ClickOnce Deployment:**
-1. **Right-click Project** ? **Publish**
+1. **Right-click Project** → **Publish**
 2. Select publish profile (ClickOnceProfile.pubxml or ClickOnceProfile2.pubxml)
 3. Click **Publish**
 
@@ -1117,11 +1117,11 @@ Before submitting a PR, verify:
 This project is licensed under the **MIT License** - see the `LICENSE` file for details.
 
 ### MIT License Summary
-- ? You can use this commercially
-- ? You can modify the code
-- ? You can distribute the software
-- ? You can use privately
-- ? No liability or warranty provided
+- ✓ You can use this commercially
+- ✓ You can modify the code
+- ✓ You can distribute the software
+- ✓ You can use privately
+- ✓ No liability or warranty provided
 
 ## Support
 
@@ -1160,15 +1160,15 @@ A: Automatic sync occurs at startup. Manual sync available from MainWindow.
 **Release Date:** December 2024
 
 **Features:**
-- ? Core attendance tracking
-- ? Comprehensive member management
-- ? 7 report types with PDF export
-- ? Local and cloud data synchronization
-- ? User authentication and roles
-- ? Dark/Light theme support
-- ? Google Drive integration
-- ? Offline mode with sync
-- ? Pagination and search
+- ✓ Core attendance tracking
+- ✓ Comprehensive member management
+- ✓ 7 report types with PDF export
+- ✓ Local and cloud data synchronization
+- ✓ User authentication and roles
+- ✓ Dark/Light theme support
+- ✓ Google Drive integration
+- ✓ Offline mode with sync
+- ✓ Pagination and search
 
 **Known Limitations:**
 - Desktop application only
@@ -1181,5 +1181,5 @@ A: Automatic sync occurs at startup. Manual sync available from MainWindow.
 © 2024 Church of Christ - Accra-Road Congregation. All rights reserved.
 
 **Last Updated:** December 2024  
-**Status:** ? Production Ready
+**Status:** ✓ Production Ready
 
