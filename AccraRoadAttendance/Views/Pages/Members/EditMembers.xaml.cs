@@ -91,7 +91,21 @@ namespace AccraRoadAttendance.Views.Pages.Members
             EducationComboBox.ItemsSource = educationItems;
             EducationComboBox.DisplayMemberPath = "DisplayName";
             EducationComboBox.SelectedValuePath = "Value";
+
+            // Initialize Gender ComboBox
+            var zoneItems = Enum.GetValues(typeof(Member.Zone))
+                .Cast<Member.Zone>()
+                .Select(g => new
+                {
+                    Value = g,
+                    DisplayName = GetEnumDisplayName(g)
+                }).ToList();
+
+            ZoneComboBox.ItemsSource = zoneItems;
+            ZoneComboBox.DisplayMemberPath = "DisplayName";
+            ZoneComboBox.SelectedValuePath = "Value";
         }
+
 
         private void InitializeVisibility()
         {
@@ -147,6 +161,8 @@ namespace AccraRoadAttendance.Views.Pages.Members
             SelectedPicturePath = member.PicturePath;
             SpouseName = member.SpouseName;
             SpouseContact = member.SpouseContact;
+            PreviousCongregation = member.PreviousCongregation;
+            zone = member.zone;
             //ImagePreview.Source = string.IsNullOrEmpty(SelectedPicturePath) ? null : new BitmapImage(new Uri(SelectedPicturePath));
             if (!string.IsNullOrEmpty(SelectedPicturePath) && File.Exists(SelectedPicturePath))
             {
@@ -442,6 +458,32 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 _fatherContact = value;
                 //ValidateNextOfKinName();
                 OnPropertyChanged(nameof(FatherContact));
+            }
+        }
+
+        // 20. Previous Congregation
+        private string _previousCongregation;
+        public string PreviousCongregation
+        {
+            get => _previousCongregation;
+            set
+            {
+                if (_previousCongregation == value) return;
+                _previousCongregation = value;
+                OnPropertyChanged(nameof(PreviousCongregation));
+            }
+        }
+
+        // 4. Zone (Enum)
+        private Zone? _zone;
+        public Zone? zone
+        {
+            get => _zone;
+            set
+            {
+                _zone = value;
+
+                OnPropertyChanged(nameof(zone));
             }
         }
 
@@ -897,6 +939,8 @@ namespace AccraRoadAttendance.Views.Pages.Members
                 memberToUpdate.FamilyMemberContact = HasFamilyMemberInChurch ? FamilyMemberContact : null;
                 memberToUpdate.LastModified = DateTime.UtcNow;
                 memberToUpdate.SyncStatus = false;
+                memberToUpdate.PreviousCongregation = PreviousCongregation;
+                memberToUpdate.zone = zone.Value;
 
                 if (maritalStatus.Value != 0)
                 {

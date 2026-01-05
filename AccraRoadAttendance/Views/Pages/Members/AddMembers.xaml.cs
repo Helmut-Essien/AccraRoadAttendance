@@ -85,6 +85,19 @@ namespace AccraRoadAttendance.Views.Pages.Members
             EducationComboBox.ItemsSource = educationItems;
             EducationComboBox.DisplayMemberPath = "DisplayName";
             EducationComboBox.SelectedValuePath = "Value";
+
+            // Initialize Gender ComboBox
+            var zoneItems = Enum.GetValues(typeof(Member.Zone))
+                .Cast<Member.Zone>()
+                .Select(g => new
+                {
+                    Value = g,
+                    DisplayName = GetEnumDisplayName(g)
+                }).ToList();
+
+            ZoneComboBox.ItemsSource = zoneItems;
+            ZoneComboBox.DisplayMemberPath = "DisplayName";
+            ZoneComboBox.SelectedValuePath = "Value";
         }
 
         #region INotifyDataErrorInfo Implementation
@@ -732,6 +745,32 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
+        // 20. Previous Congregation
+        private string _previousCongregation;
+        public string PreviousCongregation
+        {
+            get => _previousCongregation;
+            set
+            {
+                if (_previousCongregation == value) return;
+                _previousCongregation = value;
+                OnPropertyChanged(nameof(PreviousCongregation));
+            }
+        }
+
+        // 4. Zone (Enum)
+        private Zone? _zone;
+        public Zone? zone
+        {
+            get => _zone;
+            set
+            {
+                _zone = value;
+                
+                OnPropertyChanged(nameof(zone));
+            }
+        }
+
         // 20. Next of Kin Name
         private string _nextOfKinName;
         public string NextOfKinName
@@ -934,6 +973,9 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     FatherName = FatherName,
                     FatherContact = FatherContact,
                     OccupationDescription = OccupationDescription,
+                    PreviousCongregation = PreviousCongregation,
+                    zone = zone.Value
+                   
 
                 };
 
@@ -1074,6 +1116,8 @@ namespace AccraRoadAttendance.Views.Pages.Members
             FatherName = string.Empty;
             FatherContact = string.Empty;
             OccupationDescription = string.Empty;
+            PreviousCongregation = string.Empty;
+            zone = null;
 
             _errors.Clear();
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(string.Empty));
@@ -1110,6 +1154,8 @@ namespace AccraRoadAttendance.Views.Pages.Members
             OnPropertyChanged(nameof(FatherName));
             OnPropertyChanged(nameof(FatherContact));
             OnPropertyChanged(nameof(OccupationDescription));
+            OnPropertyChanged(nameof(PreviousCongregation));
+            OnPropertyChanged(nameof(zone));
         }
 
         

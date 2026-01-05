@@ -4,16 +4,19 @@ using AccraRoadAttendance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AccraRoadAttendance.Migrations.AttendanceDb
+namespace AccraRoadAttendance.Migrations
 {
-    [DbContext(typeof(AttendanceDbContext))]
-    partial class AttendanceDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(OnlineAttendanceDbContext))]
+    [Migration("20260105073740_AddedZonesToDb")]
+    partial class AddedZonesToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,8 +29,7 @@ namespace AccraRoadAttendance.Migrations.AttendanceDb
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)")
-                        .HasDefaultValueSql("NEWID()");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("AttendanceLastModified")
                         .HasColumnType("datetime");
@@ -265,10 +267,6 @@ namespace AccraRoadAttendance.Migrations.AttendanceDb
                         .HasColumnType("int");
 
                     b.Property<int>("occupationType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("zone")
-                        .HasMaxLength(500)
                         .HasColumnType("int");
 
                     b.HasKey("Id");

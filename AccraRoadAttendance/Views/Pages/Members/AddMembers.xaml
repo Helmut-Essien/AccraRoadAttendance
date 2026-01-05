@@ -71,6 +71,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -461,9 +462,48 @@
                         Text="{Binding NextOfKinContact, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                 </StackPanel>
 
-                <!--  Hometown  -->
+                <!--  Previous Congregation  -->
                 <StackPanel
                     Grid.Row="9"
+                    Grid.Column="0"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655"
+                        Text="Previous Congregation:" />
+                    <TextBox
+                        materialDesign:HintAssist.Hint="Enter previous congregation"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        Text="{Binding PreviousCongregation, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                </StackPanel>
+
+                <!--  Zone  -->
+                <StackPanel
+                    Grid.Row="9"
+                    Grid.Column="1"
+                    Margin="10">
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontWeight="SemiBold"
+                        Foreground="#374655">
+                        <Run Text="Zone:" />
+                        <!--<Run Foreground="Red" Text="*" />-->
+                    </TextBlock>
+
+                    <ComboBox
+                        x:Name="ZoneComboBox"
+                        Height="40"
+                        Padding="5,0,10,0"
+                        HorizontalContentAlignment="Stretch"
+                        materialDesign:HintAssist.Hint="Choose zone"
+                        SelectedValue="{Binding zone, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                </StackPanel>
+
+                <!--  Hometown  -->
+                <StackPanel
+                    Grid.Row="10"
                     Grid.Column="0"
                     Margin="10">
                     <TextBlock
@@ -479,7 +519,7 @@
 
                 <!--  Skills  -->
                 <StackPanel
-                    Grid.Row="9"
+                    Grid.Row="10"
                     Grid.Column="1"
                     Margin="10">
                     <TextBlock
@@ -495,7 +535,7 @@
 
                 <!--  Family Member Section  -->
                 <StackPanel
-                    Grid.Row="10"
+                    Grid.Row="11"
                     Grid.Column="0"
                     Margin="10">
                     <CheckBox
@@ -523,7 +563,7 @@
 
                 <!--  Baptism Section  -->
                 <StackPanel
-                    Grid.Row="10"
+                    Grid.Row="11"
                     Grid.Column="1"
                     Margin="10">
                     <CheckBox
@@ -551,7 +591,7 @@
 
                 <!--  Upload Picture Section  -->
                 <StackPanel
-                    Grid.Row="11"
+                    Grid.Row="12"
                     Grid.Column="0"
                     Margin="10">
                     <TextBlock
@@ -586,7 +626,7 @@
 
                 <!--  Education Level  -->
                 <StackPanel
-                    Grid.Row="11"
+                    Grid.Row="12"
                     Grid.Column="1"
                     Margin="10">
                     <TextBlock
@@ -610,7 +650,7 @@
 
                 <!--  Action Buttons  -->
                 <StackPanel
-                    Grid.Row="12"
+                    Grid.Row="13"
                     Margin="10"
                     HorizontalAlignment="Left"
                     Orientation="Horizontal">
