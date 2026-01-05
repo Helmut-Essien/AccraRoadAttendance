@@ -116,10 +116,19 @@ namespace AccraRoadAttendance.Models
         [MaxLength(500)]
         public string? Skills { get; set; }
 
+        [MaxLength(500)]
+        [Display(Name = "Previous Congregation")]
+        public string? PreviousCongregation { get; set; }
+
+        [MaxLength(500)]
+        public Zone zone { get; set; }
+
         [Column(TypeName = "datetime")]
         public DateTime LastModified { get; set; } = DateTime.UtcNow;
 
         public bool SyncStatus { get; set; } = false;
+
+
 
         // Enums
         public enum Gender
@@ -183,6 +192,21 @@ namespace AccraRoadAttendance.Models
             Tertiary,
             [Display(Name = "Post Graduate")]
             PostGraduate
+        }
+
+        public enum Zone
+        {
+            [Display(Name = "Galilea Zone")]
+            GalileaZone,
+            [Display(Name = "Iron City Zone")]
+            IronCityZone,
+            [Display(Name = "Amanfrom Zone")]
+            AmanfromZone,
+            [Display(Name = "Brigade Zone")]
+            BrigadeZone,
+            [Display(Name = "Top Town Zone")]
+            TopTownZone
+
         }
 
 

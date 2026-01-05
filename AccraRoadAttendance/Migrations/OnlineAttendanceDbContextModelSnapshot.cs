@@ -233,6 +233,10 @@ namespace AccraRoadAttendance.Migrations
                     b.Property<string>("PlaceOfBaptism")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PreviousCongregation")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<string>("Sex")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -260,6 +264,10 @@ namespace AccraRoadAttendance.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("occupationType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("zone")
+                        .HasMaxLength(500)
                         .HasColumnType("int");
 
                     b.HasKey("Id");
