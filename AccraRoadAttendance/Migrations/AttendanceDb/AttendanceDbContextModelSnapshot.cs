@@ -264,10 +264,10 @@ namespace AccraRoadAttendance.Migrations.AttendanceDb
                     b.Property<int>("maritalStatus")
                         .HasColumnType("int");
 
-                    b.Property<int>("occupationType")
+                    b.Property<int?>("occupationType")
                         .HasColumnType("int");
 
-                    b.Property<int>("zone")
+                    b.Property<int?>("zone")
                         .HasMaxLength(500)
                         .HasColumnType("int");
 

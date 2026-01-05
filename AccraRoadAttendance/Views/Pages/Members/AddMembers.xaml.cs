@@ -86,15 +86,16 @@ namespace AccraRoadAttendance.Views.Pages.Members
             EducationComboBox.DisplayMemberPath = "DisplayName";
             EducationComboBox.SelectedValuePath = "Value";
 
-            // Initialize Gender ComboBox
+            // Initialize Zone ComboBox
             var zoneItems = Enum.GetValues(typeof(Member.Zone))
                 .Cast<Member.Zone>()
                 .Select(g => new
                 {
-                    Value = g,
+                    Value = (Member.Zone?)g,
                     DisplayName = GetEnumDisplayName(g)
                 }).ToList();
 
+            zoneItems.Insert(0, new { Value = (Member.Zone?)null, DisplayName = "-- Select Zone --" });
             ZoneComboBox.ItemsSource = zoneItems;
             ZoneComboBox.DisplayMemberPath = "DisplayName";
             ZoneComboBox.SelectedValuePath = "Value";
@@ -974,7 +975,7 @@ namespace AccraRoadAttendance.Views.Pages.Members
                     FatherContact = FatherContact,
                     OccupationDescription = OccupationDescription,
                     PreviousCongregation = PreviousCongregation,
-                    zone = zone.Value
+                    zone = zone
                    
 
                 };

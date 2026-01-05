@@ -63,7 +63,7 @@ namespace AccraRoadAttendance.Models
         public MaritalStatus maritalStatus { get; set; }
 
         [Display(Name = "Occupation Type")]
-        public OccupationType occupationType { get; set; }
+        public OccupationType? occupationType { get; set; }
 
         [Display(Name = "Is Baptized")]
         public bool IsBaptized { get; set; }
@@ -121,7 +121,7 @@ namespace AccraRoadAttendance.Models
         public string? PreviousCongregation { get; set; }
 
         [MaxLength(500)]
-        public Zone zone { get; set; }
+        public Zone? zone { get; set; }
 
         [Column(TypeName = "datetime")]
         public DateTime LastModified { get; set; } = DateTime.UtcNow;
