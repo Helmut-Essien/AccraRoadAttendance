@@ -213,7 +213,9 @@ namespace AccraRoadAttendance.Services
                         SyncStatus = member.SyncStatus,
                         SpouseName = member.SpouseName,
                         SpouseContact = member.SpouseContact,
-                        OccupationDescription = member.OccupationDescription
+                        OccupationDescription = member.OccupationDescription,
+                        PreviousCongregation = member.PreviousCongregation,
+                        zone = member.zone
                     };
 
 
