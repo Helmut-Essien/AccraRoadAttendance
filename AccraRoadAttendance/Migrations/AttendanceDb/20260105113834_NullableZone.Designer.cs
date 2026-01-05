@@ -4,16 +4,19 @@ using AccraRoadAttendance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AccraRoadAttendance.Migrations
+namespace AccraRoadAttendance.Migrations.AttendanceDb
 {
-    [DbContext(typeof(OnlineAttendanceDbContext))]
-    partial class OnlineAttendanceDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(AttendanceDbContext))]
+    [Migration("20260105113834_NullableZone")]
+    partial class NullableZone
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,7 +29,8 @@ namespace AccraRoadAttendance.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<DateTime>("AttendanceLastModified")
                         .HasColumnType("datetime");
