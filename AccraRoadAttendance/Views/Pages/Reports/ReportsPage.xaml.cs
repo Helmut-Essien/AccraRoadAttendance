@@ -23,163 +23,6 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             _context = context;
         }
 
-        //private void ReportTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    if (ReportTypeComboBox.SelectedItem == null) return;
-
-        //    var selectedReport = (ReportTypeComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
-        //    ParametersPanel.Children.Clear();
-
-        //    // Create a uniform margin for controls
-        //    Thickness uniformMargin = new Thickness(10, 5, 10, 5);
-
-        //    // Common parameters with improved styling
-        //    var startDateLabel = new TextBlock
-        //    {
-        //        Text = "Start Date:",
-        //        Margin = uniformMargin,
-        //        FontSize = 14,
-        //        FontWeight = FontWeights.Medium
-        //    };
-        //    var startDatePicker = new DatePicker
-        //    {
-        //        Name = "StartDatePicker",
-        //        SelectedDate = DateTime.Today.AddMonths(-1),
-        //        Margin = uniformMargin,
-        //        Style = (Style)Application.Current.FindResource("MaterialDesignOutlinedDatePicker")
-        //    };
-        //    HintAssist.SetHint(startDatePicker, "Start Date");
-
-        //    var endDateLabel = new TextBlock
-        //    {
-        //        Text = "End Date:",
-        //        Margin = uniformMargin,
-        //        FontSize = 14,
-        //        FontWeight = FontWeights.Medium
-        //    };
-        //    var endDatePicker = new DatePicker
-        //    {
-        //        Name = "EndDatePicker",
-        //        SelectedDate = DateTime.Today,
-        //        Margin = uniformMargin,
-        //        Style = (Style)Application.Current.FindResource("MaterialDesignDatePicker")
-        //    };
-        //    HintAssist.SetHint(endDatePicker, "End Date");
-
-        //    switch (selectedReport)
-        //    {
-        //        case "Individual Attendance":
-        //            // Label for member selection
-        //            var memberLabel = new TextBlock
-        //            {
-        //                Text = "Select Member:",
-        //                Margin = uniformMargin,
-        //                FontSize = 14,
-        //                FontWeight = FontWeights.Medium
-        //            };
-        //            // Create the ComboBox with search-enabled behavior
-        //            var memberComboBox = new ComboBox
-        //            {
-        //                Name = "MemberComboBox",
-        //                Margin = uniformMargin,
-        //                DisplayMemberPath = "FullName",
-        //                IsEditable = true,           // Allow text entry
-        //                IsTextSearchEnabled = false, // We'll handle filtering manually
-        //                StaysOpenOnEdit = true,      // Keeps dropdown open during typing
-        //                Style = (Style)Application.Current.FindResource("MaterialDesignOutlinedComboBox")
-        //            };
-        //            HintAssist.SetHint(memberComboBox, "Select Member");
-
-        //            // Retrieve members and set up filtering using a CollectionView
-        //            var members = _context.Members.ToList();
-        //            var memberView = CollectionViewSource.GetDefaultView(members);
-        //            memberComboBox.ItemsSource = memberView;
-
-        //            // Filter the CollectionView as the user types
-        //            memberComboBox.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler((s, args) =>
-        //            {
-        //                string filter = memberComboBox.Text;
-        //                if (string.IsNullOrWhiteSpace(filter))
-        //                {
-        //                    memberView.Filter = null;
-        //                }
-        //                else
-        //                {
-        //                    memberView.Filter = o =>
-        //                    {
-        //                        var member = o as Member;
-        //                        return member.FullName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0;
-        //                    };
-        //                }
-        //                memberView.Refresh();
-        //            }));
-
-        //            ParametersPanel.Children.Add(memberLabel);
-        //            ParametersPanel.Children.Add(memberComboBox);
-        //            ParametersPanel.Children.Add(startDateLabel);
-        //            ParametersPanel.Children.Add(startDatePicker);
-        //            ParametersPanel.Children.Add(endDateLabel);
-        //            ParametersPanel.Children.Add(endDatePicker);
-        //            break;
-
-        //        case "Church Attendance Summary":
-        //        case "Service Type Report":
-        //        case "Demographic Report":
-        //        case "Offering Report":
-        //        case "Visitor and Newcomer Report":
-        //            ParametersPanel.Children.Add(startDateLabel);
-        //            ParametersPanel.Children.Add(startDatePicker);
-        //            ParametersPanel.Children.Add(endDateLabel);
-        //            ParametersPanel.Children.Add(endDatePicker);
-        //            if (selectedReport == "Service Type Report")
-        //            {
-        //                var serviceTypeLabel = new TextBlock
-        //                {
-        //                    Text = "Service Type:",
-        //                    Margin = new Thickness(20, 0, 10, 0),
-        //                    FontSize = 14,
-        //                    FontWeight = FontWeights.Medium
-        //                };
-        //                var serviceTypeComboBox = new ComboBox
-        //                {
-        //                    Name = "ServiceTypeComboBox",
-        //                    ItemsSource = Enum.GetValues(typeof(ServiceType))
-        //                };
-        //                serviceTypeComboBox.Style = (Style)Application.Current.FindResource("MaterialDesignOutlinedComboBox");
-        //                HintAssist.SetHint(serviceTypeComboBox, "Select Service Type");
-
-        //                ParametersPanel.Children.Add(serviceTypeLabel);
-        //                ParametersPanel.Children.Add(serviceTypeComboBox);
-        //            }
-        //            break;
-
-        //        case "Absentee Report":
-        //            var thresholdLabel = new TextBlock
-        //            {
-        //                Text = "Absent Threshold (%):",
-        //                Margin = new Thickness(0, 0, 10, 0),
-        //                FontSize = 14,
-        //                FontWeight = FontWeights.Medium
-        //            };
-        //            var thresholdTextBox = new TextBox
-        //            {
-        //                Name = "ThresholdTextBox",
-        //                Text = "50",
-        //                Width = 50
-        //            };
-        //            thresholdTextBox.Style = (Style)Application.Current.FindResource("MaterialDesignTextBox");
-        //            HintAssist.SetHint(thresholdTextBox, "Absent Threshold (%)");
-
-        //            ParametersPanel.Children.Add(thresholdLabel);
-        //            ParametersPanel.Children.Add(thresholdTextBox);
-        //            ParametersPanel.Children.Add(startDateLabel);
-        //            ParametersPanel.Children.Add(startDatePicker);
-        //            ParametersPanel.Children.Add(endDateLabel);
-        //            ParametersPanel.Children.Add(endDatePicker);
-        //            break;
-        //    }
-        //}
-
         private DatePicker _startDatePicker;
         private DatePicker _endDatePicker;
 
@@ -702,6 +545,30 @@ namespace AccraRoadAttendance.Views.Pages.Reports
                 var generator = new ReportGenerator();
                 generator.GenerateReport(selectedReport, reportData, startDate, endDate, saveFileDialog.FileName, memberName);
                 MessageBox.Show($"Report saved to {saveFileDialog.FileName}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void PrintLetterhead_Click(object sender, RoutedEventArgs e)
+        {
+            // Open a save file dialog for the user to choose the PDF location
+            var saveFileDialog = new SaveFileDialog
+            {
+                Filter = "PDF files (*.pdf)|*.pdf",
+                FileName = $"Letterhead_{DateTime.Now:yyyyMMdd}.pdf"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var generator = new ReportGenerator();
+                    generator.GenerateLetterheadOnly(saveFileDialog.FileName);
+                    MessageBox.Show($"Letterhead saved to {saveFileDialog.FileName}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error generating letterhead: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
     }

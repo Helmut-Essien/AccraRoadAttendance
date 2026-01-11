@@ -849,14 +849,39 @@ namespace AccraRoadAttendance.Views.Pages.Reports
             _isFirstCard = false;
         }
 
-        //private void AddHorizontalLine()
-        //{
-        //    var line = _section.AddParagraph();
-        //    line.Format.Borders.Bottom.Width = "0.5pt";
-        //    line.Format.Borders.Bottom.Color = Colors.Black;
-        //    line.Format.SpaceBefore = "0.5cm";
-        //    line.Format.SpaceAfter = "0.5cm";
-        //}
+        public void GenerateLetterheadOnly(string filePath)
+        {
+            CreateDocument();
+            AddLetterhead();
+            AddLetterheadFooter(); // Footer without page numbers
+            RenderAndSavePdf(filePath);
+        }
+
+        private void AddLetterheadFooter()
+        {
+            // Add to first page footer
+            AddLetterheadFooterContent(_section.Footers.FirstPage);
+
+            // Add to primary footer (all other pages)
+            AddLetterheadFooterContent(_section.Footers.Primary);
+        }
+
+        private void AddLetterheadFooterContent(HeaderFooter footer)
+        {
+            // Horizontal line
+            var line = footer.AddParagraph();
+            line.Format.Borders.Top.Width = 0.75;
+            line.Format.Borders.Top.Color = Colors.Black;
+            line.Format.SpaceBefore = "0.2cm";
+
+            // Only the Bible verse, no page numbers
+            var bibleVerse = footer.AddParagraph();
+            bibleVerse.AddText("“Salute one another with holy kiss, the Churches of Christ salute you” Romans 16:16");
+            bibleVerse.Format.Font.Name = "Arial";
+            bibleVerse.Format.Font.Size = 10;
+            bibleVerse.Format.Font.Italic = true;
+            bibleVerse.Format.Alignment = ParagraphAlignment.Left;
+        }
     }
 }
         

@@ -23,10 +23,10 @@
                 <!--  Report Selection and Parameters  -->
                 <StackPanel Grid.Row="0" Orientation="Vertical">
                     <ComboBox
-                        Foreground="{DynamicResource MaterialDesignBody}"
                         x:Name="ReportTypeComboBox"
                         Margin="0,0,0,10"
                         materialDesign:HintAssist.Hint="Select Report Type"
+                        Foreground="{DynamicResource MaterialDesignBody}"
                         SelectionChanged="ReportTypeComboBox_SelectionChanged"
                         Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                         <ComboBoxItem Content="Individual Attendance" />
@@ -55,10 +55,10 @@
                         CanUserAddRows="False"
                         CellStyle="{StaticResource MaterialDesignDataGridCell}"
                         ColumnHeaderStyle="{StaticResource MaterialDesignDataGridColumnHeader}"
+                        Foreground="{DynamicResource MaterialDesignBody}"
                         HeadersVisibility="Column"
                         IsReadOnly="True"
-                        Style="{StaticResource MaterialDesignDataGrid}"
-                        Foreground="{DynamicResource MaterialDesignBody}"/>
+                        Style="{StaticResource MaterialDesignDataGrid}" />
                 </materialDesign:Card>
 
                 <!--  Generate Button  -->
@@ -67,6 +67,14 @@
                     Margin="10"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal">
+                    <!--  Add this new button for printing just the letterhead  -->
+                    <Button
+                        Margin="5"
+                        Background="{DynamicResource PrimaryHueMidBrush}"
+                        Click="PrintLetterhead_Click"
+                        Content="Print Letterhead"
+                        Foreground="{DynamicResource MaterialDesignBody}"
+                        Style="{StaticResource MaterialDesignRaisedButton}" />
                     <Button
                         Margin="5"
                         Background="{DynamicResource PrimaryHueMidBrush}"
@@ -81,6 +89,7 @@
                         Content="Print to PDF"
                         Foreground="{DynamicResource MaterialDesignBody}"
                         Style="{StaticResource MaterialDesignRaisedButton}" />
+
 
                 </StackPanel>
 
