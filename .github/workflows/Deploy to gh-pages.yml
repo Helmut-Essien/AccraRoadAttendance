@@ -43,6 +43,21 @@ jobs:
       with:
         dotnet-version: 8.0.x # Match your .NET version
 
+    # Replace connection string in appsettings.json
+    - name: Replace Online Connection String
+      shell: pwsh
+      run: |
+        # Read the original appsettings.json
+        $appSettingsPath = "appsettings.json"
+        $jsonContent = Get-Content $appSettingsPath -Raw | ConvertFrom-Json
+        
+        # Replace the OnlineConnection with the secret value
+        $jsonContent.ConnectionStrings.OnlineConnection = "${{ secrets.PRODUCTION_CONNECTION_STRING }}"
+        
+        # Write back the modified content
+        $jsonContent | ConvertTo-Json -Depth 10 | Set-Content $appSettingsPath
+        Write-Host "✅ Online connection string replaced in appsettings.json"
+
     - name: Restore NuGet packages
       run: dotnet restore AccraRoadAttendance/AccraRoadAttendance.csproj
 
