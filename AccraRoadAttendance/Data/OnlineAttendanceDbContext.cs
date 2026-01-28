@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -126,6 +127,34 @@ namespace AccraRoadAttendance.Data
                 entity.HasKey(sm => sm.Key);
                 entity.Property(sm => sm.Value).IsRequired();
             });
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                // This will be used if the factory doesn't configure the options
+                // It will read from the default configuration
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                    .AddJsonFile("appsettings.json", optional: true)
+                    .AddJsonFile($"appsettings.Development.json", optional: true)
+                    .AddJsonFile($"appsettings.Production.json", optional: true)
+                    .Build();
+
+                var connectionString = configuration.GetConnectionString("OnlineConnection");
+
+                if (!string.IsNullOrEmpty(connectionString))
+                {
+                    optionsBuilder.UseSqlServer(
+                        connectionString,
+                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null
+                        ));
+                }
+            }
         }
     }
 }

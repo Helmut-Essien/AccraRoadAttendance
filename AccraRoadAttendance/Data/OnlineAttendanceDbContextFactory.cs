@@ -15,8 +15,15 @@ namespace AccraRoadAttendance.Data
                 .AddJsonFile($"appsettings.Development.json", optional: true)
                 .Build();
 
+            var connectionString = configuration.GetConnectionString("OnlineConnection");
             var optionsBuilder = new DbContextOptionsBuilder<OnlineAttendanceDbContext>();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("OnlineConnection"));
+            optionsBuilder.UseSqlServer(
+                connectionString,
+                sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null
+                ));
 
             return new OnlineAttendanceDbContext(optionsBuilder.Options);
         }
