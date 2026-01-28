@@ -43,12 +43,22 @@ jobs:
       with:
         dotnet-version: 8.0.x # Match your .NET version
 
-    # Replace connection string in appsettings.json
+    # FIXED PATH: appsettings.json is in AccraRoadAttendance folder
     - name: Replace Online Connection String
       shell: pwsh
       run: |
+        # Change to the project directory
+        cd AccraRoadAttendance
+        
         # Read the original appsettings.json
         $appSettingsPath = "appsettings.json"
+        Write-Host "Reading from: $(Get-Location)\$appSettingsPath"
+        
+        if (-not (Test-Path $appSettingsPath)) {
+            Write-Error "❌ File not found: $appSettingsPath"
+            exit 1
+        }
+        
         $jsonContent = Get-Content $appSettingsPath -Raw | ConvertFrom-Json
         
         # Replace the OnlineConnection with the secret value
@@ -57,7 +67,6 @@ jobs:
         # Write back the modified content
         $jsonContent | ConvertTo-Json -Depth 10 | Set-Content $appSettingsPath
         Write-Host "✅ Online connection string replaced in appsettings.json"
-
     - name: Restore NuGet packages
       run: dotnet restore AccraRoadAttendance/AccraRoadAttendance.csproj
 
