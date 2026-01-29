@@ -60,7 +60,7 @@ namespace AccraRoadAttendance.Services
                 _logger.LogInformation("DriveService initialized.");
 
                 // Set the ProfilePictures folder ID
-                _profilePicturesFolderId = "1gN_Hhie-bN7FGIm_MN3DQ1QZF95eHRjR";
+                _profilePicturesFolderId = "1SdchL1SWS1T-e5KWCMAxw89q4v1JkWd9";
                 Console.WriteLine($"ProfilePictures folder ID set to: {_profilePicturesFolderId}");
                 //MessageBox.Show($"ProfilePictures folder ID set to: {_profilePicturesFolderId}");
             }
