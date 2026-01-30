@@ -31,12 +31,12 @@
 //}
 
 
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace AccraRoadAttendance.Data
 {
@@ -44,25 +44,51 @@ namespace AccraRoadAttendance.Data
     {
         public OnlineAttendanceDbContext CreateDbContext(string[] args)
         {
-            // Try to read environment from real env var (set in local VS, CI, etc.)
-            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
-                               ?? Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")
-                               ?? "Production";  // ← safe default for CI/deploy
+            // 1. Get environment: prefer command-line arg, then real env var, then safe CI default
+            string? environmentName = null;
+
+            // Check for --environment XXX from dotnet ef -- --environment Production
+            var envArg = args.FirstOrDefault(a => a.StartsWith("--environment", StringComparison.OrdinalIgnoreCase));
+            if (envArg != null)
+            {
+                // Handle both --environment=Production and --environment Production
+                var parts = envArg.Split(new[] { '=' }, 2);
+                environmentName = parts.Length > 1 ? parts[1].Trim() : args.SkipWhile(a => a != envArg).Skip(1).FirstOrDefault();
+            }
+
+            // Fallback to real environment variable (useful locally or if set in CI)
+            environmentName ??= Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+                             ?? Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")
+                             ?? "Production";  // ← key: safe default for GitHub Actions
 
             var basePath = Directory.GetCurrentDirectory();
 
-            var configuration = new ConfigurationBuilder()
+            var configBuilder = new ConfigurationBuilder()
                 .SetBasePath(basePath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true)
-                // Optional: also support user secrets locally (very useful for dev)
-                .AddUserSecrets<OnlineAttendanceDbContextFactory>(optional: true)
-                .Build();
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-            var connectionString = configuration.GetConnectionString("OnlineConnection")
+            // Only add env-specific file if it's not Production (or if explicitly requested)
+            if (!string.Equals(environmentName, "Production", StringComparison.OrdinalIgnoreCase))
+            {
+                configBuilder.AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true);
+            }
+
+            var configuration = configBuilder.Build();
+
+            // Use --connection override if provided (highest priority)
+            string? connectionString = null;
+            var connArg = args.FirstOrDefault(a => a.StartsWith("--connection", StringComparison.OrdinalIgnoreCase));
+            if (connArg != null)
+            {
+                var parts = connArg.Split(new[] { '=' }, 2);
+                connectionString = parts.Length > 1 ? parts[1].Trim('"') : args.SkipWhile(a => a != connArg).Skip(1).FirstOrDefault();
+            }
+
+            // Fallback to config file
+            connectionString ??= configuration.GetConnectionString("OnlineConnection")
                 ?? throw new InvalidOperationException(
-                    $"Connection string 'OnlineConnection' not found in configuration "
-                    + $"(environment: {environmentName}, base path: {basePath}).");
+                    $"No 'OnlineConnection' connection string found. "
+                    + $"Environment: {environmentName}, Path: {basePath}, Args: {string.Join(" ", args)}");
 
             var optionsBuilder = new DbContextOptionsBuilder<OnlineAttendanceDbContext>();
             optionsBuilder.UseSqlServer(
