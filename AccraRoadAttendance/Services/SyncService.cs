@@ -17,16 +17,16 @@ namespace AccraRoadAttendance.Services
     {
         private readonly AttendanceDbContext _localContext;
         private readonly OnlineAttendanceDbContext _onlineContext;
-        private readonly GoogleDriveService _googleDriveService;
+        //private readonly GoogleDriveService _googleDriveService;
         private readonly INavigationService _navigationService;
         private readonly ILogger<SyncService> _logger;
         private DateTime _lastSyncTime;
 
-        public SyncService(AttendanceDbContext localContext, OnlineAttendanceDbContext onlineContext, GoogleDriveService googleDriveService, ILogger<SyncService> logger, INavigationService navigationService)
+        public SyncService(AttendanceDbContext localContext, OnlineAttendanceDbContext onlineContext, /*GoogleDriveService googleDriveService,*/ ILogger<SyncService> logger, INavigationService navigationService)
         {
             _localContext = localContext ?? throw new ArgumentNullException(nameof(localContext));
             _onlineContext = onlineContext ?? throw new ArgumentNullException(nameof(onlineContext));
-            _googleDriveService = googleDriveService ?? throw new ArgumentNullException(nameof(googleDriveService));
+            //_googleDriveService = googleDriveService ?? throw new ArgumentNullException(nameof(googleDriveService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             _lastSyncTime = LoadLastSyncTime();
@@ -231,27 +231,21 @@ namespace AccraRoadAttendance.Services
                             trackedInOnline.State = EntityState.Detached;
                         }
 
-                        _logger.LogInformation("Local member {MemberId} PicturePath: {PicturePath}", member.Id, member.PicturePath);
-                        if (!string.IsNullOrEmpty(onlineMemberToSync.PicturePath)
-                            && !onlineMemberToSync.PicturePath.StartsWith("https://drive.google.com"))
-                        {
-                            _logger.LogInformation("Uploading image for member {MemberId}", member.Id);
-                            onlineMemberToSync.PicturePath = _googleDriveService.UploadImage(member.PicturePath);
-                            _logger.LogInformation("Image uploaded: {PicturePath}", onlineMemberToSync.PicturePath);
-                        }
+                        //_logger.LogInformation("Local member {MemberId} PicturePath: {PicturePath}", member.Id, member.PicturePath);
+                        //if (!string.IsNullOrEmpty(onlineMemberToSync.PicturePath)
+                        //    && !onlineMemberToSync.PicturePath.StartsWith("https://drive.google.com"))
+                        //{
+                        //    _logger.LogInformation("Uploading image for member {MemberId}", member.Id);
+                        //    onlineMemberToSync.PicturePath = _googleDriveService.UploadImage(member.PicturePath);
+                        //    _logger.LogInformation("Image uploaded: {PicturePath}", onlineMemberToSync.PicturePath);
+                        //}
 
                         if (onlineMember == null)
                         {
                             _logger.LogInformation("Adding new member {MemberId} to online DB", member.Id);
                             _onlineContext.Members.Add(onlineMemberToSync);
                         }
-                        //else
-                        //{
-                        //    _logger.LogInformation("Updating online member {MemberId}", member.Id);
-                        //    //_onlineContext.Entry(onlineMember).CurrentValues.SetValues(member);
-                        //    _onlineContext.Members.Update(onlineMemberToSync);
-                        //    _onlineContext.Entry(onlineMemberToSync).State = EntityState.Modified;
-                        //}
+                       
                         else if (onlineMember.LastModified < member.LastModified)
                         {
                             _onlineContext.Members.Attach(onlineMember);
@@ -512,13 +506,13 @@ namespace AccraRoadAttendance.Services
 
                         
 
-                        _logger.LogInformation("Before download, PicturePath: {PicturePath}", onlineMember.PicturePath);
-                        // Handle image download if necessary
-                        if (!string.IsNullOrEmpty(onlineMember.PicturePath) && onlineMember.PicturePath.StartsWith("https://drive.google.com"))
-                        {
-                            onlineMember.PicturePath = _googleDriveService.DownloadImage(onlineMember.PicturePath);
-                            _logger.LogInformation("After download, PicturePath: {PicturePath}", onlineMember.PicturePath);
-                        }
+                        //_logger.LogInformation("Before download, PicturePath: {PicturePath}", onlineMember.PicturePath);
+                        //// Handle image download if necessary
+                        //if (!string.IsNullOrEmpty(onlineMember.PicturePath) && onlineMember.PicturePath.StartsWith("https://drive.google.com"))
+                        //{
+                        //    onlineMember.PicturePath = _googleDriveService.DownloadImage(onlineMember.PicturePath);
+                        //    _logger.LogInformation("After download, PicturePath: {PicturePath}", onlineMember.PicturePath);
+                        //}
 
                         if (localMember == null)
                         {
