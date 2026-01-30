@@ -1,9 +1,4 @@
-﻿using System.Configuration;
-using System.IO;
-using System.Windows;
-using System.Windows.Navigation;
-using System.Windows.Threading;
-using AccraRoadAttendance.Data;
+﻿using AccraRoadAttendance.Data;
 using AccraRoadAttendance.Models;
 using AccraRoadAttendance.Services;
 using AccraRoadAttendance.Views;
@@ -21,6 +16,12 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System.Configuration;
+using System.IO;
+using System.Windows;
+using System.Windows.Navigation;
+using System.Windows.Threading;
 using SplashScreen = AccraRoadAttendance.Views.SplashScreen;
 
 namespace AccraRoadAttendance
@@ -31,9 +32,9 @@ namespace AccraRoadAttendance
     public partial class App : Application
     {
         private LogoSplashWindow _logoSplash;
-        
 
-        private  IHost _host;
+
+        private IHost _host;
 
         public App()
         {
@@ -45,7 +46,7 @@ namespace AccraRoadAttendance
         //    try
         //    {
 
-                
+
         //}
         //catch (Exception ex)
         //{
@@ -53,7 +54,7 @@ namespace AccraRoadAttendance
         //    throw;
         //}
 
-            private void BuildHost()
+        private void BuildHost()
         {
             _host = Host.CreateDefaultBuilder()
             .ConfigureAppConfiguration((context, config) =>
@@ -83,13 +84,13 @@ namespace AccraRoadAttendance
 
 
                     // Configure Identity
-                     //services.AddIdentityCore<User>()
+                    //services.AddIdentityCore<User>()
                     //    .AddEntityFrameworkStores<AttendanceDbContext>();
 
                     // Configure Identity
                     services.AddIdentityCore<User>(options =>
                 {
-                     options.User.RequireUniqueEmail = true;
+                    options.User.RequireUniqueEmail = true;
                 })
                     .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<AttendanceDbContext>();
@@ -99,7 +100,12 @@ namespace AccraRoadAttendance
                     services.AddScoped<RoleManager<IdentityRole>>();
                     services.AddScoped<UserManager<User>>();
                     services.AddScoped<CurrentUserService>();
-                    services.AddScoped<GoogleDriveService>();
+                    //services.AddScoped<GoogleDriveService>();
+                    //services.AddSingleton<GoogleDriveService>(serviceProvider =>
+                    //{
+                    //    var logger = serviceProvider.GetRequiredService<ILogger<GoogleDriveService>>();
+                    //    return GoogleDriveService.CreateAsync(logger).GetAwaiter().GetResult();
+                    //});
                     services.AddScoped<SyncService>();
 
 
@@ -123,7 +129,7 @@ namespace AccraRoadAttendance
                     services.AddSingleton<INavigationService, Services.NavigationService>();
                 })
                     .Build();
-            }
+        }
 
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
@@ -131,7 +137,7 @@ namespace AccraRoadAttendance
             // Fade out LogoSplash
             if (_logoSplash != null)
             {
-                 _logoSplash.FadeOutAndCloseAsync();
+                _logoSplash.FadeOutAndCloseAsync();
             }
             //MessageBox.Show($"An unhandled exception occurred: {e.Exception.Message}\n{e.Exception.StackTrace}",
             //    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -342,7 +348,7 @@ namespace AccraRoadAttendance
                 throw;
             }
         }
-        
+
 
 
         private async Task CreateRoleIfNotExists(RoleManager<IdentityRole> roleManager, string roleName)
@@ -353,10 +359,258 @@ namespace AccraRoadAttendance
             }
         }
 
-        protected override void OnExit(ExitEventArgs e)
+        protected override async void OnExit(ExitEventArgs e)
         {
-            _host.Dispose();
+            if (_host != null)
+            {
+                await _host.StopAsync(TimeSpan.FromSeconds(5));
+                _host.Dispose();
+            }
+
             base.OnExit(e);
         }
     }
 }
+
+
+
+
+
+
+
+//using AccraRoadAttendance.Data;
+//using AccraRoadAttendance.Models;
+//using AccraRoadAttendance.Services;
+//using AccraRoadAttendance.Views;
+//using AccraRoadAttendance.Views.Pages.Attendance;
+//using AccraRoadAttendance.Views.Pages.Dashboard;
+//using AccraRoadAttendance.Views.Pages.Members;
+//using AccraRoadAttendance.Views.Pages.Reports;
+//using AccraRoadAttendance.Views.Pages.Users;
+//using Microsoft.AspNetCore.Identity;
+//using Microsoft.EntityFrameworkCore;
+//using Microsoft.Extensions.Configuration;
+//using Microsoft.Extensions.DependencyInjection;
+//using Microsoft.Extensions.Hosting;
+//using Microsoft.Extensions.Logging;
+//using System;
+//using System.IO;
+//using System.Threading.Tasks;
+//using System.Windows;
+//using System.Windows.Threading;
+//using SplashScreen = AccraRoadAttendance.Views.SplashScreen;
+
+//namespace AccraRoadAttendance
+//{
+//    public partial class App : Application
+//    {
+//        private LogoSplashWindow? _logoSplash;
+//        private IHost? _host;
+
+//        public App()
+//        {
+//            DispatcherUnhandledException += App_DispatcherUnhandledException;
+//            // Show logo splash immediately (non-blocking)
+//            _logoSplash = new LogoSplashWindow();
+//            _logoSplash.Show();
+//        }
+
+//        protected override async void OnStartup(StartupEventArgs e)
+//        {
+//            base.OnStartup(e);
+//            ShutdownMode = ShutdownMode.OnExplicitShutdown; // We'll control shutdown
+
+//            try
+//            {
+//                // Yield to let splash render
+//                await Dispatcher.Yield(DispatcherPriority.Background);
+
+//                // Build and start host (includes DB init)
+//                await InitializeHostAndDatabaseAsync();
+
+//                // Create scope for UI services
+//                using var scope = _host!.Services.CreateScope();
+//                var services = scope.ServiceProvider;
+
+//                // Get and show the splash (progress screen) or login
+//                var splashWindow = services.GetRequiredService<SplashScreen>();
+//                Current.MainWindow = splashWindow;
+
+//                // Fade out logo splash
+//                if (_logoSplash != null)
+//                {
+//                    await _logoSplash.FadeOutAndCloseAsync();
+//                    _logoSplash = null;
+//                }
+
+//                splashWindow.Show();
+
+//                // Let WPF manage shutdown once main window is set
+//                ShutdownMode = ShutdownMode.OnLastWindowClose;
+//            }
+//            catch (Exception ex)
+//            {
+//                await HandleStartupErrorAsync(ex);
+//                Shutdown(-1); // Error exit code
+//            }
+//        }
+
+//        private async Task InitializeHostAndDatabaseAsync()
+//        {
+//            _host = Host.CreateDefaultBuilder()
+//                .ConfigureAppConfiguration((hostingContext, config) =>
+//                {
+//                    config.SetBasePath(Directory.GetCurrentDirectory())
+//                          .AddJsonFile("appsettings.json", optional: false)
+//                          .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true)
+//                          .AddEnvironmentVariables();
+//                })
+//                .ConfigureServices((context, services) =>
+//                {
+//                    var configuration = context.Configuration;
+
+//                    // Local DB
+//                    var localConn = configuration.GetConnectionString("DefaultConnection");
+//                    services.AddDbContext<AttendanceDbContext>(options =>
+//                        options.UseSqlServer(localConn));
+
+//                    // Online DB (sync only)
+//                    var onlineConn = configuration.GetConnectionString("OnlineConnection");
+//                    services.AddDbContext<OnlineAttendanceDbContext>(options =>
+//                        options.UseSqlServer(onlineConn));
+
+//                    // Identity
+//                    services.AddIdentityCore<User>(options =>
+//                    {
+//                        options.User.RequireUniqueEmail = true;
+//                    })
+//                    .AddRoles<IdentityRole>()
+//                    .AddEntityFrameworkStores<AttendanceDbContext>();
+
+//                    services.AddScoped<RoleManager<IdentityRole>>();
+//                    services.AddScoped<UserManager<User>>();
+//                    services.AddScoped<CurrentUserService>();
+//                    //services.AddScoped<GoogleDriveService>();
+//                    //services.AddSingleton<GoogleDriveService>(serviceProvider =>
+//                    //{
+//                    //    var logger = serviceProvider.GetRequiredService<ILogger<GoogleDriveService>>();
+//                    //    return GoogleDriveService.CreateAsync(logger).GetAwaiter().GetResult();
+//                    //});
+//                    services.AddScoped<SyncService>();
+
+//                    // Windows & Pages (Transient = new instance each resolve)
+//                    services.AddTransient<MainWindow>();
+//                    services.AddTransient<SplashScreen>();
+//                    services.AddTransient<Login>();
+//                    services.AddTransient<AddMembers>();
+//                    services.AddTransient<EditMembers>();
+//                    services.AddTransient<Members>();
+//                    services.AddTransient<MarkAttendance>();
+//                    services.AddTransient<ReportsPage>();
+//                    services.AddTransient<MemberDetails>();
+//                    services.AddTransient<Dashboard>();
+//                    services.AddTransient<UsersManagement>();
+
+//                    services.AddSingleton<INavigationService, NavigationService>();
+//                })
+//                .Build();
+
+//            // Start host (runs hosted services if any)
+//            await _host.StartAsync();
+
+//            // Database initialization
+//            using var scope = _host.Services.CreateScope();
+//            var dbContext = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
+//            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+//            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+//            try
+//            {
+//                // Apply migrations (safe to call multiple times)
+//                await dbContext.Database.MigrateAsync();
+
+//                // Ensure roles
+//                await CreateRoleIfNotExists(roleManager, "Admin");
+//                await CreateRoleIfNotExists(roleManager, "User");
+
+//                // Seed admin user (idempotent)
+//                const string adminEmail = "admin@example.com";
+//                const string adminPassword = "Admin@123";
+
+//                if (await userManager.FindByEmailAsync(adminEmail) == null)
+//                {
+//                    var adminUser = new User
+//                    {
+//                        UserName = adminEmail,
+//                        Email = adminEmail,
+//                        EmailConfirmed = true
+//                    };
+
+//                    var result = await userManager.CreateAsync(adminUser, adminPassword);
+//                    if (result.Succeeded)
+//                    {
+//                        await userManager.AddToRoleAsync(adminUser, "Admin");
+//                    }
+//                    else
+//                    {
+//                        var errors = string.Join("; ", result.Errors.Select(er => er.Description));
+//                        throw new InvalidOperationException($"Failed to create admin user: {errors}");
+//                    }
+//                }
+//            }
+//            catch (Exception dbEx)
+//            {
+//                throw new InvalidOperationException("Database initialization failed. Check connection string and SQL Server access.", dbEx);
+//            }
+//        }
+
+//        private async Task HandleStartupErrorAsync(Exception ex)
+//        {
+//            if (_logoSplash != null)
+//            {
+//                await _logoSplash.FadeOutAndCloseAsync();
+//                _logoSplash = null;
+//            }
+
+//            MessageBox.Show(
+//                $"Startup failed: {ex.Message}\n\n{ex.StackTrace}",
+//                "Critical Error",
+//                MessageBoxButton.OK,
+//                MessageBoxImage.Error
+//            );
+//        }
+
+//        private static async Task CreateRoleIfNotExists(RoleManager<IdentityRole> roleManager, string roleName)
+//        {
+//            if (!await roleManager.RoleExistsAsync(roleName))
+//            {
+//                await roleManager.CreateAsync(new IdentityRole(roleName));
+//            }
+//        }
+
+//        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+//        {
+//            // Log or handle gracefully
+//            MessageBox.Show(
+//                $"Unhandled exception: {e.Exception.Message}",
+//                "Unexpected Error",
+//                MessageBoxButton.OK,
+//                MessageBoxImage.Error
+//            );
+
+//            e.Handled = true;
+//            // Optional: Shutdown(-1);
+//        }
+
+//        protected override async void OnExit(ExitEventArgs e)
+//        {
+//            if (_host != null)
+//            {
+//                await _host.StopAsync(TimeSpan.FromSeconds(5));
+//                _host.Dispose();
+//            }
+
+//            base.OnExit(e);
+//        }
+//    }
+//}
