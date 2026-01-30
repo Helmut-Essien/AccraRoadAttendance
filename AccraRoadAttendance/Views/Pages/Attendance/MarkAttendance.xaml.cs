@@ -141,45 +141,7 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
             return null;
         }
 
-        // Calculate the pageSize based on DataGrid's available space
-        //private void CalculatePageSize()
-        //{
-        //    var scrollViewer = GetScrollViewer(AttendanceDataGrid);
-        //    if (scrollViewer != null)
-        //    {
-        //        double viewportHeight = scrollViewer.ViewportHeight;
-        //        //double viewportHeight = scrollViewer.ActualHeight; // pixel height
-
-        //        double rowHeight = 0;
-
-        //        // Try to get the height of a rendered row
-        //        if (AttendanceDataGrid.Items.Count > 0)
-        //        {
-        //            var firstItem = AttendanceDataGrid.Items[0];
-        //            var row = (DataGridRow)AttendanceDataGrid.ItemContainerGenerator.ContainerFromItem(firstItem);
-        //            if (row != null)
-        //            {
-        //                rowHeight = row.ActualHeight;
-        //            }
-        //        }
-
-        //        // Fallback to a default row height if no row is available
-        //        if (rowHeight == 0)
-        //        {
-        //            rowHeight = 30; // Reasonable default based on typical DataGrid row height
-        //        }
-
-        //        if (rowHeight > 0)
-        //        {
-        //            int newPageSize = (int)(viewportHeight / rowHeight);
-        //            pageSize = Math.Max(1, newPageSize); // Ensure at least 1 row
-        //        }
-        //        else
-        //        {
-        //            pageSize = 1; // Minimum fallback
-        //        }
-        //    }
-        //}
+       
 
         private void CalculatePageSize()
         {
@@ -226,12 +188,7 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
         {
             if (allMembers == null) return;
 
-            //// Handle null allMembers
-            //if (allMembers == null)
-            //{
-            //    CurrentPage = 1;
-            //    return;
-            //}
+            
 
             int totalPages = (int)Math.Ceiling((double)allMembers.Count / pageSize);
             if (totalPages == 0)
@@ -267,14 +224,7 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
         }
         private async void MarkAttendance_Loaded(object sender, RoutedEventArgs e)
         {
-            //await LoadMembersAsync();
-            //CalculatePageSize();
-            //if (allMembers != null)
-            //{
-            //    AdjustCurrentPage();
-            //    RefreshDataGrid();
-            //    UpdatePagination();
-            //}
+            
             await LoadMembersAsync(); // Load the members asynchronously
             RefreshDataGrid(); // Set the initial ItemsSource to trigger rendering
 
@@ -415,31 +365,7 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
 
 
 
-        //private async void LoadMembers()
-        //{
-        //    try
-        //    {
-        //        allMembers = await _context.Members.ToListAsync();
-        //        // Initialize attendance records for active members
-        //        attendanceRecords = allMembers.Where(m => m.IsActive).Select(m => new Models.Attendance
-        //        {
-        //            MemberId = m.Id,
-        //            Member = m,
-        //            ServiceDate = DateTime.Today,
-        //            Status = AttendanceStatus.Absent,
-        //            RecordedAt = DateTime.UtcNow,
-        //            Notes = string.Empty
-        //        }).ToList();
-
-        //        AttendanceDataGrid.ItemsSource = attendanceRecords;
-        //        UpdateTotals();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Error loading members: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //    }
-        //}
-
+        
         private async Task LoadMembersAsync()
         {
             try
@@ -479,8 +405,7 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
             // Calculate TotalMembers (not displayed in the UI)
             int totalMembers = allMembers.Count; // Total members in the database (active + inactive)
 
-            // Store TotalMembers in a variable for later use
-            // It will be saved to the ChurchAttendanceSummary table
+           
         }
 
         private void ServiceTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -525,6 +450,117 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
             }
         }
 
+        //private async void SaveAttendance_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (ServiceTypeComboBox.SelectedItem == null)
+        //    {
+        //        MessageBox.Show("Please select a service type.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+        //        return;
+        //    }
+
+        //    if (!ServiceDatePicker.SelectedDate.HasValue)
+        //    {
+        //        MessageBox.Show("Please select a service date.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+        //        return;
+        //    }
+
+        //    var visitorsWindow = new VisitorsInputWindow();
+        //    if (visitorsWindow.ShowDialog() == true)
+        //    {
+        //        try
+        //        {
+        //            var serviceDate = ServiceDatePicker.SelectedDate.Value;
+        //            var serviceType = (ServiceType)ServiceTypeComboBox.SelectedValue; ;
+        //            var serviceTheme = ServiceThemeTextBox.Text;
+
+        //            using var transaction = await _context.Database.BeginTransactionAsync();
+        //            try
+        //            {
+        //                // Check for existing attendance records
+        //                var existingRecords = await _context.Attendances
+        //                    .Where(a => a.ServiceDate.Date == serviceDate.Date &&
+        //                                a.ServiceType == serviceType)
+        //                    .ToListAsync();
+
+        //                if (existingRecords.Any())
+        //                {
+        //                    var result = MessageBox.Show(
+        //                        "Attendance records already exist for this service. Do you want to update them?",
+        //                        "Attendance Exists",
+        //                        MessageBoxButton.YesNo,
+        //                        MessageBoxImage.Question);
+
+        //                    if (result == MessageBoxResult.No)
+        //                        return;
+
+        //                    _context.Attendances.RemoveRange(existingRecords);
+        //                }
+
+        //                // Check for existing ChurchAttendanceSummary
+        //                var existingSummary = await _context.ChurchAttendanceSummaries
+        //                .FirstOrDefaultAsync(s => s.SummaryDate.Date == serviceDate.Date &&
+        //                                      s.ServiceType == serviceType);
+
+        //                // Update attendance records
+        //                foreach (var record in attendanceRecords)
+        //                {
+        //                    record.ServiceDate = serviceDate;
+        //                    record.ServiceType = serviceType;
+        //                    record.RecordedAt = DateTime.UtcNow;
+        //                    _context.Attendances.Add(record);
+        //                }
+
+        //                // Save ChurchAttendanceSummary
+        //                var allMembers = await _context.Members.ToListAsync(); // Fetch all members
+        //                if (existingSummary != null)
+        //                {
+        //                    // Update existing summary
+        //                    existingSummary.TotalPresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present);
+        //                    existingSummary.TotalMalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Male);
+        //                    existingSummary.TotalFemalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Female);
+        //                    existingSummary.TotalMembers = allMembers.Count;
+        //                    existingSummary.Visitors = visitorsWindow.Visitors;
+        //                    existingSummary.Children = visitorsWindow.Children;
+        //                    existingSummary.OfferingAmount = visitorsWindow.OfferingAmount;
+        //                    existingSummary.ServiceTheme = serviceTheme;
+        //                    existingSummary.SummaryLastModified = DateTime.UtcNow; // Update timestamp if needed
+        //                }
+        //                else
+        //                {
+        //                    // Create new summary
+        //                    var summary = new ChurchAttendanceSummary
+        //                    {
+        //                        SummaryDate = serviceDate,
+        //                        ServiceType = serviceType,
+        //                        TotalPresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present),
+        //                        TotalMalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Male),
+        //                        TotalFemalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Female),
+        //                        TotalMembers = allMembers.Count,
+        //                        Visitors = visitorsWindow.Visitors,
+        //                        Children = visitorsWindow.Children,
+        //                        OfferingAmount = visitorsWindow.OfferingAmount,
+        //                        ServiceTheme = serviceTheme
+        //                    };
+        //                    _context.ChurchAttendanceSummaries.Add(summary);
+        //                }
+        //                await _context.SaveChangesAsync();
+        //                await transaction.CommitAsync();
+        //                MessageBox.Show("Attendance saved successfully!", "Success", MessageBoxButton.OK);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                await transaction.RollbackAsync();
+        //                MessageBox.Show($"An error occurred while saving attendance: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show($"An unexpected error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //        }
+        //    }
+        //}
+
+
         private async void SaveAttendance_Click(object sender, RoutedEventArgs e)
         {
             if (ServiceTypeComboBox.SelectedItem == null)
@@ -545,7 +581,7 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
                 try
                 {
                     var serviceDate = ServiceDatePicker.SelectedDate.Value;
-                    var serviceType = (ServiceType)ServiceTypeComboBox.SelectedValue; ;
+                    var serviceType = (ServiceType)ServiceTypeComboBox.SelectedValue;
                     var serviceTheme = ServiceThemeTextBox.Text;
 
                     using var transaction = await _context.Database.BeginTransactionAsync();
@@ -568,37 +604,77 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
                             if (result == MessageBoxResult.No)
                                 return;
 
-                            _context.Attendances.RemoveRange(existingRecords);
+                            // Update existing records instead of removing them
+                            foreach (var record in attendanceRecords)
+                            {
+                                var existingRecord = existingRecords.FirstOrDefault(er => er.MemberId == record.MemberId);
+
+                                if (existingRecord != null)
+                                {
+                                    // Update existing record
+                                    existingRecord.Status = record.Status;
+                                    existingRecord.Notes = record.Notes;
+                                    existingRecord.RecordedAt = DateTime.UtcNow;
+                                    _context.Attendances.Update(existingRecord);
+                                }
+                                else
+                                {
+                                    // Add new record for members not in existing records
+                                    record.ServiceDate = serviceDate;
+                                    record.ServiceType = serviceType;
+                                    record.RecordedAt = DateTime.UtcNow;
+                                    _context.Attendances.Add(record);
+                                }
+                            }
+
+                            // Remove records for members that no longer exist or are inactive
+                            var currentMemberIds = attendanceRecords.Select(ar => ar.MemberId).ToList();
+                            var recordsToRemove = existingRecords
+                                .Where(er => !currentMemberIds.Contains(er.MemberId))
+                                .ToList();
+
+                            if (recordsToRemove.Any())
+                            {
+                                _context.Attendances.RemoveRange(recordsToRemove);
+                            }
+                        }
+                        else
+                        {
+                            // No existing records, add all new records
+                            foreach (var record in attendanceRecords)
+                            {
+                                record.ServiceDate = serviceDate;
+                                record.ServiceType = serviceType;
+                                record.RecordedAt = DateTime.UtcNow;
+                                _context.Attendances.Add(record);
+                            }
                         }
 
                         // Check for existing ChurchAttendanceSummary
                         var existingSummary = await _context.ChurchAttendanceSummaries
-                        .FirstOrDefaultAsync(s => s.SummaryDate.Date == serviceDate.Date &&
-                                              s.ServiceType == serviceType);
+                            .FirstOrDefaultAsync(s => s.SummaryDate.Date == serviceDate.Date &&
+                                                  s.ServiceType == serviceType);
 
-                        // Update attendance records
-                        foreach (var record in attendanceRecords)
-                        {
-                            record.ServiceDate = serviceDate;
-                            record.ServiceType = serviceType;
-                            record.RecordedAt = DateTime.UtcNow;
-                            _context.Attendances.Add(record);
-                        }
+                        // Calculate totals
+                        var allMembers = await _context.Members.ToListAsync();
+                        int totalPresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present);
+                        int totalMalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Male);
+                        int totalFemalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Female);
 
-                        // Save ChurchAttendanceSummary
-                        var allMembers = await _context.Members.ToListAsync(); // Fetch all members
                         if (existingSummary != null)
                         {
                             // Update existing summary
-                            existingSummary.TotalPresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present);
-                            existingSummary.TotalMalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Male);
-                            existingSummary.TotalFemalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Female);
+                            existingSummary.TotalPresent = totalPresent;
+                            existingSummary.TotalMalePresent = totalMalePresent;
+                            existingSummary.TotalFemalePresent = totalFemalePresent;
                             existingSummary.TotalMembers = allMembers.Count;
                             existingSummary.Visitors = visitorsWindow.Visitors;
                             existingSummary.Children = visitorsWindow.Children;
                             existingSummary.OfferingAmount = visitorsWindow.OfferingAmount;
                             existingSummary.ServiceTheme = serviceTheme;
-                            existingSummary.SummaryLastModified = DateTime.UtcNow; // Update timestamp if needed
+                            existingSummary.SummaryLastModified = DateTime.UtcNow;
+
+                            _context.ChurchAttendanceSummaries.Update(existingSummary);
                         }
                         else
                         {
@@ -607,9 +683,9 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
                             {
                                 SummaryDate = serviceDate,
                                 ServiceType = serviceType,
-                                TotalPresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present),
-                                TotalMalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Male),
-                                TotalFemalePresent = attendanceRecords.Count(r => r.Status == AttendanceStatus.Present && r.Member.Sex == Member.Gender.Female),
+                                TotalPresent = totalPresent,
+                                TotalMalePresent = totalMalePresent,
+                                TotalFemalePresent = totalFemalePresent,
                                 TotalMembers = allMembers.Count,
                                 Visitors = visitorsWindow.Visitors,
                                 Children = visitorsWindow.Children,
@@ -618,9 +694,11 @@ namespace AccraRoadAttendance.Views.Pages.Attendance
                             };
                             _context.ChurchAttendanceSummaries.Add(summary);
                         }
+
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
-                        MessageBox.Show("Attendance saved successfully!", "Success", MessageBoxButton.OK);
+
+                        MessageBox.Show("Attendance saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (Exception ex)
                     {
