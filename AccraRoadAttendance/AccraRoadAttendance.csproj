@@ -8,6 +8,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <ApplicationIcon>CLogocw.ico</ApplicationIcon>
     <NoWin32Manifest>true</NoWin32Manifest>
+    <UserSecretsId>f2779924-111a-40b2-ab3e-dcd1e41e8040</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
