@@ -37,7 +37,7 @@ namespace AccraRoadAttendance.Services
 
         public async Task SyncDataAsync(IProgress<string>? progress = null)
         {
-            const int maxRetries = 2;
+            const int maxRetries = 3;
             const int delayMs = 2000; // 5 seconds
             int attempt = 0;
             TimeSpan delay = TimeSpan.FromSeconds(5);
