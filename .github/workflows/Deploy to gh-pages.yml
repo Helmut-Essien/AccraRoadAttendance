@@ -74,8 +74,12 @@ jobs:
       run: dotnet tool install --global dotnet-ef --version 8.*
           
     - name: Apply EF Core Migrations
-      #working-directory: AccraRoadAttendance\Data "change master yaml"
-      run: dotnet ef database update --context OnlineAttendanceDbContext --verbose --connection "${{ secrets.PRODUCTION_CONNECTION_STRING }}" --project AccraRoadAttendance/AccraRoadAttendance.csproj
+      run: dotnet ef database update 
+       --context OnlineAttendanceDbContext 
+       --verbose 
+       --connection "${{ secrets.PRODUCTION_CONNECTION_STRING }}" 
+       --project AccraRoadAttendance/AccraRoadAttendance.csproj 
+       -- --environment Production
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
