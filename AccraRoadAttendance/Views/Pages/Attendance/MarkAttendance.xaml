@@ -50,6 +50,7 @@
                 Width="150"
                 Margin="0,0,10,0"
                 Foreground="{DynamicResource MaterialDesignBody}"
+                PreviewMouseWheel="ComboBox_PreviewMouseWheel"
                 SelectionChanged="ServiceTypeComboBox_SelectionChanged" />
             <TextBox
                 Name="ServiceThemeTextBox"
@@ -69,7 +70,6 @@
             CellEditEnding="AttendanceDataGrid_CellEditEnding"
             CellStyle="{DynamicResource DataGridCellStyle1}"
             ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}"
-           
             HeadersVisibility="Column"
             IsReadOnly="False"
             RowStyle="{DynamicResource DataGridRowStyle1}"
@@ -109,7 +109,6 @@
                     Width="Auto"
                     Binding="{Binding Member.FirstName}"
                     ElementStyle="{StaticResource VerticallyCenteredCellStyle}"
-                    
                     Header="First Name"
                     IsReadOnly="True" />
 
@@ -118,7 +117,6 @@
                     Width="Auto"
                     Binding="{Binding Member.LastName}"
                     ElementStyle="{StaticResource VerticallyCenteredCellStyle}"
-                    
                     Header="Last Name"
                     IsReadOnly="True" />
 
@@ -127,7 +125,6 @@
                     Width="Auto"
                     Binding="{Binding Member.Sex}"
                     ElementStyle="{StaticResource VerticallyCenteredCellStyle}"
-                    
                     Header="Gender"
                     IsReadOnly="True" />
 
@@ -137,7 +134,6 @@
                         <DataTemplate>
                             <ComboBox
                                 Height="25"
-                                
                                 IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=IsEnabled}"
                                 ItemsSource="{Binding Source={StaticResource AttendanceStatusValues}}"
                                 PreviewMouseWheel="ComboBox_PreviewMouseWheel"
@@ -150,7 +146,6 @@
                         <DataTemplate>
                             <ComboBox
                                 Height="25"
-                               
                                 ItemsSource="{Binding Source={StaticResource AttendanceStatusValues}}"
                                 PreviewMouseWheel="ComboBox_PreviewMouseWheel"
                                 SelectedItem="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -164,7 +159,6 @@
                 <DataGridTextColumn
                     Width="*"
                     Binding="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    
                     Header="Notes"
                     IsReadOnly="False" />
             </DataGrid.Columns>
@@ -184,10 +178,7 @@
             CornerRadius="5"
             Visibility="{Binding Path=IsPaginationVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Orientation="Horizontal">
-                <Button
-                    Click="PreviousPage_Click"
-                    
-                    Style="{StaticResource pagingButton}">
+                <Button Click="PreviousPage_Click" Style="{StaticResource pagingButton}">
                     <Icon:PackIconMaterial Kind="ChevronLeft" Style="{StaticResource pagingButtonIcon}" />
                 </Button>
                 <Rectangle

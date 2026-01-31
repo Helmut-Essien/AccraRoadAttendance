@@ -235,6 +235,7 @@
                     </TextBlock>
                     <ComboBox
                         x:Name="MaritalStatusComboBox"
+                        PreviewMouseWheel="ComboBox_PreviewMouseWheel"
                         Height="40"
                         Margin="0,0,0,20"
                         Padding="5,0,10,0"
@@ -274,6 +275,7 @@
                     </TextBlock>
                     <ComboBox
                         x:Name="OccupationTypeComboBox"
+                        PreviewMouseWheel="ComboBox_PreviewMouseWheel"
                         Height="40"
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
@@ -475,6 +477,7 @@
 
                     <ComboBox
                         x:Name="ZoneComboBox"
+                        PreviewMouseWheel="ComboBox_PreviewMouseWheel"
                         Height="40"
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
@@ -620,6 +623,7 @@
                     </TextBlock>
                     <ComboBox
                         x:Name="EducationComboBox"
+                        PreviewMouseWheel="ComboBox_PreviewMouseWheel"
                         Height="40"
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
