@@ -1,0 +1,14 @@
+{
+  "exclude": [
+    "**/bin",
+    "**/bower_components",
+    "**/jspm_packages",
+    "**/node_modules",
+    "**/obj",
+    "**/platforms"
+  ],
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=AttendanceDb;Integrated Security=True;Trusted_Connection=True;",
+    "OnlineConnection": "Server=tcp:churchdb-gh-2025.database.windows.net,1433;Initial Catalog=ChurchDB;Persist Security Info=False;User ID=churchadmin;Password=K@soaChurchofChrist@2025;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AccraRoadAttendance": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

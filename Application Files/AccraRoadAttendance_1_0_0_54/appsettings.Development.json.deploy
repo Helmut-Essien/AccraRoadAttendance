@@ -1,0 +1,18 @@
+{
+  "exclude": [
+    "**/bin",
+    "**/bower_components",
+    "**/jspm_packages",
+    "**/node_modules",
+    "**/obj",
+    "**/platforms"
+  ],
+
+
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=FINSERVE\\SQLEXPRESS;Database=AttendanceDb;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True;",
+    //"DefaultConnection": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\AttendanceDb.mdf;Integrated Security=True;Connect Timeout=30;",
+    //"OnlineConnection": "Server=db35342.public.databaseasp.net; Database=db35342; User Id=db35342; Password=5Qx#!8AnFf7%; Encrypt=True; TrustServerCertificate=True; MultipleActiveResultSets=True;"
+
+  }
+}
