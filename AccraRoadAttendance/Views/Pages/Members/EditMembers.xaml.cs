@@ -874,6 +874,23 @@ namespace AccraRoadAttendance.Views.Pages.Members
             }
         }
 
+        private void ComboBox_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            // Prevent ComboBox from processing scroll events
+            e.Handled = true;
+
+            // Forward the scroll event to the parent ScrollViewer
+            if (sender is ComboBox comboBox && comboBox.Parent is UIElement parent)
+            {
+                var scrollEvent = new System.Windows.Input.MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+                {
+                    RoutedEvent = UIElement.MouseWheelEvent,
+                    Source = sender
+                };
+                parent.RaiseEvent(scrollEvent);
+            }
+        }
+
         private void UploadPicture_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog

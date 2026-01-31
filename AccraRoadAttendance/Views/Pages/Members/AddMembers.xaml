@@ -148,6 +148,7 @@
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
                         materialDesign:HintAssist.Hint="Choose gender"
+                        PreviewMouseWheel="ComboBox_PreviewMouseWheel"
                         SelectedValue="{Binding Gender, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                 </StackPanel>
@@ -238,6 +239,7 @@
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
                         materialDesign:HintAssist.Hint="Choose marital status"
+                        PreviewMouseWheel="ComboBox_PreviewMouseWheel"
                         SelectedValue="{Binding maritalStatus, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         SelectionChanged="MaritalStatus_Married"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}" />
@@ -276,6 +278,7 @@
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
                         materialDesign:HintAssist.Hint="Choose occupation"
+                        PreviewMouseWheel="ComboBox_PreviewMouseWheel"
                         SelectedValue="{Binding occupationType, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                     <TextBlock
@@ -497,6 +500,7 @@
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
                         materialDesign:HintAssist.Hint="Choose zone"
+                        PreviewMouseWheel="ComboBox_PreviewMouseWheel"
                         SelectedValue="{Binding zone, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                 </StackPanel>
@@ -642,6 +646,7 @@
                         Padding="5,0,10,0"
                         HorizontalContentAlignment="Stretch"
                         materialDesign:HintAssist.Hint="Choose education level"
+                        PreviewMouseWheel="ComboBox_PreviewMouseWheel"
                         SelectedValue="{Binding educationalLevel, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}" />
 
